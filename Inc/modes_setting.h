@@ -1,10 +1,12 @@
 #ifndef __MODES_SETTING_H
 #define __MODES_SETTING_H
+#endif
 
 
-#include "stdint.h"
+#include <main.h>
 #include <string.h>
-#include <database.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 
 extern int PSV_IPAP, PSV_EPAP, PSV_RISE_TIME, PSV_TRRIG_I, PSV_BUR, PSV_Apnea,PSV_MAXP, PSV_TRIIG_E,PSV_Target_Vt;
@@ -13,7 +15,6 @@ extern int ACV_EPAP,ACV_RAMP, ACV_RATE,ACV_IT_RATIO, ACV_Inspiratory, ACV_Expira
 extern float ACV_Vt_Sigh;
 extern int SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV,SIMV_IT_RATIO, SIMV_Inspiratory, SIMV_Expiratory,SIMV_TRRIG_I,SIMV_BUR,SIMV_Apnea,SIMV_Vt;
 
+#define MAX_BUFFER_SIZE 500
 
 extern uint8_t rspy_receive_buffer[MAX_BUFFER_SIZE];
-
-#endif

@@ -23,7 +23,9 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "driver.h"
+#include "database.h"
+#include "pcv_mode.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,8 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
- extern int pwm;
- int tm1t=0;
+ extern int pwm,speed,spd;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -44,7 +45,14 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-int isRx = 0;
+int tm1t=0,sw1=0,tm2_speed=0;
+
+extern int t,t1,s1,s2,tf;
+extern int sw2,e;
+int t3_counter,mode_counter=0;
+extern int duration_high,duration_low,turbo_speed_high,turbo_spped_low,is_inspiratory;
+
+extern modes CURRENT_MODE;
 
 /* USER CODE END PV */
 
@@ -60,6 +68,9 @@ int isRx = 0;
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 
@@ -202,6 +213,21 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line[9:5] interrupts.
+  */
+void EXTI9_5_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
+	sw1 = 0;
+//	buzzer(1,1);
+  /* USER CODE END EXTI9_5_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
+  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
+
+  /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM1 update interrupt and TIM10 global interrupt.
   */
 void TIM1_UP_TIM10_IRQHandler(void)
@@ -224,6 +250,108 @@ void TIM1_UP_TIM10_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+	tm2_speed++;
+	if(tm2_speed==10)
+	{
+		speed = sw2*600;
+		sw2 = 0;
+		tm2_speed = 0;
+	}
+	sw1++;
+	if (sw1==300)
+		if (HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9))
+			buzzer(1,1);
+  /* USER CODE END TIM2_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim2);
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+	
+		t3_counter++;
+	if(t3_counter==duration_high+duration_low)
+	{
+		t3_counter = 0;
+		spd = turbo_speed_high, led(8,1);
+		is_inspiratory=1;
+	}
+	if(t3_counter==t1)
+	{
+
+		spd = turbo_spped_low, led(8,0);
+		is_inspiratory=0;
+	}
+//	if((t3_counter%10)==0)
+//	{	
+		if(spd>=0)	
+			turbo(spd);
+	//}
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM4 global interrupt.
+  */
+void TIM4_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+mode_counter++;
+	
+	if(mode_counter==50)
+	{
+		
+		mode_counter=0;
+		if(CURRENT_MODE==STANDBY) // STANDBY
+    {
+	      turbo_speed_high=12,turbo_spped_low=12;
+    }	
+		else if(CURRENT_MODE==PSV)
+		{
+		  // PSV_Mode();
+		}
+    else if(CURRENT_MODE==PCV)
+		{
+		   PCV_Mode();
+		}	
+    else if(CURRENT_MODE==ACV)
+		{
+		  // ACV_Mode();
+		}	
+     else if(CURRENT_MODE==SIMV)
+		{
+		   //SIMV_Mode();
+		}	
+
+		else // STOP
+		{
+		 turbo_speed_high=0,turbo_spped_low=0;
+		}
+			
+	}
+  /* USER CODE END TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim4);
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+
+  /* USER CODE END TIM4_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART2 global interrupt.
   */
 void USART2_IRQHandler(void)
@@ -234,9 +362,22 @@ void USART2_IRQHandler(void)
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
 
-	//HAL_UART_RxCpltCallback(&huart2);
-	
   /* USER CODE END USART2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+	sw2++;		
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+	
+	
+  /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

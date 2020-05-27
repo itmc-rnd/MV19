@@ -19,6 +19,8 @@ int month(void);
 int year(void);
 void driver_init(void);
 void turbo_break(int x);
+float pressure(int x);
+float flow(int x);
 
 
 #endif

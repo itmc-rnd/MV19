@@ -1,9 +1,5 @@
 #include "database.h"
-
 #include "stdint.h"
-
-uint8_t rspy_receive_buffer[MAX_BUFFER_SIZE];
-int rspy_receive_buffer_index = 0;
 
 modes CURRENT_MODE;
 
@@ -18,6 +14,14 @@ int ALARM_PCV_Fr_Maxi,ALARM_PCV_FiO2_Mini,ALARM_PCV_FiO2_Maxi,ALARM_PCV_Vti_Mini
 int ALARM_ACV_Pi_Mini,ALARM_ACV_Pi_Maxi,ALARM_ACV_Fr_Maxi,ALARM_ACV_FiO2_Mini,ALARM_ACV_FiO2_Maxi,ALARM_ACV_Vte_Mini;
 int ALARM_SIMV_Pi_Mini,ALARM_SIMV_Pi_Maxi,ALARM_SIMV_Fr_Maxi,ALARM_SIMV_FiO2_Mini,ALARM_SIMV_FiO2_Maxi,ALARM_SIMV_Vte_Mini;
 
-
+char buf[50];
 
 int Current_IPAP,Current_EPAP,Current_Apnea;
+
+int turbo_speed_high=0,turbo_spped_low=0,raise_step=100;
+int duration_high=500,duration_low=500;
+int is_inspiratory=1,turbo_speed=0;
+int pwm_i, pwm_e;
+
+float Current_P1=0,Current_P2=0;
+

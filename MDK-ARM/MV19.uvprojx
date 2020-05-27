@@ -18,7 +18,7 @@
           <Vendor>STMicroelectronics</Vendor>
           <PackID>Keil.STM32F4xx_DFP.2.14.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x10000000-0x1000FFFF) IROM(0x8000000-0x80FFFFF) CLOCK(25000000) FPU2 CPUTYPE("Cortex-M4")</Cpu>
+          <Cpu>IRAM(0x20000000-0x2001FFFF) IRAM2(0x10000000-0x1000FFFF) IROM(0x8000000-0x80FFFFF)  CLOCK(25000000) FPU2 CPUTYPE("Cortex-M4")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll></FlashDriverDll>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                  ../Drivers/STM32F4xx_HAL_Driver/Inc;                  ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                  ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                 ../Drivers/STM32F4xx_HAL_Driver/Inc;                                 ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                 ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -392,41 +392,6 @@
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
-              <FileName>modes_setting.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\modes_setting.c</FilePath>
-            </File>
-            <File>
-              <FileName>alarms_setting.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\alarms_setting.c</FilePath>
-            </File>
-            <File>
-              <FileName>mode_psv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\mode_psv.c</FilePath>
-            </File>
-            <File>
-              <FileName>mode_pcv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\mode_pcv.c</FilePath>
-            </File>
-            <File>
-              <FileName>mode_acv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\mode_acv.c</FilePath>
-            </File>
-            <File>
-              <FileName>mode_simv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\mode_simv.c</FilePath>
-            </File>
-            <File>
-              <FileName>standby.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\standby.c</FilePath>
-            </File>
-            <File>
               <FileName>driver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\driver.c</FilePath>
@@ -447,50 +412,30 @@
               <FilePath>../Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
             <File>
-              <FileName>show_alarms.c</FileName>
+              <FileName>alarms_setting.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\show_alarms.c</FilePath>
-            </File>
-            <File>
-              <FileName>check_alarms.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\check_alarms.c</FilePath>
-            </File>
-            <File>
-              <FileName>ven_psv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\ven_psv.c</FilePath>
-            </File>
-            <File>
-              <FileName>ven_pcv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\ven_pcv.c</FilePath>
-            </File>
-            <File>
-              <FileName>ven_acv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\ven_acv.c</FilePath>
-            </File>
-            <File>
-              <FileName>ven_simv.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\ven_simv.c</FilePath>
+              <FilePath>..\Src\alarms_setting.c</FilePath>
             </File>
             <File>
               <FileName>database.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\database.c</FilePath>
             </File>
+            <File>
+              <FileName>modes_setting.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\modes_setting.c</FilePath>
+            </File>
+            <File>
+              <FileName>pcv_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\pcv_mode.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Drivers/STM32F4xx_HAL_Driver</GroupName>
           <Files>
-            <File>
-              <FileName>stm32f4xx_hal_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_usart.c</FilePath>
-            </File>
             <File>
               <FileName>stm32f4xx_hal_adc.c</FileName>
               <FileType>1</FileType>
@@ -585,16 +530,6 @@
               <FileName>stm32f4xx_hal_i2c_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_ll_sdmmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_sdmmc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_hal_sd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sd.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_spi.c</FileName>

@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "driver.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -42,7 +42,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-   
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -54,15 +54,15 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void start_psv_mode(void);
+	
 void decode_raspi_packet(void);
 uint16_t crc_calc(uint8_t *data, uint8_t data_size);
 
 void start_standby(void);
-void start_psv_mode(void);
 void date_time_decoder(void);
 
-int psv_mode_decoder(void);
+void psv_mode_decoder(void);
 void pcv_mode_decoder(void);
 void acv_mode_decoder(void);
 void simv_mode_decoder(void);
@@ -74,8 +74,7 @@ void simv_alarm_decoder(void);
 
 void create_response_for_raspberry(int function_id,int param_id);
 void send_rspy(uint8_t *data, int size);
-
-
+void print_debug(uint8_t *data, int size);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -149,12 +148,6 @@ void send_rspy(uint8_t *data, int size);
 #define RS485_RX_GPIO_Port GPIOC
 #define RS485_EN_Pin GPIO_PIN_8
 #define RS485_EN_GPIO_Port GPIOA
-#define DEBUG_TX_Pin GPIO_PIN_9
-#define DEBUG_TX_GPIO_Port GPIOA
-#define LED9_Pin GPIO_PIN_9
-#define LED9_GPIO_Port GPIOG
-#define DR0_Pin GPIO_PIN_10
-#define DR0_GPIO_Port GPIOG
 #define DR1_Pin GPIO_PIN_11
 #define DR1_GPIO_Port GPIOG
 #define DR2_Pin GPIO_PIN_12
@@ -163,8 +156,6 @@ void send_rspy(uint8_t *data, int size);
 #define DR3_GPIO_Port GPIOG
 #define DR4_Pin GPIO_PIN_14
 #define DR4_GPIO_Port GPIOG
-#define DEBUG_RX_Pin GPIO_PIN_7
-#define DEBUG_RX_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -1,5 +1,5 @@
 #include "alarms_setting.h"
-#include "stdint.h"
+
 
 // BEGIN OF ALARMS Packet DECODER
 

@@ -3,7 +3,7 @@
 
 //  BEGIN OF MODE Packet DECODER
     
-int psv_mode_decoder()
+void psv_mode_decoder()
 {
 			   PSV_IPAP=rspy_receive_buffer[4];
 	       PSV_EPAP=rspy_receive_buffer[5];
@@ -21,9 +21,7 @@ int psv_mode_decoder()
 					 PSV_TRIIG_E=TRIIG_E;
 							 
          int PSV_Target_Vt=rspy_receive_buffer[13]*16+rspy_receive_buffer[14];			
-  
-			 
-				   return 0;
+				 	
 }
 
 void pcv_mode_decoder()
@@ -40,9 +38,6 @@ void pcv_mode_decoder()
 
          PCV_Target_Vt=rspy_receive_buffer[13]*16+rspy_receive_buffer[14];			
   
-				 char buf[50];
-				 sprintf(buf, "PCV - IPAP=%d , EPAP=%d , RISE_TIME=%d ,  RATE=%d , IT_RATIO=%d , Inspiratory=%d , Expiratory=%d ,TRRIG_I=%d , MAXP=%d , Target_Vt=%d  %s", PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspiratory, PCV_Expiratory,PCV_TRRIG_I,PCV_MAXP,PCV_Target_Vt ,"\r\n");
-				 print_debug((uint8_t *)buf, strlen(buf));
 }
 
 void acv_mode_decoder()
@@ -62,11 +57,6 @@ void acv_mode_decoder()
 
           ACV_Sigh_Rate=rspy_receive_buffer[14]*16+rspy_receive_buffer[15];			
 				  ACV_Vt=rspy_receive_buffer[16]*16+rspy_receive_buffer[17];
-  
-				 char buf[50];
-				 sprintf(buf, "ACV - EPAP=%d , RAMP=%d , RATE=%d , IT_RATIO=%d , Inspiratory=%d , Expiratory=%d ,TRRIG_I=%d , Vt_Sigh=%d/%d == %f, MAXP=%d , Sigh_Rate=%d , Vt=%d  %s", ACV_EPAP,ACV_RAMP, ACV_RATE,ACV_IT_RATIO, ACV_Inspiratory, ACV_Expiratory,ACV_TRRIG_I,Vt_Sigh_I,Vt_Sigh_F , ACV_Vt_Sigh,ACV_MAXP,ACV_Sigh_Rate,ACV_Vt ,"\r\n");
-				 print_debug((uint8_t *)buf, strlen(buf));
-
 
 }		
 		
@@ -83,10 +73,6 @@ void simv_mode_decoder()
 				  SIMV_Apnea=rspy_receive_buffer[13];
 				  SIMV_Vt=rspy_receive_buffer[14]*16+rspy_receive_buffer[15];
   
-				 char buf[50];
-				 sprintf(buf, "SIMV - IPAP=%d , EPAP=%d , RATE_SIMV=%d ,  IT_RATIO=%d , Inspiratory=%d , Expiratory=%d ,TRRIG_I=%d , BUR=%d , Apnea=%d , Vt=%d  %s", SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV,SIMV_IT_RATIO, SIMV_Inspiratory, SIMV_Expiratory,SIMV_TRRIG_I,SIMV_BUR,SIMV_Apnea,SIMV_Vt ,"\r\n");
-				 print_debug((uint8_t *)buf, strlen(buf));
-
 }
     
 //  END OF MODE Packet DECODER

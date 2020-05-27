@@ -16,6 +16,8 @@ extern SPI_HandleTypeDef hspi1;
 extern SPI_HandleTypeDef hspi2;
 
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
 
 extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart1;
@@ -28,13 +30,17 @@ extern UART_HandleTypeDef huart6;
 unsigned char b[5];
 
 int s,i=0,pwm=10;
+float ans=0;
+int sw2 = 0;
+int speed =0;
+extern int e;
 
 
 
 void ADC_CNL(int x)
 {
 	ADC_ChannelConfTypeDef sConfig = {0};
-	hadc3.Instance = ADC1;
+	hadc3.Instance = ADC3;
   hadc3.Init.ScanConvMode = DISABLE;
   hadc3.Init.ContinuousConvMode = DISABLE;
   hadc3.Init.DiscontinuousConvMode = DISABLE;
@@ -98,7 +104,6 @@ void led(int x,int y)
 			case 7:	HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_SET);	break;
 			case 8:	HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, GPIO_PIN_SET);	break;
 			case 9:	HAL_GPIO_WritePin(LED8_GPIO_Port, LED8_Pin, GPIO_PIN_SET);	break;
-			case 10:	HAL_GPIO_WritePin(LED9_GPIO_Port, LED9_Pin, GPIO_PIN_SET);	break;
 		}
 	}
 	else
@@ -114,7 +119,6 @@ void led(int x,int y)
 			case 7:	HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_RESET);	break;
 			case 8:	HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, GPIO_PIN_RESET);	break;
 			case 9:	HAL_GPIO_WritePin(LED8_GPIO_Port, LED8_Pin, GPIO_PIN_RESET);	break;
-			case 10:	HAL_GPIO_WritePin(LED9_GPIO_Port, LED9_Pin, GPIO_PIN_RESET);	break;
 		}
 	}
 }
@@ -130,18 +134,21 @@ int bcd2bin(int bcd)
 
 void turbo(int x)
 {
-	pwm = x;
+	if((pwm+e)>x)
+		pwm = x;
+	else
+		pwm = pwm+e;
 }
-
 void turbo_break(int x)
 {
 		HAL_GPIO_WritePin(DR3_GPIO_Port, DR3_Pin, x);
 }
 void driver_init(void)
 {
-	pwm = 0;
-	
+	turbo(0);
 	HAL_TIM_Base_Start_IT(&htim1);
+	HAL_TIM_Base_Start_IT(&htim2);
+	HAL_TIM_Base_Start_IT(&htim3);
 	
 	HAL_GPIO_WritePin(DR3_GPIO_Port, DR3_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(DR4_GPIO_Port, DR4_Pin, GPIO_PIN_SET);
@@ -157,10 +164,10 @@ void buzzer(int x,int y)
 	{
 		switch (x)
 		{
-			case 1:	HAL_GPIO_WritePin(Buzzer1_GPIO_Port, Buzzer1_Pin, GPIO_PIN_SET);	break;
-			case 2:	HAL_GPIO_WritePin(Buzzer2_GPIO_Port, Buzzer2_Pin, GPIO_PIN_SET);	break;
-			case 3:	HAL_GPIO_WritePin(Buzzer3_GPIO_Port, Buzzer3_Pin, GPIO_PIN_SET);	break;
-			case 4:	HAL_GPIO_WritePin(Buzzer4_GPIO_Port, Buzzer4_Pin, GPIO_PIN_SET);	break;
+			case 1:	HAL_GPIO_WritePin(Buzzer1_GPIO_Port, Buzzer1_Pin, GPIO_PIN_SET)	;	break;
+			case 2:	HAL_GPIO_WritePin(Buzzer2_GPIO_Port, Buzzer2_Pin, GPIO_PIN_SET)	;	break;
+			case 3:	HAL_GPIO_WritePin(Buzzer3_GPIO_Port, Buzzer3_Pin, GPIO_PIN_SET)	;	break;
+			case 4:	HAL_GPIO_WritePin(Buzzer4_GPIO_Port, Buzzer4_Pin, GPIO_PIN_SET)	;	break;
 		}
 	}
 	else
@@ -238,6 +245,21 @@ int month(void)
 		s = bcd2bin(b[0]);
 		return s;
 
+}
+
+
+
+
+float pressure(int x)
+{
+	switch (x)
+	{
+		case 1 :	i = ADC_READ(8);	break;
+		case 2 :	i = ADC_READ(6);	break;
+		case 3 :	i = ADC_READ(10);	break;
+	}
+	ans = ((0.002717*i)-0.4125)*10;
+	return ans;
 }
 
 int year(void)
