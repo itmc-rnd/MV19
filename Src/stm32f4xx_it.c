@@ -281,13 +281,13 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 	
 		t3_counter++;
-	if(t3_counter==duration_high+duration_low)
+	if(t3_counter>duration_high+duration_low)
 	{
 		t3_counter = 0;
 		spd = turbo_speed_high, led(8,1);
 		is_inspiratory=1;
 	}
-	if(t3_counter==t1)
+	if(t3_counter==duration_low)
 	{
 
 		spd = turbo_spped_low, led(8,0);
@@ -298,6 +298,14 @@ void TIM3_IRQHandler(void)
 		if(spd>=0)	
 			turbo(spd);
 	//}
+		if(t3_counter%100)
+		{
+			led(6,0);
+		}
+		else
+		{
+		  led(6,1);
+		}
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */
