@@ -324,7 +324,7 @@ void TIM3_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-mode_counter++;
+   mode_counter++;
 	
 	if(mode_counter==50)
 	{

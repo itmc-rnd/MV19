@@ -39,7 +39,8 @@ mv19\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 mv19\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 mv19\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 mv19\main.o: ../Inc/driver.h
-mv19\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-mv19\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-mv19\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 mv19\main.o: ../Inc/database.h
+mv19\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+mv19\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+mv19\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+mv19\main.o: ../Inc/show_alarms.h

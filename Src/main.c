@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <database.h>
+#include "show_alarms.h"
 
 /* USER CODE END Includes */
 
@@ -125,6 +125,7 @@ extern int turbo_speed_high,turbo_spped_low,turbo_speed,is_inspiratory,raise_ste
 extern char buf[200];
 uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
+extern int duration_high,duration_low;
 
 /* USER CODE END PV */
 
@@ -229,14 +230,39 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	
 	HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
-	HAL_TIM_Base_Start_IT(&htim4);
+	
 	 
 	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0;
-	 
-	driver_init();
-
-		extern int duration_high,duration_low;
+	 float x=0,y=0;
+	 int cnt=0,sum=0;
 	
+	driver_init();
+  HAL_Delay(200);
+	 if(check_devices())
+	 {
+//			   int sum=0;
+//	   
+//	  turbo_speed_high=12,turbo_spped_low=12;
+//    HAL_Delay(5000);
+//	   if(speed==0)
+//		 {
+//			 create_response_for_raspberry(111,0);
+//		 }
+//		 turbo_speed_high=0,turbo_spped_low=0;
+//		 
+//		 for(int cnt=0;cnt<10;cnt++)
+//		 {
+//			 sum=sum+pressure(3);
+//		 }
+//		 
+//		 if(sum/10<-1)
+//		 {
+//			
+//        create_response_for_raspberry(111,63);   // Pressure Not found
+//		 }
+		 
+		 HAL_TIM_Base_Start_IT(&htim4);
+		 
 	while (1)
   {
 		
@@ -289,7 +315,7 @@ int main(void)
 			
 			rspy_receive_buffer_index = 0;
 		}
-		
+	}
   }
   /* USER CODE END 3 */
 }
@@ -1075,6 +1101,8 @@ void decode_raspi_packet()
 					if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
               CURRENT_MODE=STANDBY;
+							duration_high=500;
+	            duration_low=500;
 						  turbo_speed_high=12,turbo_spped_low=12;
 						  create_response_for_raspberry(0,0);
 							
@@ -1195,57 +1223,6 @@ void decode_raspi_packet()
 		}
 }
 
-void start_standby()
-{
-			   int start_command=rspy_receive_buffer[3];
-	       if(start_command==0)
-					{
-						
-					turbo(20);
-					
-				
-					}
-					else
-					{
-						 //char buf[50];					
-					   //sprintf(buf, "%s","\r\n STANDBY DATA Error!!!!\r\n");						
-					   //print_debug((uint8_t *)buf, 18);
-					}
-}
-
-void start_psv_mode()
-{
-		
-			   int start_command=rspy_receive_buffer[3];
-	       if(start_command==0x01)
-					{
-  				 //char buf[50];
-	  			 //sprintf(buf, "\r\n START PSV MODE func....\r\n");
-		  		 //print_debug((uint8_t *)buf, strlen(buf));
-						
-					 turbo(80);
-						
-					 /*while(1)
-					 {				
-						 if(CURRENT_MODE==STANDBY)						 
-             {
-							 //char buf[50];
-	  			     //sprintf(buf, "\r\n START PSV MODE TO STANDBY....\r\n");
-		  		     //print_debug((uint8_t *)buf, strlen(buf));
-							 
-							 break;
-						 }
-					 }*/
-					}
-					else
-					{
-						 //char buf[50];					
-					   //sprintf(buf, "%s","\r\n START PSV MODE DATA Error!!!!\r\n");						
-					   //print_debug((uint8_t *)buf, 18);
-					}
-					
-
-}
 
 
 // BEGIN OF CREATE RESPONSE FOR RASPBERRY

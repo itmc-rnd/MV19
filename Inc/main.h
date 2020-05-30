@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "driver.h"
+#include <database.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -54,12 +55,12 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void start_psv_mode(void);
+	
+AlarmData show_alarm(int alarm_id);
 	
 void decode_raspi_packet(void);
 uint16_t crc_calc(uint8_t *data, uint8_t data_size);
 
-void start_standby(void);
 void date_time_decoder(void);
 
 void psv_mode_decoder(void);
@@ -72,6 +73,7 @@ void pcv_alarm_decoder(void);
 void acv_alarm_decoder(void);
 void simv_alarm_decoder(void);
 
+bool check_devices(void);
 void create_response_for_raspberry(int function_id,int param_id);
 void send_rspy(uint8_t *data, int size);
 void print_debug(uint8_t *data, int size);

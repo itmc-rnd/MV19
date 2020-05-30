@@ -12,4 +12,4 @@ void STANDBY_Mode(void)
 	turbo_speed_high=12;
 	turbo_spped_low=12;
 }
-	
+

@@ -1,6 +1,6 @@
 #include "database.h"
 #include "stdint.h"
-#include <stdbool.h>
+
 
 modes CURRENT_MODE;
 
