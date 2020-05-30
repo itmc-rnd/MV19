@@ -124,6 +124,7 @@ extern int turbo_speed_high,turbo_spped_low,turbo_speed,is_inspiratory,raise_ste
  extern int pwm_i, pwm_e, PCV_RATE;
 extern char buf[200];
 uint8_t rspy_receive_buffer_Data[1000];
+extern bool Config_request;
 
 /* USER CODE END PV */
 
@@ -233,13 +234,19 @@ int main(void)
 	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0;
 	 
 	driver_init();
-		float x=0,y=0;
+
 		extern int duration_high,duration_low;
 	
 	while (1)
   {
 		
-		 a=pressure(1);
+		if(Config_request)
+		{
+			create_response_for_raspberry(5,0);
+			Config_request=false;
+		}
+		
+		a=pressure(1);
 		b=pressure(1);
 		c=pressure(1);
 		d=pressure(1);
@@ -1245,7 +1252,7 @@ void start_psv_mode()
 
 void create_response_for_raspberry(int function_id,int param_id)
 {
-	  uint8_t response[13];
+	  uint8_t response[8];
 	
 		response[0]=0xFE;
 		response[1]=0x02;
@@ -1313,12 +1320,15 @@ void send_rspy(uint8_t *data, int size)
 		send_complete = false;
 
 	
-			HAL_UART_Transmit_IT(&huart2, data, size);
-
-
+			//HAL_UART_Transmit_IT(&huart2, data, size);
 	
-	send_complete = true;
-	
+		for(int i=0; i<size; i++)
+		{
+				HAL_UART_Transmit_IT(&huart2, data+i, 1);
+				HAL_Delay(10);
+		}
+
+	send_complete = true;		
 
 }
 

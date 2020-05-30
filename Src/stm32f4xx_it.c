@@ -23,9 +23,12 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdbool.h>
 #include "driver.h"
 #include "database.h"
 #include "pcv_mode.h"
+#include "standby_mode.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +56,7 @@ int t3_counter,mode_counter=0;
 extern int duration_high,duration_low,turbo_speed_high,turbo_spped_low,is_inspiratory;
 
 extern modes CURRENT_MODE;
+extern bool Config_request;
 
 /* USER CODE END PV */
 
@@ -265,7 +269,8 @@ void TIM2_IRQHandler(void)
 	sw1++;
 	if (sw1==300)
 		if (HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9))
-			buzzer(1,1);
+			Config_request=true;
+			//buzzer(1,1);
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
@@ -327,7 +332,7 @@ mode_counter++;
 		mode_counter=0;
 		if(CURRENT_MODE==STANDBY) // STANDBY
     {
-	      turbo_speed_high=12,turbo_spped_low=12;
+	       STANDBY_Mode();
     }	
 		else if(CURRENT_MODE==PSV)
 		{

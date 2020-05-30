@@ -1,5 +1,6 @@
 #include "database.h"
 #include "stdint.h"
+#include <stdbool.h>
 
 modes CURRENT_MODE;
 
@@ -24,4 +25,7 @@ int is_inspiratory=1,turbo_speed=0;
 int pwm_i, pwm_e;
 
 float Current_P1=0,Current_P2=0;
+
+bool Config_request=false;
+
 
