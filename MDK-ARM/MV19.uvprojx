@@ -446,6 +446,26 @@
               <FileType>1</FileType>
               <FilePath>..\Src\check_device_init.c</FilePath>
             </File>
+            <File>
+              <FileName>pcv_alarms.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\pcv_alarms.c</FilePath>
+            </File>
+            <File>
+              <FileName>acv_alarms.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\acv_alarms.c</FilePath>
+            </File>
+            <File>
+              <FileName>psv_alarms.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\psv_alarms.c</FilePath>
+            </File>
+            <File>
+              <FileName>simv_alarms.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\simv_alarms.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

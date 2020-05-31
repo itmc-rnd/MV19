@@ -127,6 +127,8 @@ uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
 extern int duration_high,duration_low;
 
+extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -238,30 +240,9 @@ int main(void)
 	
 	driver_init();
   HAL_Delay(200);
-	 if(check_devices())
-	 {
-//			   int sum=0;
-//	   
-//	  turbo_speed_high=12,turbo_spped_low=12;
-//    HAL_Delay(5000);
-//	   if(speed==0)
-//		 {
-//			 create_response_for_raspberry(111,0);
-//		 }
-//		 turbo_speed_high=0,turbo_spped_low=0;
-//		 
-//		 for(int cnt=0;cnt<10;cnt++)
-//		 {
-//			 sum=sum+pressure(3);
-//		 }
-//		 
-//		 if(sum/10<-1)
-//		 {
-//			
-//        create_response_for_raspberry(111,63);   // Pressure Not found
-//		 }
-		 
-		 HAL_TIM_Base_Start_IT(&htim4);
+	check_devices();
+	
+	HAL_TIM_Base_Start_IT(&htim4);
 		 
 	while (1)
   {
@@ -315,7 +296,7 @@ int main(void)
 			
 			rspy_receive_buffer_index = 0;
 		}
-	}
+	
   }
   /* USER CODE END 3 */
 }
@@ -1098,7 +1079,39 @@ void decode_raspi_packet()
 						 
 			  if(calc_crc==recieved_crc)
 				{
-					if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
+					
+					if(rspy_receive_buffer[2]==0x6E) //  Check System 
+					{
+						CURRENT_MODE=STOP;
+						
+						extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
+						  if(turbo_error)
+							{
+						    // create_response_for_raspberry(111,0);
+							}
+							if(pressure_s1_error)
+							{
+						   //  create_response_for_raspberry(111,1);
+							}
+							if(pressure_s2_error)
+							{
+						    // create_response_for_raspberry(111,2);
+							}
+							if(flow_s_error)
+							{
+						     //create_response_for_raspberry(111,3);
+							}
+							if(buzzer_error)
+							{
+						    // create_response_for_raspberry(111,4);
+							}
+							if(turbo_error||pressure_s1_error||pressure_s2_error||flow_s_error||buzzer_error)
+							   create_checking_signal_for_raspberry(0x6E,1,turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error);
+							else
+								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0);
+							
+					}
+					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
               CURRENT_MODE=STANDBY;
 							duration_high=500;
@@ -1227,6 +1240,46 @@ void decode_raspi_packet()
 
 // BEGIN OF CREATE RESPONSE FOR RASPBERRY
 
+void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool f1,bool bz)
+{
+	  uint8_t response[13];
+	
+		response[0]=0xFE;
+		response[1]=0x07;
+		response[2]=function_id;
+		response[3]=param_id;
+	  response[4]=tubo;
+	  response[5]=sp1;
+	  response[6]=sp2;
+	  response[7]=f1;
+	  response[8]=bz;
+	  {
+		    uint8_t *dt;
+		    dt[0]=response[2];  dt[1]=response[3];
+			  dt[2]=response[4];  dt[3]=response[5];
+			  dt[4]=response[6];  dt[5]=response[7];
+			  dt[6]=response[8];  
+			
+				uint16_t resp_crc=crc_calc(dt,7);
+				if( resp_crc<256)
+				{
+					response[9]=0x00;
+					response[10]=resp_crc;
+				}
+				else
+				{
+					response[9]=(int)resp_crc/255;
+					response[10]=resp_crc%255;
+				}
+	  }
+		response[11]=0xFF;
+		response[12]=0x0A;
+							
+		
+		 
+		send_rspy(response, 13);
+}
+
 void create_response_for_raspberry(int function_id,int param_id)
 {
 	  uint8_t response[8];
@@ -1237,7 +1290,7 @@ void create_response_for_raspberry(int function_id,int param_id)
 		response[3]=param_id;
 	  {
 		    uint8_t *dt;
-		    dt[0]=0x00;  dt[1]=0x01;
+		    dt[0]=response[2];  dt[1]=response[3];
 				uint16_t resp_crc=crc_calc(dt,2);
 				if( resp_crc<256)
 				{
@@ -1254,8 +1307,8 @@ void create_response_for_raspberry(int function_id,int param_id)
 		response[7]=0x0A;
 							
 		send_rspy(response, 8);
+		
 }
-
 // END OF CREATE RESPONSE FOR RASPBERRY
 
 //  BEGIN OF DATE and TIME Packet DECODER
@@ -1305,6 +1358,8 @@ void send_rspy(uint8_t *data, int size)
 				HAL_Delay(10);
 		}
 
+		led(4,1);
+		
 	send_complete = true;		
 
 }

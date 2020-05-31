@@ -1,6 +1,7 @@
 #include "database.h"
 #include "stdint.h"
 
+bool turbo_error=false,pressure_s1_error=false,pressure_s2_error=false,flow_s_error=false,buzzer_error=false;
 
 modes CURRENT_MODE;
 

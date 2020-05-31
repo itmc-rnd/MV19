@@ -27,6 +27,7 @@
 #include "driver.h"
 #include "database.h"
 #include "pcv_mode.h"
+#include "pcv_alarms.h"
 #include "standby_mode.h"
 
 /* USER CODE END Includes */
@@ -336,11 +337,13 @@ void TIM4_IRQHandler(void)
     }	
 		else if(CURRENT_MODE==PSV)
 		{
-		  // PSV_Mode();
+		   PSV_Mode();
+			 PSV_Alarms();
 		}
     else if(CURRENT_MODE==PCV)
 		{
 		   PCV_Mode();
+			 PCV_Alarms();
 		}	
     else if(CURRENT_MODE==ACV)
 		{
