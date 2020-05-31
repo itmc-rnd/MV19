@@ -21,7 +21,7 @@ void check_devices()                 /////////////////////// ALARM CHECK
 		 
 		 for(int cnt=0;cnt<10;cnt++)
 		 {
-			 sum=sum+pressure(3);
+			 sum=sum+pressure(1);
 		 }
 		 
 		 if(sum/10<-1)
@@ -32,7 +32,7 @@ void check_devices()                 /////////////////////// ALARM CHECK
 		 	 
 		 for(int cnt=0;cnt<10;cnt++)
 		 {
-			 sum=sum+pressure(3);
+			 sum=sum+pressure(2);
 		 }
 		 
 		 if(sum/10<-1)
