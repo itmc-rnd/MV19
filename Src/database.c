@@ -22,9 +22,10 @@ int Current_IPAP,Current_EPAP,Current_Apnea;
 int turbo_speed_high=0,turbo_spped_low=0,raise_step=100;
 int duration_high=500,duration_low=500;
 int is_inspiratory=1,turbo_speed=0;
-int pwm_i, pwm_e;
+int pwm_i_pcv, pwm_e_pcv;
 
 float Current_P1=0,Current_P2=0;
+float Current_Qi=0,Current_Qe=0;
 
 bool Config_request=false;
 

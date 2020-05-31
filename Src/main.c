@@ -120,8 +120,10 @@ int rspy_receive_buffer_index = 0;
 bool send_complete = true;
 extern modes CURRENT_MODE;
 extern float Current_P1,Current_P2;
+extern float Current_Qi,Current_Qe;
 extern int turbo_speed_high,turbo_spped_low,turbo_speed,is_inspiratory,raise_step;
- extern int pwm_i, pwm_e, PCV_RATE;
+ extern int pwm_i_pcv, pwm_e_pcv, PCV_RATE;
+ extern int pwm_i_simv, pwm_e_simv, SIMV_RATE_SIMV;
 extern char buf[200];
 uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
@@ -295,7 +297,7 @@ int main(void)
 		   Current_P2=a;
 		 }
 
-		sprintf(buf, "\f duration_high=%d , duration_low=%d , turbo_speed_high=%d , turbo_speed_low=%d , P1=%f   %d  MM=%d - i=%d  , pwm-i=%d  , pwm-e=%d , PCV_RATE=%d , raise_step=%d",duration_high,duration_low,turbo_speed_high,turbo_spped_low, Current_P1,turbo_speed,(int)CURRENT_MODE,is_inspiratory, pwm_i, pwm_e, PCV_RATE,raise_step);
+		sprintf(buf, "\f duration_high=%d , duration_low=%d , turbo_speed_high=%d , turbo_speed_low=%d , P1=%f   %d  MM=%d - i=%d  , pwm_i=%d  , pwm-e=%d , PCV_RATE=%d , raise_step=%d",duration_high,duration_low,turbo_speed_high,turbo_spped_low, Current_P1,turbo_speed,(int)CURRENT_MODE,is_inspiratory, pwm_i_pcv, pwm_e_pcv, PCV_RATE,raise_step);
 		print_debug((uint8_t *)buf, strlen(buf));
 		
 		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
