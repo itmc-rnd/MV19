@@ -337,8 +337,8 @@ void TIM4_IRQHandler(void)
     }	
 		else if(CURRENT_MODE==PSV)
 		{
-		   PSV_Mode();
-			 PSV_Alarms();
+		 //  PSV_Mode();
+		//	 PSV_Alarms();
 		}
     else if(CURRENT_MODE==PCV)
 		{
