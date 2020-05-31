@@ -1116,10 +1116,12 @@ void decode_raspi_packet()
 					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
               CURRENT_MODE=STANDBY;
+						
 							duration_high=500;
 	            duration_low=500;
 						  turbo_speed_high=12,turbo_spped_low=12;
 						  create_response_for_raspberry(0,0);
+						
 							
 							//start_standby();
 					}
@@ -1147,13 +1149,14 @@ void decode_raspi_packet()
 						else if(rspy_receive_buffer[3]==0x02)   //PCV MODE
 						{
 							
-							CURRENT_MODE=PCV;
+							 CURRENT_MODE=PCV;
 							
 							 pcv_mode_decoder();
 							
 							create_response_for_raspberry(2,2);
 							
-						  
+						 
+							
 						}
 						else if(rspy_receive_buffer[3]==0x03)   // ACV MODE
 						{
@@ -1360,7 +1363,7 @@ void send_rspy(uint8_t *data, int size)
 				HAL_Delay(10);
 		}
 
-		led(4,1);
+		
 		
 	send_complete = true;		
 
