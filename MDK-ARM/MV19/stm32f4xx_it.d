@@ -43,5 +43,6 @@ mv19\stm32f4xx_it.o: ../Inc/database.h
 mv19\stm32f4xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 mv19\stm32f4xx_it.o: ../Inc/stm32f4xx_it.h
 mv19\stm32f4xx_it.o: ../Inc/pcv_mode.h
+mv19\stm32f4xx_it.o: ../Inc/simv_mode.h
 mv19\stm32f4xx_it.o: ../Inc/pcv_alarms.h
 mv19\stm32f4xx_it.o: ../Inc/standby_mode.h

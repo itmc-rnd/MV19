@@ -2,7 +2,7 @@ Dependencies for Project 'MV19', Target 'MV19': (DO NOT MODIFY !)
 F (startup_stm32f407xx.s)(0x5EC4E579)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include--pd "__UVISION_VERSION SETA 525" --pd "_RTE_ SETA 1" --pd "STM32F407xx SETA 1"--list startup_stm32f407xx.lst --xref -o mv19\startup_stm32f407xx.o --depend mv19\startup_stm32f407xx.d)
 F (..\Src\driver.c)(0x5ECE484F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\driver.o --omf_browse mv19\driver.crf --depend mv19\driver.d)
 I (../Inc/driver.h)(0x5ECE484F)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -42,8 +42,8 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x5EC4E579)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x5EC4E579)
 I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
-F (../Src/main.c)(0x5ED49175)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\main.o --omf_browse mv19\main.crf --depend mv19\main.d)
-I (../Inc/main.h)(0x5ED354C0)
+F (../Src/main.c)(0x5ED4DE59)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\main.o --omf_browse mv19\main.crf --depend mv19\main.d)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -87,8 +87,8 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599EFE64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599EFE64)
 I (../Inc/show_alarms.h)(0x5ED229A0)
-F (../Src/stm32f4xx_it.c)(0x5ED49134)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\stm32f4xx_it.o --omf_browse mv19\stm32f4xx_it.crf --depend mv19\stm32f4xx_it.d)
-I (../Inc/main.h)(0x5ED354C0)
+F (../Src/stm32f4xx_it.c)(0x5ED49A46)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\stm32f4xx_it.o --omf_browse mv19\stm32f4xx_it.crf --depend mv19\stm32f4xx_it.d)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -131,10 +131,11 @@ I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (../Inc/stm32f4xx_it.h)(0x5ECE484F)
 I (../Inc/pcv_mode.h)(0x5ECE484F)
+I (../Inc/simv_mode.h)(0x5ED377D0)
 I (../Inc/pcv_alarms.h)(0x5ED33675)
 I (../Inc/standby_mode.h)(0x5ED2031C)
 F (../Src/stm32f4xx_hal_msp.c)(0x5ECE484F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\stm32f4xx_hal_msp.o --omf_browse mv19\stm32f4xx_hal_msp.crf --depend mv19\stm32f4xx_hal_msp.d)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -177,7 +178,7 @@ I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 F (..\Src\alarms_setting.c)(0x5ED48CBB)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\alarms_setting.o --omf_browse mv19\alarms_setting.crf --depend mv19\alarms_setting.d)
 I (../Inc/alarms_setting.h)(0x5ECE484F)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -220,13 +221,13 @@ I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599EFE64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599EFE64)
-F (..\Src\database.c)(0x5ED377D0)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\database.o --omf_browse mv19\database.crf --depend mv19\database.d)
+F (..\Src\database.c)(0x5ED4DDAC)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\database.o --omf_browse mv19\database.crf --depend mv19\database.d)
 I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599EFE66)
 F (..\Src\modes_setting.c)(0x5ECE484F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\modes_setting.o --omf_browse mv19\modes_setting.crf --depend mv19\modes_setting.d)
 I (../Inc/modes_setting.h)(0x5ECE484F)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -284,7 +285,7 @@ I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 F (..\Src\check_device_init.c)(0x5ED49024)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\check_device_init.o --omf_browse mv19\check_device_init.crf --depend mv19\check_device_init.d)
 I (../Inc/check_device_init.h)(0x5ED48599)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -330,7 +331,7 @@ I (../Inc/pcv_alarms.h)(0x5ED33675)
 I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (../Inc/check_device_init.h)(0x5ED48599)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -374,7 +375,7 @@ I (../Inc/acv_alarms.h)(0x5ED358DB)
 I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (../Inc/check_device_init.h)(0x5ED48599)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -418,7 +419,7 @@ I (../Inc/psv_alarms.h)(0x5ED3594F)
 I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (../Inc/check_device_init.h)(0x5ED48599)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -462,7 +463,7 @@ I (../Inc/simv_alarms.h)(0x5ED34F7A)
 I (../Inc/database.h)(0x5ED2297A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (../Inc/check_device_init.h)(0x5ED48599)
-I (../Inc/main.h)(0x5ED354C0)
+I (../Inc/main.h)(0x5ED4DE0D)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)
 I (../Inc/stm32f4xx_hal_conf.h)(0x5ECE484F)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5EC4E579)
@@ -500,6 +501,11 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h)(0x5EC4E579)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h)(0x5EC4E579)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x5EC4E579)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x5EC4E579)
+I (../Inc/driver.h)(0x5ECE484F)
+F (..\Src\simv_mode.c)(0x5ED49BC2)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\simv_mode.o --omf_browse mv19\simv_mode.crf --depend mv19\simv_mode.d)
+I (../Inc/simv_mode.h)(0x5ED377D0)
+I (../Inc/database.h)(0x5ED2297A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599EFE66)
 I (../Inc/driver.h)(0x5ECE484F)
 F (../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c)(0x5EC4E579)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_MV19-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include-IC:\Users\msamizadeh\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.14.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="525" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx-o mv19\stm32f4xx_hal_adc.o --omf_browse mv19\stm32f4xx_hal_adc.crf --depend mv19\stm32f4xx_hal_adc.d)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5EC4E579)

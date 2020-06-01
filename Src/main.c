@@ -240,8 +240,8 @@ int main(void)
 	 int cnt=0,sum=0;
 	
 	driver_init();
-  //HAL_Delay(200);
-	//check_devices();
+ // HAL_Delay(200);
+//	check_devices();
 	
 	HAL_TIM_Base_Start_IT(&htim4);
 		 
@@ -1084,10 +1084,10 @@ void decode_raspi_packet()
 					{
 						  CURRENT_MODE=STOP;
 						 
-							if(turbo_error||pressure_s1_error||pressure_s2_error||flow_s_error||buzzer_error)
-							   create_checking_signal_for_raspberry(0x6E,1,turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error);
+							if(turbo_error||pressure_s1_error||pressure_s2_error||flow_s_error||flow_s_error||buzzer_error)
+							   create_checking_signal_for_raspberry(0x6E,1,turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,flow_s_error,buzzer_error);
 							else
-								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0);							
+								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0,0);							
 					}
 					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
@@ -1187,44 +1187,45 @@ void decode_raspi_packet()
 
 // BEGIN OF CREATE RESPONSE FOR RASPBERRY
 
-void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool f1,bool bz)
+void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool flow1,bool flow2,bool bz)
 {
-	  uint8_t response[13];
+	  uint8_t response[14];
 	
 		response[0]=0xFE;
-		response[1]=0x07;
+		response[1]=0x08;
 		response[2]=function_id;
 		response[3]=param_id;
 	  response[4]=tubo;
 	  response[5]=sp1;
 	  response[6]=sp2;
-	  response[7]=f1;
-	  response[8]=bz;
+	  response[7]=flow1;
+	  response[8]=flow2;
+	  response[9]=bz;
 	  {
 		    uint8_t *dt;
 		    dt[0]=response[2];  dt[1]=response[3];
 			  dt[2]=response[4];  dt[3]=response[5];
 			  dt[4]=response[6];  dt[5]=response[7];
-			  dt[6]=response[8];  
+			  dt[6]=response[8];  dt[7]=response[9];  
 			
 				uint16_t resp_crc=crc_calc(dt,7);
 				if( resp_crc<256)
 				{
-					response[9]=0x00;
-					response[10]=resp_crc;
+					response[10]=0x00;
+					response[11]=resp_crc;
 				}
 				else
 				{
-					response[9]=(int)resp_crc/255;
-					response[10]=resp_crc%255;
+					response[10]=(int)resp_crc/255;
+					response[11]=resp_crc%255;
 				}
 	  }
-		response[11]=0xFF;
-		response[12]=0x0A;
+		response[12]=0xFF;
+		response[13]=0x0A;
 							
 		
 		 
-		send_rspy(response, 13);
+		send_rspy(response, 14);
 }
 
 

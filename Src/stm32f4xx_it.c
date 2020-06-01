@@ -27,6 +27,7 @@
 #include "driver.h"
 #include "database.h"
 #include "pcv_mode.h"
+#include "simv_mode.h"
 #include "pcv_alarms.h"
 #include "standby_mode.h"
 
@@ -352,7 +353,7 @@ void TIM4_IRQHandler(void)
 		}	
      else if(CURRENT_MODE==SIMV)
 		{
-		   //SIMV_Mode();
+		   SIMV_Mode();
 		}	
 
 		else // STOP

@@ -25,7 +25,7 @@ void SIMV_Mode()
 	
 	Tt_simv=6000/SIMV_RATE_SIMV;
 	Ttrig_simv= 0.8*Tt_simv;
-	Ti_simv=SIMV_IT_RATIO*Tt_simv;
+	Ti_simv=SIMV_IT_RATIO*Tt_simv/100;
 	Te_simv=Tt_simv-Ti_simv;
 	
 	pwm_i_simv=(SIMV_IPAP/55.0)*100;

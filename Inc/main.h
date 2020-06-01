@@ -74,7 +74,7 @@ void acv_alarm_decoder(void);
 void simv_alarm_decoder(void);
 
 void check_devices(void);
-void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool f1,bool bz);
+void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool f1ow1,bool flow2,bool bz);
 void create_response_for_raspberry(int function_id,int param_id);
 void send_rspy(uint8_t *data, int size);
 void print_debug(uint8_t *data, int size);

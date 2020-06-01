@@ -15,6 +15,7 @@
 "mv19\acv_alarms.o"
 "mv19\psv_alarms.o"
 "mv19\simv_alarms.o"
+"mv19\simv_mode.o"
 "mv19\stm32f4xx_hal_adc.o"
 "mv19\stm32f4xx_hal_adc_ex.o"
 "mv19\stm32f4xx_hal_rcc.o"
