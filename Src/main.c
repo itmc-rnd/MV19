@@ -76,8 +76,7 @@ const unsigned  int CrcTable[] = {
   0X8201, 0X42C0, 0X4380, 0X8341, 0X4100, 0X81C1, 0X8081, 0X4040
 };
 
-int t=500,t1=350,s1=20,s2=40,tf=0,e=100,tm2=0,spd=0;
-extern int speed;
+//int t=500,t1=350,s1=20,s2=40,tf=0,e=100,tm2=0;
 
 /* USER CODE END PD */
 
@@ -241,8 +240,8 @@ int main(void)
 	 int cnt=0,sum=0;
 	
 	driver_init();
-  HAL_Delay(200);
-	check_devices();
+  //HAL_Delay(200);
+	//check_devices();
 	
 	HAL_TIM_Base_Start_IT(&htim4);
 		 

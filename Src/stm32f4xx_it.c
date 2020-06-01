@@ -39,7 +39,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
- extern int pwm,speed,spd;
+ extern int pwm,turbo_speed;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,9 +49,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-int tm1t=0,sw1=0,tm2_speed=0;
+int tm1t=0,sw1=0,tm2_speed=0,spd=0,tf=0;
+int t=500,t1=350,s1=20,s2=40,e=100,tm2=0;
 
-extern int t,t1,s1,s2,tf;
+extern int t,t1,s1,s2;
 extern int sw2,e;
 int t3_counter,mode_counter=0;
 extern int duration_high,duration_low,turbo_speed_high,turbo_spped_low,is_inspiratory;
@@ -263,7 +264,7 @@ void TIM2_IRQHandler(void)
 	tm2_speed++;
 	if(tm2_speed==10)
 	{
-		speed = sw2*600;
+		turbo_speed = sw2*600;
 		sw2 = 0;
 		tm2_speed = 0;
 	}
