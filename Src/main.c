@@ -1069,7 +1069,6 @@ void decode_raspi_packet()
 	
 		if(rspy_receive_buffer[0] == 0xFE && rspy_receive_buffer[1] >= 1 &&  rspy_receive_buffer[data_lenth+6-2] == 0xFF && rspy_receive_buffer[data_lenth+6-1] == 0x0A)
 		{
-				
 			  uint16_t recieved_crc=rspy_receive_buffer[data_lenth+6-4]*256+rspy_receive_buffer[data_lenth+6-3];
 			
 			   for(int i=0;i<data_lenth;i++)
@@ -1082,36 +1081,14 @@ void decode_raspi_packet()
 			  if(calc_crc==recieved_crc)
 				{
 					
-					if(rspy_receive_buffer[2]==0x6E) //  Check System 
+					if(rspy_receive_buffer[2]==0x6E) //  Check System Function
 					{
-						CURRENT_MODE=STOP;
-						
-						extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
-						  if(turbo_error)
-							{
-						    // create_response_for_raspberry(111,0);
-							}
-							if(pressure_s1_error)
-							{
-						   //  create_response_for_raspberry(111,1);
-							}
-							if(pressure_s2_error)
-							{
-						    // create_response_for_raspberry(111,2);
-							}
-							if(flow_s_error)
-							{
-						     //create_response_for_raspberry(111,3);
-							}
-							if(buzzer_error)
-							{
-						    // create_response_for_raspberry(111,4);
-							}
+						  CURRENT_MODE=STOP;
+						 
 							if(turbo_error||pressure_s1_error||pressure_s2_error||flow_s_error||buzzer_error)
 							   create_checking_signal_for_raspberry(0x6E,1,turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error);
 							else
-								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0);
-							
+								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0);							
 					}
 					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
@@ -1122,121 +1099,87 @@ void decode_raspi_packet()
 						  turbo_speed_high=12,turbo_spped_low=12;
 						  create_response_for_raspberry(0,0);
 						
-							
-							//start_standby();
 					}
-					else
-					if(rspy_receive_buffer[2]==0x01) //  SET Date and Time Function
+					else if(rspy_receive_buffer[2]==0x04) //  SET STOP MODE Function
 					{
-						create_response_for_raspberry(1,0);
-							date_time_decoder();
+              CURRENT_MODE=STOP;
+						
+							duration_high=500;
+	            duration_low=500;
+						  turbo_speed_high=0,turbo_spped_low=0;
+						  create_response_for_raspberry(4,0);
+													
+					}
+					else if(rspy_receive_buffer[2]==0x01) //  SET Date and Time Function
+					{
+						  create_response_for_raspberry(1,0);
+						  date_time_decoder();
 					}
 					else if(rspy_receive_buffer[2]==0x02) //  SET MODE Function
 					{
 						if(rspy_receive_buffer[3]==0x01)    // PSV MODE
-						{
-							
-							//led(8,1);
-							CURRENT_MODE=PSV;
-							
-						  psv_mode_decoder();
-							
-							
-							create_response_for_raspberry(2,1);
-														
-							//start_psv_mode();
+						{														
+							CURRENT_MODE=PSV;							
+						  psv_mode_decoder();														
+							create_response_for_raspberry(2,1);													
 						}
 						else if(rspy_receive_buffer[3]==0x02)   //PCV MODE
-						{
-							
-							 CURRENT_MODE=PCV;
-							
-							 pcv_mode_decoder();
-							
-							create_response_for_raspberry(2,2);
-							
-						 
-							
+						{						
+							 CURRENT_MODE=PCV;							
+							 pcv_mode_decoder();							
+							 create_response_for_raspberry(2,2);							
 						}
 						else if(rspy_receive_buffer[3]==0x03)   // ACV MODE
 						{
-							CURRENT_MODE=ACV;
-							
-						   acv_mode_decoder();
-							
+							CURRENT_MODE=ACV;							
+						  acv_mode_decoder();							
 							create_response_for_raspberry(2,3);
 						}
 						else if(rspy_receive_buffer[3]==0x04)  // SIMV MODE
 						{
-							CURRENT_MODE=SIMV;
-						   simv_mode_decoder();
-							
-							create_response_for_raspberry(2,4);
+							 CURRENT_MODE=SIMV;
+						   simv_mode_decoder();							
+							 create_response_for_raspberry(2,4);
 						}
 						else
 						{
-						 //char buf[50];					
-					   sprintf(buf, "%s","\r\n Data MODE Error!!!!\r\n");						
-					   print_debug((uint8_t *)buf, 19);
+						 // Nothing		
+					   // Received Data MODE Error!!!!					   
 						}
 					}		
 					else if(rspy_receive_buffer[2]==0x03) //  SET ALARM Function
 					{
 						if(rspy_receive_buffer[3]==0x01)    // PSV ALARM
 						{
-							//char buf[50];					
-					   sprintf(buf, "%s","\r\n PSV ALARM ...\r\n");						
-					   print_debug((uint8_t *)buf, 17);
-							
 						   psv_alarm_decoder();
-							
-							create_response_for_raspberry(3,1);
-							
+							 create_response_for_raspberry(3,1);							
 						}
 						else if(rspy_receive_buffer[3]==0x02)   //PCV ALARM
 						{
-						//char buf[50];					
-					   sprintf(buf, "%s","\r\n PCV ALARM ...\r\n");						
-					   print_debug((uint8_t *)buf, 17);
-							
 						   pcv_alarm_decoder();
-							
-							create_response_for_raspberry(3,2);
-							
+ 							 create_response_for_raspberry(3,2);							
 						}
 						else if(rspy_receive_buffer[3]==0x03)   // ACV ALARM
-						{
-							
-														//char buf[50];					
-					   sprintf(buf, "%s","\r\n ACV ALARM ...\r\n");						
-					   print_debug((uint8_t *)buf, 17);
-						   acv_alarm_decoder();
-							
-							create_response_for_raspberry(3,3);
+						{							
+						   acv_alarm_decoder();							
+							 create_response_for_raspberry(3,3);
 						}
 						else if(rspy_receive_buffer[3]==0x04)  // SIMV ALARM
 						{
-							
-														//char buf[50];					
-					   sprintf(buf, "%s","\r\n SIMV ALARM ...\r\n");						
-					   print_debug((uint8_t *)buf, 17);
 						   simv_alarm_decoder();
-							
-							create_response_for_raspberry(3,4);
+							 create_response_for_raspberry(3,4);
 						}
 						else
 						{
-						 //char buf[50];					
-					   sprintf(buf, "%s","\r\n Data ALARM Error!!!!\r\n");						
-					   print_debug((uint8_t *)buf, 19);
+						 // Nothing		
+					   // Received Data ALARM Error!!!!
 						}
 					}
 				}
 				else
 				{
-					   //char buf[50];					
-					   sprintf(buf, "%s","\r\n CRC Error!!!!\r\n");						
-					   print_debug((uint8_t *)buf, 18);
+						 // Nothing		
+					   // Received CRC Error!!!!
 			}
 		}
 }
@@ -1285,6 +1228,7 @@ void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo
 		send_rspy(response, 13);
 }
 
+
 void create_response_for_raspberry(int function_id,int param_id)
 {
 	  uint8_t response[8];
@@ -1327,12 +1271,8 @@ void create_response_for_raspberry(int function_id,int param_id)
 				 int hh=rspy_receive_buffer[7];
 				 int mm=rspy_receive_buffer[8];
 				 int ss=rspy_receive_buffer[9];
-						
-						  //int date=YYh*1000000+YYl*10000+MM*100+DD;
-          
-				 //char buf[50];
-			   sprintf(buf, "Date: %02d%02d-%02d-%02d Time: %02d:%02d:%02d   %s", YYh,YYl, MM, DD, hh, mm, ss ,"\r\n");
-				 print_debug((uint8_t *)buf, strlen(buf));
+					
+			  //int date=YYh*1000000+YYl*10000+MM*100+DD;
 		}
     
 //  END OF DATE and TIME Packet DECODER
@@ -1351,22 +1291,17 @@ uint16_t crc_calc(uint8_t *data, uint8_t data_size)
 }
 void send_rspy(uint8_t *data, int size)
 {
-
-		send_complete = false;
-
-	
 			//HAL_UART_Transmit_IT(&huart2, data, size);
 	
+		send_complete = false;
+		
 		for(int i=0; i<size; i++)
 		{
 				HAL_UART_Transmit_IT(&huart2, data+i, 1);
 				HAL_Delay(10);
 		}
-
-		
-		
-	send_complete = true;		
-
+	
+	  send_complete = true;		
 }
 
 
