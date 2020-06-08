@@ -3,7 +3,7 @@
 #include "check_device_init.h"
 #include "stdbool.h"
 
-extern int ACV_EPAP,ACV_RAMP, ACV_RATE,ACV_IT_RATIO, ACV_Inspiratory, ACV_Expiratory,ACV_TRRIG_I,ACV_MAXP,ACV_Sigh_Rate,ACV_Vt;
+extern int ACV_EPAP,ACV_RAMP, ACV_RATE,ACV_IT_RATIO, ACV_Inspiratory, ACV_Expiratory,ACV_TRRIG_I,ACV_Sigh_Rate,ACV_Vt;
 extern int ALARM_ACV_Pi_Mini,ALARM_ACV_Pi_Maxi,ALARM_ACV_Fr_Maxi,ALARM_ACV_FiO2_Mini,ALARM_ACV_FiO2_Maxi,ALARM_ACV_Vte_Mini;
 
 void ACV_Alarms()
@@ -32,4 +32,9 @@ void ACV_Alarms()
 		{
 			 create_response_for_raspberry(111,87);
 		}
+				else
+			return;
+		
+    return;
+		
 }

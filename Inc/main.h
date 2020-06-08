@@ -87,6 +87,10 @@ void print_debug(uint8_t *data, int size);
 #define EEPROM_A1_GPIO_Port GPIOE
 #define EEPROM_A0_Pin GPIO_PIN_6
 #define EEPROM_A0_GPIO_Port GPIOE
+#define LED_CLK_Pin GPIO_PIN_0
+#define LED_CLK_GPIO_Port GPIOF
+#define LED_DATA_Pin GPIO_PIN_1
+#define LED_DATA_GPIO_Port GPIOF
 #define Flow1_Pin GPIO_PIN_6
 #define Flow1_GPIO_Port GPIOF
 #define FLow2_Pin GPIO_PIN_7
@@ -143,8 +147,6 @@ void print_debug(uint8_t *data, int size);
 #define LED6_GPIO_Port GPIOG
 #define LED7_Pin GPIO_PIN_7
 #define LED7_GPIO_Port GPIOG
-#define LED8_Pin GPIO_PIN_8
-#define LED8_GPIO_Port GPIOG
 #define RS485_TX_Pin GPIO_PIN_6
 #define RS485_TX_GPIO_Port GPIOC
 #define RS485_RX_Pin GPIO_PIN_7

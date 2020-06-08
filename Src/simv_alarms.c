@@ -32,4 +32,8 @@ void SIMV_Alarms()
 		{
 			 create_response_for_raspberry(111,81);
 		}
+				else
+			return;
+		
+    return;
 }

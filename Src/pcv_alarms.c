@@ -6,36 +6,60 @@
 extern int PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspiratory, PCV_Expiratory,PCV_TRRIG_I,PCV_MAXP,PCV_Target_Vt;
 extern int ALARM_PCV_Fr_Maxi,ALARM_PCV_FiO2_Mini,ALARM_PCV_FiO2_Maxi,ALARM_PCV_Vti_Mini,ALARM_PCV_Vti_Maxi,ALARM_PCV_Vte_Mini;
 
+extern bool ALARM_RECEIVED,Audio_Paused_available,Alarm_Paused_available;
+extern int ALARM_CODE;
 
-float tmp=0;
+float tmp=0.0;
 
 void PCV_Alarms()
 {
+	 ALARM_RECEIVED=false;
 	
 	 tmp=ALARM_PCV_FiO2_Maxi-(ALARM_PCV_FiO2_Maxi*0.1);
 	
 	 if(PCV_Target_Vt <= ALARM_PCV_Vti_Mini || ALARM_PCV_Vti_Mini>(ALARM_PCV_Vti_Maxi-50))
 		{
-	     create_response_for_raspberry(111,70);
+			
+		  ALARM_RECEIVED=true;
+			Audio_Paused_available=true;
+			Alarm_Paused_available=false;
+			ALARM_CODE=70;
+
+		
 		}
 	 else if(PCV_Target_Vt >= ALARM_PCV_Vti_Maxi || ALARM_PCV_Vti_Maxi<(ALARM_PCV_Vti_Mini+50))
 		{
-			 create_response_for_raspberry(111,71);
+		  ALARM_RECEIVED=true;
+			ALARM_CODE=71;
+	
 		} 
 		else if(PCV_Target_Vt < ALARM_PCV_Vte_Mini)
 		{
-			 create_response_for_raspberry(111,72);
+		  ALARM_RECEIVED=true;
+			ALARM_CODE=72;
+		
 		}
 		else if(ALARM_PCV_Fr_Maxi < (PCV_RATE+5))
 		{
-			 create_response_for_raspberry(111,73);
+		  ALARM_RECEIVED=true;
+			ALARM_CODE=73;
+		
 		}
 		else if(ALARM_PCV_FiO2_Mini > ((int)tmp))
 		{
-			 create_response_for_raspberry(111,74);
+		  ALARM_RECEIVED=true;
+			ALARM_CODE=74;
+		
 		}
 		else if(ALARM_PCV_FiO2_Mini > ((int)tmp))
 		{
-			 create_response_for_raspberry(111,75);
+		  ALARM_RECEIVED=true;
+			ALARM_CODE=75;
+	
 		}
+		else
+			return;
+		
+    return;
+		
 }

@@ -4,16 +4,16 @@
 
 extern int SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV, SIMV_IT_RATIO, SIMV_Inspiratory, SIMV_Expiratory,SIMV_TRRIG_I, SIMV_BUR, SIMV_Apnea, SIMV_Vt;
 extern int is_inspiratory;
-extern int turbo_speed_high,turbo_spped_low,raise_step;
-extern int duration_high,duration_low;
+extern int turbo_speed_Ins,turbo_speed_Exp,raise_step;
+extern int duration_Ins,duration_Exp;
 extern int Current_P1,Current_P2, Current_Qi, Current_Qe;
 extern int t3_counter;
 
-int Tt_simv, Ttrig_simv, Ti_simv, Te_simv, Tflat_simv, delay_unit_simv;
-int SIMV_IPAP_Sens, SIMV_EPAP_Sens;
-int SIMV_Qi_Sens, SIMV_Qe_Sens;
- int pwm_i_simv, pwm_e_simv;
- int Pe_Ad, Pe_Pa, Q_Pa, Q_Ad;
+ int Tt_simv=0, Ttrig_simv=0, Ti_simv=0, Te_simv=0, Tflat_simv=0, delay_unit_simv=0;
+ int SIMV_IPAP_Sens=0, SIMV_EPAP_Sens=0;
+ int SIMV_Qi_Sens=0, SIMV_Qe_Sens=0;
+ int pwm_i_simv=0, pwm_e_simv=0;
+ int Pe_Ad=0, Pe_Pa=0, Q_Pa, Q_Ad=0;
  float  Pe= -4.7, Bias_Flow=20.0;
  
 // int SIMV_BUR, SIMV_Apnea; 
@@ -24,7 +24,7 @@ void SIMV_Mode()
 	      
 	
 	Tt_simv=6000/SIMV_RATE_SIMV;
-	Ttrig_simv= 0.8*Tt_simv;
+	Ttrig_simv= (80*Tt_simv)/100;
 	Ti_simv=SIMV_IT_RATIO*Tt_simv/100;
 	Te_simv=Tt_simv-Ti_simv;
 	
@@ -37,7 +37,10 @@ void SIMV_Mode()
 	Q_Ad=Bias_Flow+4;
 	
 
+  duration_Ins=Ti_simv;
+  duration_Exp=Te_simv;
 
+	
 //============================ determine IPAP	
 
 if(is_inspiratory==1)
@@ -52,12 +55,12 @@ if(is_inspiratory==1)
 	          else
 			        	pwm_i_simv=pwm_i_simv;
 						
-	    turbo_speed_high=pwm_i_simv;
-	    duration_high=Ti_simv;
+	    turbo_speed_Ins=pwm_i_simv;
+	    duration_Ins=Ti_simv;
 						
 					}
 					else
-							 	turbo_speed_high=10;
+							 	turbo_speed_Ins=10;
  
 }
 
@@ -79,8 +82,8 @@ if(is_inspiratory==0)
 								 
 //								pwm_e_simv=pwm_e_simv - (SIMV_EPAP_Sens-SIMV_EPAP);
 //	
-//	          	  turbo_spped_low=pwm_e_simv;
-//	              duration_low=Te_simv;
+//	          	  turbo_speed_Exp=pwm_e_simv;
+//	              duration_Exp=Te_simv;
 		     	  	 }
 							 else
 							 {
@@ -89,8 +92,8 @@ if(is_inspiratory==0)
 									 else
 									   	 pwm_e_simv= 0;
 	
-	          	  turbo_spped_low=pwm_e_simv;
-	              duration_low=Te_simv;
+	          	  turbo_speed_Exp=pwm_e_simv;
+	              duration_Exp=Te_simv;
 								 }
 				 
 			 }
@@ -104,8 +107,8 @@ if(is_inspiratory==0)
 								 
 //								pwm_e_simv=pwm_e_simv - (SIMV_EPAP_Sens-SIMV_EPAP);
 //	
-//	          	  turbo_spped_low=pwm_e_simv;
-//	              duration_low=Te_simv;
+//	          	  turbo_speed_Exp=pwm_e_simv;
+//	              duration_Exp=Te_simv;
 			      	 }
 							 else
 							 {
@@ -114,8 +117,8 @@ if(is_inspiratory==0)
 								 else
 									 pwm_e_simv= 0;
 	
-	          	  turbo_spped_low=pwm_e_simv;
-	              duration_low=Te_simv;
+	          	  turbo_speed_Exp=pwm_e_simv;
+	              duration_Exp=Te_simv;
 							 }
 				 
 			 }      	
