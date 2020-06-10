@@ -59,7 +59,7 @@ void Error_Handler(void);
 AlarmData show_alarm(int alarm_id);
 	
 void decode_raspi_packet(void);
-uint16_t crc_calc(uint8_t *data, uint8_t data_size);
+uint16_t crc_calc(const uint8_t *data, uint8_t data_size);
 
 void date_time_decoder(void);
 

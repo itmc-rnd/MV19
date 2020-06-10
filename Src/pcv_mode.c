@@ -6,18 +6,35 @@ extern int PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspira
 extern int is_inspiratory;
 extern int turbo_speed_Ins,turbo_speed_Exp,raise_step;
 extern int duration_Ins,duration_Exp;
+<<<<<<< HEAD
 extern int Current_P1,Current_P2;
 extern int Current_F1,Current_F2;
 extern int t3_counter;
+=======
+extern int Current_Pressure_Ins,Current_Pressure_Exp;
+extern int Current_Flow_Ins,Current_Flow_Exp;
+
+extern float Current_P_Triger;	
+
+extern int t3_counter_old,t3_counter;
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 extern int pwm_i_pcv, pwm_e_pcv;
 
 int Tt_pcv=0, Ti_pcv=0,  Tflat_pcv=0,Te_pcv=0, trs_step_pcv=100;
 int Trs_pcv=0;
+<<<<<<< HEAD
 int PCV_IPAP_Sens=0, PCV_EPAP_Sens=0, PCV_Vt_Sens=0;
 int PCV_Qi_Sens=0, PCV_Qe_Sens=0;
 
 int pwm_max=0;
 int pwm_Vt_pcv=0;
+=======
+int PCV_Ins_Pressure=0, PCV_Exp_Pressure=0, PCV_Vt_Sens=0;
+int PCV_Ins_Flow=0, PCV_Exp_Flow=0;
+
+int pwm_max=0;
+int pwm_Vt_pcv=0,pwm_Vt_pcv_calulate=0;
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 
 
 
@@ -31,6 +48,7 @@ void PCV_Mode()
 	Trs_pcv=PCV_RISE_TIME*20;
 	Tflat_pcv=Ti_pcv-Trs_pcv;
 	
+<<<<<<< HEAD
 //	if(turbo_speed_Ins>=0 && turbo_speed_Exp>=0)
 //	{
 //   	if(turbo_speed_Ins>turbo_speed_Exp)
@@ -41,6 +59,8 @@ void PCV_Mode()
 		
 
 	
+=======
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 	pwm_Vt_pcv=(PCV_Target_Vt/1400.0)*100;
 	pwm_max=(PCV_MAXP/55.0)*100;
 	pwm_i_pcv=(PCV_IPAP/55.0)*100;
@@ -53,6 +73,7 @@ void PCV_Mode()
 
 if(is_inspiratory==1)
 {	
+<<<<<<< HEAD
 			PCV_IPAP_Sens = Current_P1;
 	    PCV_EPAP_Sens = Current_P2;
 
@@ -74,11 +95,37 @@ if(is_inspiratory==1)
 				                           pwm_Vt_pcv=pwm_Vt_pcv;
 	
 	                          turbo_speed_Ins=pwm_Vt_pcv;
+=======
+			PCV_Ins_Pressure = Current_Pressure_Ins;
+	    PCV_Exp_Pressure = Current_Pressure_Exp;
+
+    	PCV_Ins_Flow = Current_Flow_Exp/1000;  // Flow ins
+
+	
+	   PCV_Vt_Sens=(PCV_Vt_Sens + (PCV_Ins_Flow*(t3_counter-t3_counter_old))/100); // determine the volume of breath according to flow
+	   t3_counter_old=t3_counter;
+	
+	  if (PCV_Target_Vt!=0)   // the power of turbo set by volume
+    {    
+								if(PCV_Ins_Pressure<PCV_MAXP) // The inspiratory pressure should be less than the maximi P
+						    {
+						
+			                 	 if(PCV_Exp_Pressure<=PCV_IPAP)  // for certainty that expiration is Done 
+				                 	{  
+                               	if((PCV_Vt_Sens-PCV_Target_Vt)<=pwm_Vt_pcv)   // Delet negetive value of pwm
+			                             pwm_Vt_pcv_calulate=pwm_Vt_pcv-((PCV_Vt_Sens-PCV_Target_Vt)/1400.0)*100;
+			                          
+																if(pwm_Vt_pcv_calulate>pwm_Vt_pcv)	
+				                           pwm_Vt_pcv_calulate=pwm_Vt_pcv;
+	
+	                          turbo_speed_Ins=(int)((int)(pwm_Vt_pcv_calulate*198.0)/Ti_pcv);;
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 	                          duration_Ins=Ti_pcv;
 			                			trs_step_pcv=(int)(turbo_speed_Ins-turbo_speed_Exp)/(Trs_pcv);
 							          		if (trs_step_pcv==0)
 									         	trs_step_pcv=1;
                             raise_step=trs_step_pcv;
+<<<<<<< HEAD
 	                       	}
 				                  else
 			              			turbo_speed_Ins=10;
@@ -94,6 +141,26 @@ if(is_inspiratory==1)
 					{  
                 	if((PCV_IPAP_Sens-PCV_IPAP)<=pwm_i_pcv)   // Delet negetive value of pwm
 			             pwm_i_pcv=pwm_i_pcv-(PCV_IPAP_Sens-PCV_IPAP);
+=======
+														
+	                       	}
+				                  else
+			              			turbo_speed_Ins=14;
+				 
+			        }		
+								else
+					  	turbo_speed_Ins=14;
+										
+			
+								
+        }						
+			else  // the power of turbo set by pressure
+			{
+			 if(PCV_Exp_Pressure<=PCV_Ins_Pressure)  // for certainty that expiration is Done 
+					{  
+                	if((PCV_Ins_Pressure-PCV_IPAP)<=pwm_i_pcv)   // Delet negetive value of pwm
+			             pwm_i_pcv=pwm_i_pcv-(PCV_Ins_Pressure-PCV_IPAP);
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 			            else
 				           pwm_i_pcv=pwm_i_pcv;
 	
@@ -105,7 +172,11 @@ if(is_inspiratory==1)
             raise_step=trs_step_pcv;
 	        	}
 				 else
+<<<<<<< HEAD
 						turbo_speed_Ins=10;
+=======
+						turbo_speed_Ins=14;
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 			}	
 			
 			
@@ -116,6 +187,7 @@ if(is_inspiratory==1)
 if(is_inspiratory==0)
 {	
 		    
+<<<<<<< HEAD
       	PCV_EPAP_Sens = Current_P2;
 	
         PCV_Qe_Sens = (-1)*Current_F2/1000;	    // Flow Exp
@@ -126,6 +198,18 @@ if(is_inspiratory==0)
 				   	{
 	                if((PCV_EPAP_Sens-PCV_EPAP)>pwm_e_pcv)
 			              pwm_e_pcv=pwm_e_pcv-(PCV_EPAP_Sens-PCV_EPAP);
+=======
+      	PCV_Exp_Pressure = Current_Pressure_Exp;
+	
+        PCV_Exp_Flow = (-1)*Current_Flow_Exp/1000;	    // Flow Exp
+       PCV_Vt_Sens=(PCV_Vt_Sens + PCV_Exp_Flow*t3_counter);  // determine the volume of breath according to flow
+	
+
+     	   		if(PCV_Exp_Pressure>=PCV_EPAP)
+				   	{
+	                if((PCV_Exp_Pressure-PCV_EPAP)>pwm_e_pcv)
+			              pwm_e_pcv=pwm_e_pcv-(PCV_Exp_Pressure-PCV_EPAP);
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
                   else 
 		            	 pwm_e_pcv= 0;
 					 

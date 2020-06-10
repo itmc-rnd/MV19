@@ -58,10 +58,15 @@ void SIMV_Alarms()
 		}
 		else if(ALARM_SIMV_FiO2_Mini > (ALARM_SIMV_FiO2_Maxi-(ALARM_SIMV_FiO2_Maxi*0.1)))
 		{
+<<<<<<< HEAD
 			  ALARM_RECEIVED=true;
 			  ALARM_CODE=81;
 			 //create_response_for_raspberry(111,81);
 		}*/
+=======
+			 create_response_for_raspberry(111,81);
+		}
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 				else
 			return;
 		

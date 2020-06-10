@@ -33,6 +33,7 @@ void ACV_Alarms()
 		avg=Sum/3;
 	 if(ALARM_ACV_Pi_Mini < (ACV_EPAP+2) || ALARM_ACV_Pi_Mini > (ALARM_ACV_Pi_Maxi-10))
 		{
+<<<<<<< HEAD
 			if(Current_P1<ALARM_ACV_Pi_Mini)
 				{
 					ALARM_RECEIVED=true;
@@ -45,6 +46,9 @@ void ACV_Alarms()
 					ALARM_CODE=83;
 					// create_response_for_raspberry(111,83);
 				}
+=======
+	    create_response_for_raspberry(111,82);
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 		}
 	 else if(ALARM_ACV_Pi_Maxi < (ACV_EPAP+15) || ALARM_ACV_Pi_Maxi <(ALARM_ACV_Pi_Maxi +10))
 		{
@@ -69,10 +73,15 @@ void ACV_Alarms()
 		}
 		else if(ALARM_ACV_FiO2_Mini > (ALARM_ACV_FiO2_Maxi-(ALARM_ACV_FiO2_Maxi*0.1)))
 		{
+<<<<<<< HEAD
 			 ALARM_RECEIVED=true;
 			 ALARM_CODE=87; 
 			//create_response_for_raspberry(111,87);
 		}*/
+=======
+			 create_response_for_raspberry(111,87);
+		}
+>>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 				else
 			return;
 		
