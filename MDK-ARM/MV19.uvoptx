@@ -217,151 +217,86 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>Tt_pcv,0x0A</ItemText>
-=======
-          <ItemText>is_inspiratory,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>Ti_pcv,0x0A</ItemText>
-=======
-          <ItemText>PSV_Flow_MAXi</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>PCV_IT_RATIO,0x0A</ItemText>
-=======
-          <ItemText>Maxi_Flow</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>Trs_pcv,0x0A</ItemText>
-=======
-          <ItemText>Maxi_Flow</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>Tflat_pcv,0x0A</ItemText>
-=======
-          <ItemText>PSV_TRIIG_E,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>Te_pcv,0x0A</ItemText>
-=======
-          <ItemText>PSV_Ins_Flow</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>pwm_Vt_pcv,0x0A</ItemText>
-=======
-          <ItemText>Q_Pa_psv,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>pwm_max,0x0A</ItemText>
-=======
-          <ItemText>PSV_Exp_Pressure_Trriger,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>pwm_i_pcv,0x0A</ItemText>
-=======
-          <ItemText>Pe_Pa_psv,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>pwm_e_pcv,0x0A</ItemText>
-=======
-          <ItemText>Pe_Ad_psv,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>PCV_IPAP,0x0A</ItemText>
-=======
-          <ItemText>PSV_Flow_MAXi,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>PCV_Vt_Sens,0x0A</ItemText>
-=======
-          <ItemText>Maxi_Flow,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>Current_F2,0x0A</ItemText>
-=======
-          <ItemText>PSV_Ins_Flow,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>PCV_IPAP,0x0A</ItemText>
-=======
-          <ItemText>PSV_Flow_MAXi_sens,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>t3_counter,0x0A</ItemText>
-=======
-          <ItemText>pwm_e_psv,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>PCV_Target_Vt,0x0A</ItemText>
-=======
-          <ItemText>turbo_speed_Exp,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
           <ItemText>pwm_Vt_pcv,0x0A</ItemText>
         </Ww>
         <Ww>
@@ -438,9 +373,6 @@
           <count>31</count>
           <WinNumber>1</WinNumber>
           <ItemText>rspy_receive_buffer</ItemText>
-=======
-          <ItemText>turbo_speed_Ins,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -547,11 +479,7 @@
         <Ww>
           <count>20</count>
           <WinNumber>2</WinNumber>
-<<<<<<< HEAD
           <ItemText>\\MV19\../Src/database.c\mode_counter</ItemText>
-=======
-          <ItemText>\\MV19\../Src/database.c\mode_counter,0x0A</ItemText>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
         </Ww>
         <Ww>
           <count>21</count>
@@ -578,29 +506,6 @@
           <WinNumber>2</WinNumber>
           <ItemText>ACV_Vt,0x0A</ItemText>
         </Ww>
-<<<<<<< HEAD
-=======
-        <Ww>
-          <count>26</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>sigh_counter,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>27</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>ACV_Sigh_Rate,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>28</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>\\MV19\../Src/main.c\create_checking_signal_for_raspberry\response</ItemText>
-        </Ww>
-        <Ww>
-          <count>29</count>
-          <WinNumber>2</WinNumber>
-          <ItemText>response</ItemText>
-        </Ww>
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
       </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>

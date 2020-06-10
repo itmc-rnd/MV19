@@ -6,17 +6,7 @@ extern int SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV, SIMV_IT_RATIO, SIMV_Inspiratory,
 extern int is_inspiratory;
 extern int turbo_speed_Ins,turbo_speed_Exp,raise_step;
 extern int duration_Ins,duration_Exp;
-<<<<<<< HEAD
-extern int Current_P1,Current_P2, Current_Qi, Current_Qe;
-extern int t3_counter;
 
- int Tt_simv=0, Ttrig_simv=0, Ti_simv=0, Te_simv=0, Tflat_simv=0, delay_unit_simv=0;
- int SIMV_IPAP_Sens=0, SIMV_EPAP_Sens=0;
- int SIMV_Qi_Sens=0, SIMV_Qe_Sens=0;
- int pwm_i_simv=0, pwm_e_simv=0;
- int Pe_Ad=0, Pe_Pa=0, Q_Pa, Q_Ad=0;
- float  Pe= -4.7, Bias_Flow=20.0;
-=======
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
 extern int t3_counter_old,t3_counter;
 extern float Current_P_Triger;
@@ -27,7 +17,6 @@ extern float Current_P_Triger;
  int pwm_i_simv=0, pwm_e_simv=0;
  int Pe_Ad_SIMV=0, Pe_Pa_SIMV=0, Q_Pa_SIMV=0, Q_Ad_SIMV=0;
  float  Pe= -4.7, Bias_Flow=20.0,SIMV_Exp_Pressure_Trriger=0.0;
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
  
 int pwm_Vt_simv=0,pwm_Vt_simv_calulate=0;
 
@@ -65,21 +54,7 @@ if(is_inspiratory==1)
 	    SIMV_Exp_Pressure=Current_Pressure_Exp;
       SIMV_Ins_Flow=Current_Flow_Exp;        // Flow Ins 
 	
-<<<<<<< HEAD
- if (Current_P2<=SIMV_IPAP)
-					{  	
-	         	if ((SIMV_IPAP_Sens-SIMV_IPAP)<=pwm_i_simv)
-		          	pwm_i_simv=pwm_i_simv - (SIMV_IPAP_Sens-SIMV_IPAP);
-	          else
-			        	pwm_i_simv=pwm_i_simv;
-						
-	    turbo_speed_Ins=pwm_i_simv;
-	    duration_Ins=Ti_simv;
-						
-					}
-					else
-							 	turbo_speed_Ins=10;
-=======
+
 	   SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100); // determine the volume of breath according to flow
 	   t3_counter_old=t3_counter;
 	
