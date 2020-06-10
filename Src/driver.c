@@ -18,6 +18,7 @@ extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim12;
 
 extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart1;
@@ -33,8 +34,8 @@ int s,i=0,pwm=10;
 float ans=0;
 int sw2 = 0;
 int speed =0;
-extern int e;
-
+extern int e,st[],status_bar;
+extern bool status_change_falg;
 
 
 void ADC_CNL(int x)
@@ -103,7 +104,7 @@ void led(int x,int y)
 			case 6:	HAL_GPIO_WritePin(LED5_GPIO_Port, LED5_Pin, GPIO_PIN_SET);	break;
 			case 7:	HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_SET);	break;
 			case 8:	HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, GPIO_PIN_SET);	break;
-			case 9:	HAL_GPIO_WritePin(LED8_GPIO_Port, LED8_Pin, GPIO_PIN_SET);	break;
+	
 		}
 	}
 	else
@@ -118,7 +119,7 @@ void led(int x,int y)
 			case 6:	HAL_GPIO_WritePin(LED5_GPIO_Port, LED5_Pin, GPIO_PIN_RESET);	break;
 			case 7:	HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, GPIO_PIN_RESET);	break;
 			case 8:	HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, GPIO_PIN_RESET);	break;
-			case 9:	HAL_GPIO_WritePin(LED8_GPIO_Port, LED8_Pin, GPIO_PIN_RESET);	break;
+
 		}
 	}
 }
@@ -144,11 +145,20 @@ void turbo_break(int x)
 		HAL_GPIO_WritePin(DR3_GPIO_Port, DR3_Pin, x);
 }
 void driver_init(void)
-{
+{	
+	for(i=1;i<status_bar+2;i++)
+	{
+		st[i] = 0;
+		status(i,st[i]);
+	}
+
+
+
 	turbo(0);
 	HAL_TIM_Base_Start_IT(&htim1);
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_Base_Start_IT(&htim3);
+	HAL_TIM_Base_Start_IT(&htim12);
 	
 	HAL_GPIO_WritePin(DR3_GPIO_Port, DR3_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(DR4_GPIO_Port, DR4_Pin, GPIO_PIN_SET);
@@ -260,6 +270,26 @@ float pressure(int x)
 	}
 	ans = ((0.002717*i)-0.4125)*10;
 	return ans;
+}
+
+float flow(int x)
+{
+	switch (x)
+	{
+		case 1 :	i = ADC_READ(11);	break;
+		case 2 :	i = ADC_READ(4);	break;
+		case 3 :	i = ADC_READ(5);	break;
+	}
+	ans = ((0.3419*i)-230)-250;
+	return ans;
+}
+
+
+void status(int x,int y)
+{
+	st[x] = y;
+	status_change_falg=true;
+	
 }
 
 int year(void)

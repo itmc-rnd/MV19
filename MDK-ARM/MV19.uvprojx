@@ -11,7 +11,6 @@
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407ZGTx</Device>
@@ -324,7 +323,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -337,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                                 ../Drivers/STM32F4xx_HAL_Driver/Inc;                                 ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                 ../Drivers/CMSIS/Include</IncludePath>
+              <IncludePath>../Inc;                                  ../Drivers/STM32F4xx_HAL_Driver/Inc;                                  ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;                                  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;                                  ../Drivers/CMSIS/Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -397,21 +395,6 @@
               <FilePath>..\Src\driver.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/main.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/stm32f4xx_it.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_hal_msp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/stm32f4xx_hal_msp.c</FilePath>
-            </File>
-            <File>
               <FileName>alarms_setting.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\alarms_setting.c</FilePath>
@@ -465,6 +448,36 @@
               <FileName>simv_alarms.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\simv_alarms.c</FilePath>
+            </File>
+            <File>
+              <FileName>simv_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\simv_mode.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/main.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/stm32f4xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/stm32f4xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>acv_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\acv_mode.c</FilePath>
+            </File>
+            <File>
+              <FileName>psv_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\psv_mode.c</FilePath>
             </File>
           </Files>
         </Group>

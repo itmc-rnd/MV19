@@ -1,15 +1,15 @@
 #include "standby_mode.h"
 #include "database.h"
 
-extern int turbo_speed_high,turbo_spped_low,raise_step;
-extern int duration_high,duration_low;
+extern int turbo_speed_Ins,turbo_speed_Exp,raise_step;
+extern int duration_Ins,duration_Exp;
 
 
 void STANDBY_Mode(void)
 {
-	duration_high=500;
-	duration_low=500;
-	turbo_speed_high=12;
-	turbo_spped_low=12;
+	duration_Ins=500;
+	duration_Exp=500;
+	turbo_speed_Ins=12;
+	turbo_speed_Exp=12;
 }
 

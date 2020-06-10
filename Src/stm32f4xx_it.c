@@ -26,9 +26,20 @@
 #include <stdbool.h>
 #include "driver.h"
 #include "database.h"
-#include "pcv_mode.h"
-#include "pcv_alarms.h"
+
 #include "standby_mode.h"
+
+#include "pcv_mode.h"
+#include "simv_mode.h"
+#include "psv_mode.h"
+#include "acv_mode.h"
+
+#include "pcv_alarms.h"
+#include "simv_alarms.h"
+#include "psv_alarms.h"
+#include "acv_alarms.h"
+
+
 
 /* USER CODE END Includes */
 
@@ -52,14 +63,16 @@
 int tm1t=0,sw1=0,tm2_speed=0,spd=0,tf=0;
 int t=500,t1=350,s1=20,s2=40,e=100,tm2=0;
 
-extern int t,t1,s1,s2;
-extern int sw2,e;
-int t3_counter,mode_counter=0;
-extern int duration_high,duration_low,turbo_speed_high,turbo_spped_low,is_inspiratory;
+extern int t,t1,s1,s2,st[];
+extern int sw2,e,status_bar;
+extern int t3_counter,t3_counter_old,mode_counter;
+int status_counter=0;
+extern int duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp,is_inspiratory;
 
 extern modes CURRENT_MODE;
-extern bool Config_request;
-
+extern bool Config_request,status_change_falg;
+extern bool Audio_Paused_available,Alarm_Paused_available;
+extern int ACV_Vt_Sens;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,6 +90,7 @@ extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
+extern TIM_HandleTypeDef htim12;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 
@@ -225,7 +239,11 @@ void EXTI9_5_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
 	sw1 = 0;
-//	buzzer(1,1);
+	if(Audio_Paused_available)
+	  buzzer(1,0);
+	if(Alarm_Paused_available)
+	   status(1,0);
+	
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
@@ -269,6 +287,9 @@ void TIM2_IRQHandler(void)
 		tm2_speed = 0;
 	}
 	sw1++;
+	
+
+	
 	if (sw1==300)
 		if (HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9))
 			Config_request=true;
@@ -288,16 +309,24 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 	
 		t3_counter++;
-	if(t3_counter>duration_high+duration_low)
+	if(t3_counter>=duration_Ins+duration_Exp)
 	{
 		t3_counter = 0;
-		spd = turbo_speed_high, led(8,1);
+		t3_counter_old=0;
+		ACV_Vt_Sens=0;
+		
+		spd = turbo_speed_Ins;
+    if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+		   HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_SET);
 		is_inspiratory=1;
+		
 	}
-	if(t3_counter==duration_low)
+	if(t3_counter==duration_Ins)
 	{
 
-		spd = turbo_spped_low, led(8,0);
+		spd = turbo_speed_Exp;
+    if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
 		is_inspiratory=0;
 	}
 //	if((t3_counter%10)==0)
@@ -338,26 +367,29 @@ void TIM4_IRQHandler(void)
     }	
 		else if(CURRENT_MODE==PSV)
 		{
-		 //  PSV_Mode();
-		//	 PSV_Alarms();
+		   PSV_Mode();
+			// PSV_Alarms();
 		}
     else if(CURRENT_MODE==PCV)
 		{
 		   PCV_Mode();
-			 //PCV_Alarms();
+			// PCV_Alarms();
 		}	
     else if(CURRENT_MODE==ACV)
 		{
-		  // ACV_Mode();
+			
+		   ACV_Mode();
+		//	 ACV_Alarms();
 		}	
      else if(CURRENT_MODE==SIMV)
 		{
-		   //SIMV_Mode();
+		   SIMV_Mode();
+		//	 SIMV_Alarms();
 		}	
 
 		else // STOP
 		{
-		 turbo_speed_high=0,turbo_spped_low=0;
+		   turbo_speed_Ins=0,turbo_speed_Exp=0;
 		}
 			
 	}
@@ -395,6 +427,30 @@ void EXTI15_10_IRQHandler(void)
 	
 	
   /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM8 break interrupt and TIM12 global interrupt.
+  */
+void TIM8_BRK_TIM12_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 0 */
+	if (status_change_falg==1)
+	{	
+		status_change_falg = 0;
+		for(status_counter=1;status_counter<status_bar+2;status_counter++)
+		{
+			HAL_GPIO_WritePin(LED_DATA_GPIO_Port, LED_DATA_Pin, st[status_counter]);
+			HAL_GPIO_WritePin(LED_CLK_GPIO_Port, LED_CLK_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(LED_CLK_GPIO_Port, LED_CLK_Pin, GPIO_PIN_RESET);
+			
+		}
+	}
+  /* USER CODE END TIM8_BRK_TIM12_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim12);
+  /* USER CODE BEGIN TIM8_BRK_TIM12_IRQn 1 */
+
+  /* USER CODE END TIM8_BRK_TIM12_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

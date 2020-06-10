@@ -20,7 +20,7 @@ void psv_mode_decoder()
 				 else
 					 PSV_TRIIG_E=TRIIG_E;
 							 
-         int PSV_Target_Vt=rspy_receive_buffer[13]*16+rspy_receive_buffer[14];			
+         int PSV_Target_Vt=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];			
 				 	
 }
 
@@ -36,7 +36,7 @@ void pcv_mode_decoder()
 			   PCV_TRRIG_I=rspy_receive_buffer[11];
 			   PCV_MAXP=rspy_receive_buffer[12];
 
-         PCV_Target_Vt=rspy_receive_buffer[13]*16+rspy_receive_buffer[14];			
+         PCV_Target_Vt=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];			
   
 }
 
@@ -46,32 +46,33 @@ void acv_mode_decoder()
 	        ACV_RAMP=rspy_receive_buffer[5];
 				  ACV_RATE=rspy_receive_buffer[6];
 				  ACV_IT_RATIO=rspy_receive_buffer[7];
+	
 				  ACV_Inspiratory=rspy_receive_buffer[8]; 
 				  ACV_Expiratory=rspy_receive_buffer[9];
 			    ACV_TRRIG_I=rspy_receive_buffer[10];
+	
 				 int Vt_Sigh_I=rspy_receive_buffer[11];
+	
 				 int Vt_Sigh_F=rspy_receive_buffer[12];
 			   ACV_Vt_Sigh=Vt_Sigh_I+(Vt_Sigh_F/10);
-				 
-				 ACV_MAXP=rspy_receive_buffer[13];
-
-          ACV_Sigh_Rate=rspy_receive_buffer[14]*16+rspy_receive_buffer[15];			
-				  ACV_Vt=rspy_receive_buffer[16]*16+rspy_receive_buffer[17];
+				 ACV_Sigh_Rate=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];	
+	
+				  ACV_Vt=rspy_receive_buffer[15]*256+rspy_receive_buffer[16];
 
 }		
 		
 void simv_mode_decoder()
 {
-			    SIMV_IPAP=rspy_receive_buffer[5];
-	        SIMV_EPAP=rspy_receive_buffer[6];
-				  SIMV_RATE_SIMV=rspy_receive_buffer[7];
-				  SIMV_IT_RATIO=rspy_receive_buffer[8];
-				  SIMV_Inspiratory=rspy_receive_buffer[9]; 
-				  SIMV_Expiratory=rspy_receive_buffer[10];
-			    SIMV_TRRIG_I=rspy_receive_buffer[11];
-				  SIMV_BUR=rspy_receive_buffer[12];
-				  SIMV_Apnea=rspy_receive_buffer[13];
-				  SIMV_Vt=rspy_receive_buffer[14]*16+rspy_receive_buffer[15];
+			    SIMV_IPAP=rspy_receive_buffer[4];
+	        SIMV_EPAP=rspy_receive_buffer[5];
+				  SIMV_RATE_SIMV=rspy_receive_buffer[6];
+				  SIMV_IT_RATIO=rspy_receive_buffer[7];
+				  SIMV_Inspiratory=rspy_receive_buffer[8]; 
+				  SIMV_Expiratory=rspy_receive_buffer[9];
+			    SIMV_TRRIG_I=rspy_receive_buffer[10];
+				  SIMV_BUR=rspy_receive_buffer[11];
+				  SIMV_Apnea=rspy_receive_buffer[12];
+				  SIMV_Vt=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];
   
 }
     

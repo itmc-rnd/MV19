@@ -93,7 +93,6 @@ ADC_HandleTypeDef hadc3;
 DAC_HandleTypeDef hdac;
 
 I2C_HandleTypeDef hi2c1;
-I2C_HandleTypeDef hi2c2;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
@@ -102,6 +101,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
+TIM_HandleTypeDef htim12;
 
 UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart1;
@@ -118,17 +118,21 @@ int packet_received = 0;
 int rspy_receive_buffer_index = 0;
 bool send_complete = true;
 extern modes CURRENT_MODE;
-extern float Current_P1,Current_P2;
+extern int Current_P1,Current_P2,Current_F1,Current_F2;
 extern float Current_Qi,Current_Qe;
-extern int turbo_speed_high,turbo_spped_low,turbo_speed,is_inspiratory,raise_step;
+extern int turbo_speed_Ins,turbo_speed_Exp,turbo_speed,is_inspiratory,raise_step;
  extern int pwm_i_pcv, pwm_e_pcv, PCV_RATE;
  extern int pwm_i_simv, pwm_e_simv, SIMV_RATE_SIMV;
 extern char buf[200];
 uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
-extern int duration_high,duration_low;
+extern int duration_Ins,duration_Exp;
 
 extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
+extern bool flow_s1_error,flow_s2_error;
+
+extern bool ALARM_RECEIVED;
+extern int ALARM_CODE;
 
 /* USER CODE END PV */
 
@@ -145,11 +149,11 @@ static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USART6_UART_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_I2C2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
+static void MX_TIM12_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -220,11 +224,11 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
   MX_I2C1_Init();
-  MX_I2C2_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -235,18 +239,22 @@ int main(void)
 	HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
 	
 	 
-	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0;
-	 float x=0,y=0;
+	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0,Counter_loop=0;
+	/// float x=0,y=0;
 	 int cnt=0,sum=0;
 	
 	driver_init();
-  //HAL_Delay(200);
-	//check_devices();
+  HAL_Delay(200);
+	check_devices();
 	
 	HAL_TIM_Base_Start_IT(&htim4);
 		 
+	status(4,1);
+	 
 	while (1)
   {
+		
+		status(4,1);
 		
 		if(Config_request)
 		{
@@ -254,44 +262,116 @@ int main(void)
 			Config_request=false;
 		}
 		
-		a=pressure(1);
-		b=pressure(1);
-		c=pressure(1);
-		d=pressure(1);
-		e=pressure(1);
-		f=pressure(1);
-		g=pressure(1);
-		h=pressure(1);
-		i=pressure(1);
-		j=pressure(1);
+		if(ALARM_RECEIVED)
+		{
+			ALARM_RECEIVED=false;
+			buzzer(1,1);
+			status(1,1);
+			create_response_for_raspberry(111,ALARM_CODE);
+		}
 		
-		 a=(a+b+c+d+e+f+g+h+i+j)/10;
-		 if(a<=0)
-		 {
-        Current_P1=0;
-		    Current_P2=0;
-		 }
-		 else
-		 {
-			 Current_P1=a;
-		   Current_P2=a;
-		 }
+		   a=(int)pressure(1);
+		   b=(int)pressure(1);
+       c=(int)pressure(1);
+       d=(int)pressure(1);
+       e=(int)pressure(1);
+       f=(int)pressure(1);
+       g=(int)pressure(1);
+       h=(int)pressure(1);
+       i=(int)pressure(1);
+       h=(int)pressure(1);
+		
+	      sum=(a+b+c+d+e+f+g+h+i+j);
+		   if((sum/10)<=0)
+		   {
+         Current_P1=0;
+		   }
+		   else
+		   {
+			   Current_P1=(int)(sum/10);
+		   }
+		
+		   a=(int)pressure(2);
+		   b=(int)pressure(2);
+       c=(int)pressure(2);
+       d=(int)pressure(2);
+       e=(int)pressure(2);
+       f=(int)pressure(2);
+       g=(int)pressure(2);
+       h=(int)pressure(2);
+       i=(int)pressure(2);
+       h=(int)pressure(2);
+		
+	      sum=(a+b+c+d+e+f+g+h+i+j);
+		   if((sum/10)<=0)
+		   {
+         Current_P2=0;
+		   }
+		   else
+		   {
+			   Current_P2=(int)(sum/10);
+		   }
+    	
+			 a=(int)flow(1);
+		   b=(int)flow(1);
+       c=(int)flow(1);
+       d=(int)flow(1);
+       e=(int)flow(1);
+       f=(int)flow(1);
+       g=(int)flow(1);
+       h=(int)flow(1);
+       i=(int)flow(1);
+       h=(int)flow(1);
+		
+	      sum=(a+b+c+d+e+f+g+h+i+j);
+		   if((sum/10)<=0)
+		   {
+         Current_F1=0;
+		   }
+		   else
+		   {
+			   Current_F1=(int)(sum/10);
+		   }
+    
+			 	
+			 a=(int)flow(2);
+		   b=(int)flow(2);
+       c=(int)flow(2);
+       d=(int)flow(2);
+       e=(int)flow(2);
+       f=(int)flow(2);
+       g=(int)flow(2);
+       h=(int)flow(2);
+       i=(int)flow(2);
+       h=(int)flow(2);
+		
+	      sum=(a+b+c+d+e+f+g+h+i+j);
+		   if((sum/10)<=0)
+		   {
+         Current_F2=0;
+		   }
+		   else
+		   {
+			   Current_F2=(int)(sum/10);
+		   }
+			 
+		   HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+			 
+			 //		sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_P1,Current_P2,Current_F1,Current_F2);
+		   //   HAL_UART_Transmit(&huart1,(uint8_t *) buf, 500, 1000 );
 
-		sprintf(buf, "\f duration_high=%d , duration_low=%d , turbo_speed_high=%d , turbo_speed_low=%d , P1=%f   %d  MM=%d - i=%d  , pwm_i=%d  , pwm-e=%d , PCV_RATE=%d , raise_step=%d",duration_high,duration_low,turbo_speed_high,turbo_spped_low, Current_P1,turbo_speed,(int)CURRENT_MODE,is_inspiratory, pwm_i_pcv, pwm_e_pcv, PCV_RATE,raise_step);
-		print_debug((uint8_t *)buf, strlen(buf));
+			 
+			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_P1,Current_P2,Current_F1,Current_F2);
+		   print_debug((uint8_t *)buf, strlen(buf));
 		
 		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
 		HAL_Delay(500);
+			 
 		if(packet_received == 1)
 		{
 			packet_received = 0;
 						
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-			
-		
-
-				   
-			
 			
 			decode_raspi_packet();
 			
@@ -299,6 +379,10 @@ int main(void)
 		}
 	
   }
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+	
   /* USER CODE END 3 */
 }
 
@@ -468,40 +552,6 @@ static void MX_I2C1_Init(void)
 }
 
 /**
-  * @brief I2C2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C2_Init(void)
-{
-
-  /* USER CODE BEGIN I2C2_Init 0 */
-
-  /* USER CODE END I2C2_Init 0 */
-
-  /* USER CODE BEGIN I2C2_Init 1 */
-
-  /* USER CODE END I2C2_Init 1 */
-  hi2c2.Instance = I2C2;
-  hi2c2.Init.ClockSpeed = 100000;
-  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c2.Init.OwnAddress1 = 0;
-  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c2.Init.OwnAddress2 = 0;
-  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C2_Init 2 */
-
-  /* USER CODE END I2C2_Init 2 */
-
-}
-
-/**
   * @brief SPI1 Initialization Function
   * @param None
   * @retval None
@@ -596,9 +646,9 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 240;
+  htim1.Init.Prescaler = 400;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 100;
+  htim1.Init.Period = 50;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -642,7 +692,7 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 4800;
+  htim2.Init.Prescaler = 7135;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 100;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -687,7 +737,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 4800;
+  htim3.Init.Prescaler = 7135;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 100;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -734,7 +784,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 7200;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 10;
+  htim4.Init.Period = 350;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -755,6 +805,44 @@ static void MX_TIM4_Init(void)
   /* USER CODE BEGIN TIM4_Init 2 */
 
   /* USER CODE END TIM4_Init 2 */
+
+}
+
+/**
+  * @brief TIM12 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM12_Init(void)
+{
+
+  /* USER CODE BEGIN TIM12_Init 0 */
+
+  /* USER CODE END TIM12_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+
+  /* USER CODE BEGIN TIM12_Init 1 */
+
+  /* USER CODE END TIM12_Init 1 */
+  htim12.Instance = TIM12;
+  htim12.Init.Prescaler = 7200;
+  htim12.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim12.Init.Period = 300;
+  htim12.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim12.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim12) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim12, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM12_Init 2 */
+
+  /* USER CODE END TIM12_Init 2 */
 
 }
 
@@ -946,18 +1034,19 @@ static void MX_GPIO_Init(void)
                           |Valve2_Pin|Valve3_Pin|PWM_Pin|SPI2_PWR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(RSPY2_GPIO_Port, RSPY2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOF, LED_CLK_Pin|LED_DATA_Pin|Buzzer3_Pin|Buzzer4_Pin 
+                          |Alarm_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOF, Buzzer3_Pin|Buzzer4_Pin|Alarm_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(RSPY2_GPIO_Port, RSPY2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, Buzzer1_Pin|Buzzer2_Pin|LED0_Pin|LED1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOG, LED2_Pin|LED3_Pin|LED4_Pin|LED5_Pin 
-                          |LED6_Pin|LED7_Pin|LED8_Pin|DR2_Pin 
-                          |DR3_Pin|DR4_Pin, GPIO_PIN_RESET);
+                          |LED6_Pin|LED7_Pin|DR2_Pin|DR3_Pin 
+                          |DR4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(RS485_EN_GPIO_Port, RS485_EN_Pin, GPIO_PIN_RESET);
@@ -970,6 +1059,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_CLK_Pin LED_DATA_Pin Buzzer3_Pin Buzzer4_Pin 
+                           Alarm_Pin */
+  GPIO_InitStruct.Pin = LED_CLK_Pin|LED_DATA_Pin|Buzzer3_Pin|Buzzer4_Pin 
+                          |Alarm_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
   /*Configure GPIO pin : RSPY1_Pin */
   GPIO_InitStruct.Pin = RSPY1_Pin;
@@ -984,13 +1082,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(RSPY2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Buzzer3_Pin Buzzer4_Pin Alarm_Pin */
-  GPIO_InitStruct.Pin = Buzzer3_Pin|Buzzer4_Pin|Alarm_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
   /*Configure GPIO pins : Buzzer1_Pin Buzzer2_Pin LED0_Pin LED1_Pin */
   GPIO_InitStruct.Pin = Buzzer1_Pin|Buzzer2_Pin|LED0_Pin|LED1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -999,12 +1090,18 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED2_Pin LED3_Pin LED4_Pin LED5_Pin 
-                           LED6_Pin LED7_Pin LED8_Pin DR2_Pin */
+                           LED6_Pin LED7_Pin DR2_Pin */
   GPIO_InitStruct.Pin = LED2_Pin|LED3_Pin|LED4_Pin|LED5_Pin 
-                          |LED6_Pin|LED7_Pin|LED8_Pin|DR2_Pin;
+                          |LED6_Pin|LED7_Pin|DR2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PG8 DR1_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|DR1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /*Configure GPIO pin : RS485_EN_Pin */
@@ -1025,12 +1122,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : DR1_Pin */
-  GPIO_InitStruct.Pin = DR1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(DR1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : DR3_Pin */
   GPIO_InitStruct.Pin = DR3_Pin;
@@ -1083,19 +1174,24 @@ void decode_raspi_packet()
 					if(rspy_receive_buffer[2]==0x6E) //  Check System Function
 					{
 						  CURRENT_MODE=STOP;
-						 
-							if(turbo_error||pressure_s1_error||pressure_s2_error||flow_s_error||buzzer_error)
-							   create_checking_signal_for_raspberry(0x6E,1,turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error);
+						
+						  if(rspy_receive_buffer[3]==0x01)  
+						  {														
+							  check_devices(); 											
+						  }
+						
+							if(turbo_error||pressure_s1_error||pressure_s2_error||flow_s1_error||flow_s2_error||buzzer_error)
+							   create_checking_signal_for_raspberry(0x6E,1,turbo_error,pressure_s1_error,pressure_s2_error,flow_s1_error,flow_s2_error,buzzer_error);
 							else
-								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0);							
+								create_checking_signal_for_raspberry(0x6E,0,0,0,0,0,0,0);							
 					}
 					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
               CURRENT_MODE=STANDBY;
 						
-							duration_high=500;
-	            duration_low=500;
-						  turbo_speed_high=12,turbo_spped_low=12;
+							duration_Ins=500;
+	            duration_Exp=500;
+						  turbo_speed_Ins=12,turbo_speed_Exp=12;
 						  create_response_for_raspberry(0,0);
 						
 					}
@@ -1103,9 +1199,9 @@ void decode_raspi_packet()
 					{
               CURRENT_MODE=STOP;
 						
-							duration_high=500;
-	            duration_low=500;
-						  turbo_speed_high=0,turbo_spped_low=0;
+							duration_Ins=500;
+	            duration_Exp=500;
+						  turbo_speed_Ins=0,turbo_speed_Exp=0;
 						  create_response_for_raspberry(4,0);
 													
 					}
@@ -1187,44 +1283,45 @@ void decode_raspi_packet()
 
 // BEGIN OF CREATE RESPONSE FOR RASPBERRY
 
-void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool f1,bool bz)
+void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool flow1,bool flow2,bool bz)
 {
-	  uint8_t response[13];
+	  uint8_t response[14];
 	
 		response[0]=0xFE;
-		response[1]=0x07;
+		response[1]=0x08;
 		response[2]=function_id;
 		response[3]=param_id;
 	  response[4]=tubo;
 	  response[5]=sp1;
 	  response[6]=sp2;
-	  response[7]=f1;
-	  response[8]=bz;
+	  response[7]=flow1;
+	  response[8]=flow2;
+	  response[9]=bz;
 	  {
 		    uint8_t *dt;
 		    dt[0]=response[2];  dt[1]=response[3];
 			  dt[2]=response[4];  dt[3]=response[5];
 			  dt[4]=response[6];  dt[5]=response[7];
-			  dt[6]=response[8];  
+			  dt[6]=response[8];  dt[7]=response[9];  
 			
 				uint16_t resp_crc=crc_calc(dt,7);
 				if( resp_crc<256)
 				{
-					response[9]=0x00;
-					response[10]=resp_crc;
+					response[10]=0x00;
+					response[11]=resp_crc;
 				}
 				else
 				{
-					response[9]=(int)resp_crc/255;
-					response[10]=resp_crc%255;
+					response[10]=(int)resp_crc/255;
+					response[11]=resp_crc%255;
 				}
 	  }
-		response[11]=0xFF;
-		response[12]=0x0A;
+		response[12]=0xFF;
+		response[13]=0x0A;
 							
 		
 		 
-		send_rspy(response, 13);
+		send_rspy(response, 14);
 }
 
 
@@ -1292,7 +1389,7 @@ void send_rspy(uint8_t *data, int size)
 {
 			//HAL_UART_Transmit_IT(&huart2, data, size);
 	
-		send_complete = false;
+ 		send_complete = false;
 		
 		for(int i=0; i<size; i++)
 		{
