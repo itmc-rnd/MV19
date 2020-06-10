@@ -403,7 +403,7 @@ void TIM4_IRQHandler(void)
     else if(CURRENT_MODE==PCV)
 		{
 		   PCV_Mode();
-			// PCV_Alarms();
+			 PCV_Alarms();
 		}	
     else if(CURRENT_MODE==ACV)
 		{
@@ -414,7 +414,7 @@ void TIM4_IRQHandler(void)
      else if(CURRENT_MODE==SIMV)
 		{
 		   SIMV_Mode();
-		//	 SIMV_Alarms();
+			 SIMV_Alarms();
 		}	
 
 		else // STOP

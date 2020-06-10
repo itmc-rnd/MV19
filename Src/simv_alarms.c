@@ -17,39 +17,39 @@ void SIMV_Alarms()
 {
 
 		
-	 if(ALARM_SIMV_Pi_Mini < (SIMV_EPAP+2) || ALARM_SIMV_Pi_Mini > SIMV_IPAP || ALARM_SIMV_Pi_Mini > (ALARM_SIMV_Pi_Maxi-10))
-		{
+//	 if(ALARM_SIMV_Pi_Mini < (SIMV_EPAP+2) || ALARM_SIMV_Pi_Mini > SIMV_IPAP || ALARM_SIMV_Pi_Mini > (ALARM_SIMV_Pi_Maxi-10))
+//		{
 			if(Current_Pressure_Ins<ALARM_SIMV_Pi_Mini)
 			{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=76;
-				//create_response_for_raspberry(111,76);
+			  return;
 			}
-		}
-	 else if(ALARM_SIMV_Pi_Maxi < (SIMV_EPAP+15) ||ALARM_SIMV_Pi_Maxi <(SIMV_IPAP+2) || ALARM_SIMV_Pi_Maxi <(ALARM_SIMV_Pi_Mini+10))
-		{
+//		}
+//	 else if(ALARM_SIMV_Pi_Maxi < (SIMV_EPAP+15) ||ALARM_SIMV_Pi_Maxi <(SIMV_IPAP+2) || ALARM_SIMV_Pi_Maxi <(ALARM_SIMV_Pi_Mini+10))
+//		{
 			if(Current_Pressure_Ins>ALARM_SIMV_Pi_Maxi)
 			{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=77;
-			 //create_response_for_raspberry(111,77);
+        return;
 			}	
-		} 
-		else if(ALARM_SIMV_Vte_Mini > SIMV_Vt)
-		{
+//		} 
+//		else if(ALARM_SIMV_Vte_Mini > SIMV_Vt)
+//		{
 			if(SIMV_Vt_Sens<ALARM_SIMV_Vte_Mini)
 			{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=78;
-			 //create_response_for_raspberry(111,78);
+			  return;
 			}	
-		}
-		else if(ALARM_SIMV_Fr_Maxi < (SIMV_BUR+5))
-		{
-			  ALARM_RECEIVED=true;
-			  ALARM_CODE=79;
-			//create_response_for_raspberry(111,79);
-		}
+//		}
+//		else if(ALARM_SIMV_Fr_Maxi < (SIMV_BUR+5))
+//		{
+//			  ALARM_RECEIVED=true;
+//			  ALARM_CODE=79;
+//			
+//		}
 	/*	else if(ALARM_SIMV_FiO2_Mini > (ALARM_SIMV_FiO2_Maxi-(ALARM_SIMV_FiO2_Maxi*0.1)))
 		{
 			  ALARM_RECEIVED=true;
@@ -62,8 +62,7 @@ void SIMV_Alarms()
 			  ALARM_CODE=81;
 			 //create_response_for_raspberry(111,81);
 		}*/
-				else
-			return;
+			
 		
     return;
 }

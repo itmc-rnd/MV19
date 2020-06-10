@@ -17,37 +17,37 @@ void PSV_Alarms()
 		{
 			 ALARM_RECEIVED=true;
 			 ALARM_CODE=88; 
-		//create_response_for_raspberry(111,88);
+			return;
 		}
 	 else if(ALARM_PSV_Vti_Maxi <= PSV_Target_Vt || ALARM_PSV_Vti_Maxi <(ALARM_PSV_Vti_Mini+50))
 		{
 			ALARM_RECEIVED=true;
 			ALARM_CODE=89; 
-			 //create_response_for_raspberry(111,89);
+			return;
 		} 
 		else if(ALARM_PSV_Vte_Mini > PSV_Target_Vt)
 		{
 			ALARM_RECEIVED=true;
 			ALARM_CODE=90; 
-			//create_response_for_raspberry(111,90);
+      return;
 		}
 		else if(ALARM_PSV_Fr_Maxi < (PSV_BUR+5))
 		{
 			 ALARM_RECEIVED=true;
 			 ALARM_CODE=91;
-			//create_response_for_raspberry(111,91);
+			 return;
 		}
 		else if(ALARM_PSV_FiO2_Mini > (ALARM_PSV_FiO2_Maxi-(ALARM_PSV_FiO2_Maxi*0.1)))
 		{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=92;
-			 //create_response_for_raspberry(111,92);
+        return;
 		}
 		else if(ALARM_PSV_FiO2_Mini > (ALARM_PSV_FiO2_Maxi-(ALARM_PSV_FiO2_Maxi*0.1)))
 		{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=93;
-			 //create_response_for_raspberry(111,93);
+			  return;
 		}
 				else
 			return;

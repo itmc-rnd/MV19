@@ -110,10 +110,11 @@ if(is_inspiratory==1)
 if(is_inspiratory==0)
 {	
 
-			SIMV_Exp_Pressure=Current_Pressure_Exp;
-	    SIMV_Exp_Pressure_Trriger=(-1.0)* Current_P_Triger;
+			 SIMV_Exp_Pressure=Current_Pressure_Exp;
+	     SIMV_Exp_Pressure_Trriger=(-1.0)* Current_P_Triger;
     	 SIMV_Exp_Flow = (-1)*Current_Flow_Exp;	     // Flow Exp
        SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+	
 	     t3_counter_old=t3_counter;
 	
        if (SIMV_TRRIG_I>1)
