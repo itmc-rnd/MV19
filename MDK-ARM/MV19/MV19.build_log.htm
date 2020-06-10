@@ -27,18 +27,32 @@ Project File Date:  06/07/2020
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'MV19'
-compiling stm32f4xx_it.c...
-../Inc/simv_alarms.h(5): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Inc/psv_alarms.h(5): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Src/stm32f4xx_it.c(447): warning:  #188-D: enumerated type mixed with another type
-  			HAL_GPIO_WritePin(LED_DATA_GPIO_Port, LED_DATA_Pin, st[status_counter]);
-../Src/stm32f4xx_it.c: 3 warnings, 0 errors
+compiling main.c...
+../Inc/show_alarms.h(6): warning:  #1-D: last line of file ends without a newline
+   
+../Src/main.c(329): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	      sumf=(af+bf+cf+df+ef+ff+gf+hf+iff+jf)/10.0;
+../Src/main.c(247): warning:  #177-D: variable "cnt"  was declared but never referenced
+  	 int cnt=0,sum=0;
+../Src/main.c(1397): warning:  #177-D: variable "YYh"  was declared but never referenced
+  			   int YYh=rspy_receive_buffer[3];
+../Src/main.c(1398): warning:  #177-D: variable "YYl"  was declared but never referenced
+  	       int YYl=rspy_receive_buffer[4];
+../Src/main.c(1399): warning:  #177-D: variable "MM"  was declared but never referenced
+  				 int MM=rspy_receive_buffer[5];
+../Src/main.c(1400): warning:  #177-D: variable "DD"  was declared but never referenced
+  				 int DD=rspy_receive_buffer[6];
+../Src/main.c(1401): warning:  #177-D: variable "hh"  was declared but never referenced
+  				 int hh=rspy_receive_buffer[7];
+../Src/main.c(1402): warning:  #177-D: variable "mm"  was declared but never referenced
+  				 int mm=rspy_receive_buffer[8];
+../Src/main.c(1403): warning:  #177-D: variable "ss"  was declared but never referenced
+  				 int ss=rspy_receive_buffer[9];
+../Src/main.c: 10 warnings, 0 errors
 linking...
-Program Size: Code=19612 RO-data=1624 RW-data=740 ZI-data=4100  
+Program Size: Code=22416 RO-data=1664 RW-data=760 ZI-data=4096  
 FromELF: creating hex file...
-"MV19\MV19.axf" - 0 Error(s), 3 Warning(s).
+"MV19\MV19.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 

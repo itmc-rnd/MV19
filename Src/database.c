@@ -25,8 +25,8 @@ int duration_Ins=500,duration_Exp=500;
 int is_inspiratory=1,turbo_speed=0;
 int pwm_i_pcv, pwm_e_pcv;
 
-int  st[20],Current_P1=0,Current_P2=0,Current_F1=0,Current_F2=0;
-float Current_Qi=0,Current_Qe=0;
+int  st[20],Current_Pressure_Ins=0,Current_Pressure_Exp=0,Current_Flow_Ins=0,Current_Flow_Exp=0;
+float Current_P_Triger=0.0;
 
 bool Config_request=false,status_change_falg=false;
 
@@ -40,6 +40,10 @@ bool ALARM_RECEIVED=false,Audio_Paused_available=false,Alarm_Paused_available=fa
 int ALARM_CODE=0;
 
 bool acv_mode_first_round=true;
+
+int PSV_Flow_MAXi_sens=0;
+
+bool PSV_MODE_INS=false;
 
 
 

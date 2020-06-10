@@ -118,8 +118,9 @@ int packet_received = 0;
 int rspy_receive_buffer_index = 0;
 bool send_complete = true;
 extern modes CURRENT_MODE;
-extern int Current_P1,Current_P2,Current_F1,Current_F2;
-extern float Current_Qi,Current_Qe;
+extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
+extern float Current_P_Triger;
+
 extern int turbo_speed_Ins,turbo_speed_Exp,turbo_speed,is_inspiratory,raise_step;
  extern int pwm_i_pcv, pwm_e_pcv, PCV_RATE;
  extern int pwm_i_simv, pwm_e_simv, SIMV_RATE_SIMV;
@@ -127,6 +128,7 @@ extern char buf[200];
 uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
 extern int duration_Ins,duration_Exp;
+extern int t3_counter;
 
 extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
 extern bool flow_s1_error,flow_s2_error;
@@ -240,7 +242,8 @@ int main(void)
 	
 	 
 	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0,Counter_loop=0;
-	/// float x=0,y=0;
+	 float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
+	 float sumf=0.0;
 	 int cnt=0,sum=0;
 	
 	driver_init();
@@ -284,34 +287,55 @@ int main(void)
 	      sum=(a+b+c+d+e+f+g+h+i+j);
 		   if((sum/10)<=0)
 		   {
-         Current_P1=0;
+         Current_Pressure_Ins=0;
 		   }
 		   else
 		   {
-			   Current_P1=(int)(sum/10);
+			   Current_Pressure_Ins=(int)((sum*15)/100);
 		   }
 		
-		   a=(int)pressure(2);
-		   b=(int)pressure(2);
-       c=(int)pressure(2);
-       d=(int)pressure(2);
-       e=(int)pressure(2);
-       f=(int)pressure(2);
-       g=(int)pressure(2);
-       h=(int)pressure(2);
-       i=(int)pressure(2);
-       h=(int)pressure(2);
+		   a=(int)pressure(3);
+		   b=(int)pressure(3);
+       c=(int)pressure(3);
+       d=(int)pressure(3);
+       e=(int)pressure(3);
+       f=(int)pressure(3);
+       g=(int)pressure(3);
+       h=(int)pressure(3);
+       i=(int)pressure(3);
+       h=(int)pressure(3);
 		
 	      sum=(a+b+c+d+e+f+g+h+i+j);
 		   if((sum/10)<=0)
 		   {
-         Current_P2=0;
+         Current_Pressure_Exp=0;
 		   }
 		   else
 		   {
-			   Current_P2=(int)(sum/10);
+			   Current_Pressure_Exp=(int)(sum/10);
 		   }
     	
+			 af=pressure(2);
+		   bf=pressure(2);
+       cf=pressure(2);
+       df=pressure(2);
+       ef=pressure(2);
+       ff=pressure(2);
+       gf=pressure(2);
+       hf=pressure(2);
+      iff=pressure(2);
+       hf=pressure(2);
+		
+	      sumf=(af+bf+cf+df+ef+ff+gf+hf+iff+jf)/10.0;
+		   if(sumf<=0)
+		   {
+         Current_P_Triger=0;
+		   }
+		   else
+		   {
+			   Current_P_Triger=sumf;
+		   }
+			 
 			 a=(int)flow(1);
 		   b=(int)flow(1);
        c=(int)flow(1);
@@ -326,11 +350,11 @@ int main(void)
 	      sum=(a+b+c+d+e+f+g+h+i+j);
 		   if((sum/10)<=0)
 		   {
-         Current_F1=0;
+         Current_Flow_Ins=0;
 		   }
 		   else
 		   {
-			   Current_F1=(int)(sum/10);
+			   Current_Flow_Ins=(int)(sum/10);
 		   }
     
 			 	
@@ -348,24 +372,25 @@ int main(void)
 	      sum=(a+b+c+d+e+f+g+h+i+j);
 		   if((sum/10)<=0)
 		   {
-         Current_F2=0;
+         Current_Flow_Exp=0;
 		   }
 		   else
 		   {
-			   Current_F2=(int)(sum/10);
+			   Current_Flow_Exp=(int)(sum/10);
 		   }
+			 Current_Flow_Ins=Current_Flow_Exp;
 			 
 		   HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
 			 
-			 //		sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_P1,Current_P2,Current_F1,Current_F2);
+			 //		sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp);
 		   //   HAL_UART_Transmit(&huart1,(uint8_t *) buf, 500, 1000 );
 
 			 
-			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_P1,Current_P2,Current_F1,Current_F2);
+			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
 		   print_debug((uint8_t *)buf, strlen(buf));
 		
 		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
-		HAL_Delay(500);
+		HAL_Delay(100);
 			 
 		if(packet_received == 1)
 		{
@@ -1188,6 +1213,7 @@ void decode_raspi_packet()
 					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
               CURRENT_MODE=STANDBY;
+						  t3_counter=duration_Ins;
 						
 							duration_Ins=500;
 	            duration_Exp=500;
@@ -1198,6 +1224,7 @@ void decode_raspi_packet()
 					else if(rspy_receive_buffer[2]==0x04) //  SET STOP MODE Function
 					{
               CURRENT_MODE=STOP;
+						  t3_counter=duration_Ins;
 						
 							duration_Ins=500;
 	            duration_Exp=500;
@@ -1214,25 +1241,32 @@ void decode_raspi_packet()
 					{
 						if(rspy_receive_buffer[3]==0x01)    // PSV MODE
 						{														
-							CURRENT_MODE=PSV;							
+							CURRENT_MODE=PSV;			
+              t3_counter=duration_Ins;
+							
 						  psv_mode_decoder();														
 							create_response_for_raspberry(2,1);													
 						}
 						else if(rspy_receive_buffer[3]==0x02)   //PCV MODE
 						{						
-							 CURRENT_MODE=PCV;							
+							 CURRENT_MODE=PCV;	
+               t3_counter=duration_Ins;
+							
 							 pcv_mode_decoder();							
 							 create_response_for_raspberry(2,2);							
 						}
 						else if(rspy_receive_buffer[3]==0x03)   // ACV MODE
 						{
-							CURRENT_MODE=ACV;							
+							CURRENT_MODE=ACV;	
+              t3_counter=duration_Ins;							
 						  acv_mode_decoder();							
 							create_response_for_raspberry(2,3);
 						}
 						else if(rspy_receive_buffer[3]==0x04)  // SIMV MODE
 						{
 							 CURRENT_MODE=SIMV;
+							 t3_counter=duration_Ins;
+							
 						   simv_mode_decoder();							
 							 create_response_for_raspberry(2,4);
 						}
@@ -1298,22 +1332,22 @@ void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo
 	  response[8]=flow2;
 	  response[9]=bz;
 	  {
-		    uint8_t *dt;
+		    uint8_t dt[8];
 		    dt[0]=response[2];  dt[1]=response[3];
 			  dt[2]=response[4];  dt[3]=response[5];
 			  dt[4]=response[6];  dt[5]=response[7];
 			  dt[6]=response[8];  dt[7]=response[9];  
 			
-				uint16_t resp_crc=crc_calc(dt,7);
-				if( resp_crc<256)
+				uint16_t resp_crc=crc_calc(dt,response[1]);
+				if( resp_crc<=256)
 				{
 					response[10]=0x00;
 					response[11]=resp_crc;
 				}
 				else
 				{
-					response[10]=(int)resp_crc/255;
-					response[11]=resp_crc%255;
+					response[10]=(int)resp_crc/256;
+					response[11]=resp_crc%256;
 				}
 	  }
 		response[12]=0xFF;
@@ -1334,18 +1368,18 @@ void create_response_for_raspberry(int function_id,int param_id)
 		response[2]=function_id;
 		response[3]=param_id;
 	  {
-		    uint8_t *dt;
+		    uint8_t dt[2];
 		    dt[0]=response[2];  dt[1]=response[3];
-				uint16_t resp_crc=crc_calc(dt,2);
-				if( resp_crc<256)
+				uint16_t resp_crc=crc_calc(dt,response[1]);
+				if( resp_crc<=256)
 				{
 					response[4]=0x00;
 					response[5]=resp_crc;
 				}
 				else
 				{
-					response[4]=(int)resp_crc/255;
-					response[5]=resp_crc%255;
+					response[4]=(int)resp_crc/256;
+					response[5]=resp_crc%256;
 				}
 	  }
 		response[6]=0xFF;
@@ -1375,10 +1409,10 @@ void create_response_for_raspberry(int function_id,int param_id)
 		
 
 
-uint16_t crc_calc(uint8_t *data, uint8_t data_size)
+uint16_t crc_calc(const uint8_t *data, uint8_t data_size)
 {
   uint16_t crc = 0xFFFF;
-  for (char i = 0; i < data_size; i++)
+  for (int i = 0; i < data_size; i++)
   {
 		crc = ((CrcTable[(crc ^ data[i]) & 0xFF]) ^ (crc >> 8)) & 0xFFFF;
   }

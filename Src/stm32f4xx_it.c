@@ -73,6 +73,8 @@ extern modes CURRENT_MODE;
 extern bool Config_request,status_change_falg;
 extern bool Audio_Paused_available,Alarm_Paused_available;
 extern int ACV_Vt_Sens;
+
+extern bool PSV_MODE_INS;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -309,11 +311,31 @@ void TIM3_IRQHandler(void)
   /* USER CODE BEGIN TIM3_IRQn 0 */
 	
 		t3_counter++;
-	if(t3_counter>=duration_Ins+duration_Exp)
+	if(CURRENT_MODE==PSV)
+	{
+	 if(PSV_MODE_INS==true)   // ins
+	 {
+		  spd = turbo_speed_Ins;
+		  is_inspiratory=1;
+		 
+	 }
+	 else   //Exp  - No action
+	 {
+		  spd = turbo_speed_Exp;
+		  t3_counter = 0;
+		  is_inspiratory=0;
+	 }
+	}
+	else
+	{
+	if(t3_counter>=duration_Ins+duration_Exp )
 	{
 		t3_counter = 0;
 		t3_counter_old=0;
-		//ACV_Vt_Sens=0;
+		ACV_Vt_Sens=0;
+	}
+	if(t3_counter<=duration_Ins )
+	{
 		
 		spd = turbo_speed_Ins;
     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
@@ -321,13 +343,15 @@ void TIM3_IRQHandler(void)
 		is_inspiratory=1;
 		
 	}
-	if(t3_counter==duration_Ins)
+	if(t3_counter>duration_Ins)
 	{
-
+//     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+//	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
 		spd = turbo_speed_Exp;
 		is_inspiratory=0;
+		 ACV_Vt_Sens=0;
 	}
-	if(t3_counter==duration_Ins+30)
+	if(t3_counter==duration_Ins+40)
 	{
     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
 	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
@@ -335,9 +359,11 @@ void TIM3_IRQHandler(void)
 
 //	if((t3_counter%10)==0)
 //	{	
+}
 		if(spd>=0)	
 			turbo(spd);
 	//}
+
 		if(t3_counter%100)
 		{
 			led(6,0);
@@ -377,7 +403,7 @@ void TIM4_IRQHandler(void)
     else if(CURRENT_MODE==PCV)
 		{
 		   PCV_Mode();
-			 PCV_Alarms();
+			// PCV_Alarms();
 		}	
     else if(CURRENT_MODE==ACV)
 		{

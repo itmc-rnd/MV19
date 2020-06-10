@@ -3,7 +3,7 @@
 
 #include "stdbool.h"
 
-typedef enum {STOP,STANDBY, PSV, PCV, ACV,SIMV} modes;
+typedef enum {STOP,STANDBY,SIMV, PCV, ACV, PSV} modes;
 
 typedef struct{
 			  int id;
