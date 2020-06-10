@@ -54,11 +54,7 @@ void acv_mode_decoder()
 				 int Vt_Sigh_I=rspy_receive_buffer[11];
 	
 				 int Vt_Sigh_F=rspy_receive_buffer[12];
-<<<<<<< HEAD
-			   ACV_Vt_Sigh=Vt_Sigh_I+(Vt_Sigh_F/10);
-=======
 			   ACV_Vt_Sigh=Vt_Sigh_I+(Vt_Sigh_F/10.0);
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 				 ACV_Sigh_Rate=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];	
 	
 				  ACV_Vt=rspy_receive_buffer[15]*256+rspy_receive_buffer[16];

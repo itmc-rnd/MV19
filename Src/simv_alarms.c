@@ -8,18 +8,18 @@ extern int ALARM_SIMV_Pi_Mini,ALARM_SIMV_Pi_Maxi,ALARM_SIMV_Fr_Maxi,ALARM_SIMV_F
 
 extern bool ALARM_RECEIVED,Audio_Paused_available,Alarm_Paused_available;
 extern int ALARM_CODE;
-int SIMV_IPAP_Sens=0;
-extern int Current_P1;
-extern int32_t SIMV_Vt_Sens;
-float tmp=0.0;
+
+extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
+extern int SIMV_Vt_Sens;
+float simv_tmp=0.0;
 
 void SIMV_Alarms()
 {
-		SIMV_IPAP_Sens= Current_P1;
+
 		
 	 if(ALARM_SIMV_Pi_Mini < (SIMV_EPAP+2) || ALARM_SIMV_Pi_Mini > SIMV_IPAP || ALARM_SIMV_Pi_Mini > (ALARM_SIMV_Pi_Maxi-10))
 		{
-			if(SIMV_IPAP_Sens<ALARM_SIMV_Pi_Mini)
+			if(Current_Pressure_Ins<ALARM_SIMV_Pi_Mini)
 			{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=76;
@@ -28,7 +28,7 @@ void SIMV_Alarms()
 		}
 	 else if(ALARM_SIMV_Pi_Maxi < (SIMV_EPAP+15) ||ALARM_SIMV_Pi_Maxi <(SIMV_IPAP+2) || ALARM_SIMV_Pi_Maxi <(ALARM_SIMV_Pi_Mini+10))
 		{
-			if(SIMV_IPAP_Sens>ALARM_SIMV_Pi_Maxi)
+			if(Current_Pressure_Ins>ALARM_SIMV_Pi_Maxi)
 			{
 				ALARM_RECEIVED=true;
 			  ALARM_CODE=77;
@@ -58,15 +58,10 @@ void SIMV_Alarms()
 		}
 		else if(ALARM_SIMV_FiO2_Mini > (ALARM_SIMV_FiO2_Maxi-(ALARM_SIMV_FiO2_Maxi*0.1)))
 		{
-<<<<<<< HEAD
 			  ALARM_RECEIVED=true;
 			  ALARM_CODE=81;
 			 //create_response_for_raspberry(111,81);
 		}*/
-=======
-			 create_response_for_raspberry(111,81);
-		}
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 				else
 			return;
 		

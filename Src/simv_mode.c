@@ -6,13 +6,13 @@ extern int SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV, SIMV_IT_RATIO, SIMV_Inspiratory,
 extern int is_inspiratory;
 extern int turbo_speed_Ins,turbo_speed_Exp,raise_step;
 extern int duration_Ins,duration_Exp;
-
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
 extern int t3_counter_old,t3_counter;
 extern float Current_P_Triger;
 
  int Tt_simv=0, Ttrig_simv=0, Ti_simv=0, Te_simv=0, Tflat_simv=0, delay_unit_simv=0;
- int SIMV_Ins_Pressure=0, SIMV_Exp_Pressure=0, SIMV_Vt_Sens=0;;
+ int SIMV_Ins_Pressure=0, SIMV_Exp_Pressure=0;
+ extern int SIMV_Vt_Sens;
  int SIMV_Ins_Flow=0, SIMV_Exp_Flow=0;
  int pwm_i_simv=0, pwm_e_simv=0;
  int Pe_Ad_SIMV=0, Pe_Pa_SIMV=0, Q_Pa_SIMV=0, Q_Ad_SIMV=0;
@@ -54,7 +54,6 @@ if(is_inspiratory==1)
 	    SIMV_Exp_Pressure=Current_Pressure_Exp;
       SIMV_Ins_Flow=Current_Flow_Exp;        // Flow Ins 
 	
-
 	   SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100); // determine the volume of breath according to flow
 	   t3_counter_old=t3_counter;
 	
@@ -102,7 +101,6 @@ if(is_inspiratory==1)
 				 else
 						turbo_speed_Ins=14;
 			}	
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
  
 }
 
@@ -148,12 +146,6 @@ if(is_inspiratory==0)
 			     	 if((Ttrig_simv>Tt_simv && (SIMV_Exp_Flow>Q_Pa_SIMV)) || (Ttrig_simv>Tt_simv && (SIMV_Exp_Pressure_Trriger<Pe_Pa_SIMV)))
 			      	 {
 								 
-<<<<<<< HEAD
-//								pwm_e_simv=pwm_e_simv - (SIMV_EPAP_Sens-SIMV_EPAP);
-//	
-//	          	  turbo_speed_Exp=pwm_e_simv;
-//	              duration_Exp=Te_simv;
-=======
 								if ((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
 								       pwm_e_simv=pwm_e_simv - (SIMV_Exp_Pressure-SIMV_EPAP);
 									 else
@@ -163,7 +155,6 @@ if(is_inspiratory==0)
 	               duration_Exp=Te_simv;
 									 
 								 t3_counter=duration_Ins+duration_Exp+1;
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 		     	  	 }
 							 else
 							 {
@@ -179,30 +170,6 @@ if(is_inspiratory==0)
 			 }
 			 else
 			 {
-<<<<<<< HEAD
-				     	 //if((Ttrig_simv>Tt_simv && SIMV_Qi_Sens>Q_Ad) || (Ttrig_simv>Tt_simv && SIMV_IPAP_Sens>Pe_Ad))
-				         if(Ttrig_simv>Tt_simv && SIMV_IPAP_Sens>Pe_Ad)
-			       	 {
-					     	 t3_counter=0;
-								 
-//								pwm_e_simv=pwm_e_simv - (SIMV_EPAP_Sens-SIMV_EPAP);
-//	
-//	          	  turbo_speed_Exp=pwm_e_simv;
-//	              duration_Exp=Te_simv;
-			      	 }
-							 else
-							 {
-								 if ((SIMV_EPAP_Sens-SIMV_EPAP)>pwm_e_simv)
-								     pwm_e_simv=pwm_e_simv - (SIMV_EPAP_Sens-SIMV_EPAP);
-								 else
-									 pwm_e_simv= 0;
-	
-	          	  turbo_speed_Exp=pwm_e_simv;
-	              duration_Exp=Te_simv;
-							 }
-				 
-			 }      	
-=======
 			   if(SIMV_Exp_Pressure>=SIMV_EPAP)
 				   	{
 	                if((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
@@ -217,7 +184,6 @@ if(is_inspiratory==0)
 		    	 else
 				   		turbo_speed_Exp=15;
 			 }				 			    	
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
        
 }
 

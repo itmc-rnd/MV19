@@ -118,14 +118,9 @@ int packet_received = 0;
 int rspy_receive_buffer_index = 0;
 bool send_complete = true;
 extern modes CURRENT_MODE;
-<<<<<<< HEAD
-extern int Current_P1,Current_P2,Current_F1,Current_F2;
-extern float Current_Qi,Current_Qe;
-=======
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
 extern float Current_P_Triger;
 
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 extern int turbo_speed_Ins,turbo_speed_Exp,turbo_speed,is_inspiratory,raise_step;
  extern int pwm_i_pcv, pwm_e_pcv, PCV_RATE;
  extern int pwm_i_simv, pwm_e_simv, SIMV_RATE_SIMV;
@@ -133,10 +128,7 @@ extern char buf[200];
 uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
 extern int duration_Ins,duration_Exp;
-<<<<<<< HEAD
-=======
 extern int t3_counter;
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 
 extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
 extern bool flow_s1_error,flow_s2_error;
@@ -250,12 +242,8 @@ int main(void)
 	
 	 
 	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0,Counter_loop=0;
-<<<<<<< HEAD
-	/// float x=0,y=0;
-=======
 	 float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
 	 float sumf=0.0;
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 	 int cnt=0,sum=0;
 	
 	driver_init();
@@ -284,105 +272,6 @@ int main(void)
 			status(1,1);
 			create_response_for_raspberry(111,ALARM_CODE);
 		}
-<<<<<<< HEAD
-		
-		   a=(int)pressure(1);
-		   b=(int)pressure(1);
-       c=(int)pressure(1);
-       d=(int)pressure(1);
-       e=(int)pressure(1);
-       f=(int)pressure(1);
-       g=(int)pressure(1);
-       h=(int)pressure(1);
-       i=(int)pressure(1);
-       h=(int)pressure(1);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_P1=0;
-		   }
-		   else
-		   {
-			   Current_P1=(int)(sum/10);
-		   }
-		
-		   a=(int)pressure(2);
-		   b=(int)pressure(2);
-       c=(int)pressure(2);
-       d=(int)pressure(2);
-       e=(int)pressure(2);
-       f=(int)pressure(2);
-       g=(int)pressure(2);
-       h=(int)pressure(2);
-       i=(int)pressure(2);
-       h=(int)pressure(2);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_P2=0;
-		   }
-		   else
-		   {
-			   Current_P2=(int)(sum/10);
-		   }
-    	
-			 a=(int)flow(1);
-		   b=(int)flow(1);
-       c=(int)flow(1);
-       d=(int)flow(1);
-       e=(int)flow(1);
-       f=(int)flow(1);
-       g=(int)flow(1);
-       h=(int)flow(1);
-       i=(int)flow(1);
-       h=(int)flow(1);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_F1=0;
-		   }
-		   else
-		   {
-			   Current_F1=(int)(sum/10);
-		   }
-    
-			 	
-			 a=(int)flow(2);
-		   b=(int)flow(2);
-       c=(int)flow(2);
-       d=(int)flow(2);
-       e=(int)flow(2);
-       f=(int)flow(2);
-       g=(int)flow(2);
-       h=(int)flow(2);
-       i=(int)flow(2);
-       h=(int)flow(2);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_F2=0;
-		   }
-		   else
-		   {
-			   Current_F2=(int)(sum/10);
-		   }
-			 
-		   HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
-			 
-			 //		sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_P1,Current_P2,Current_F1,Current_F2);
-		   //   HAL_UART_Transmit(&huart1,(uint8_t *) buf, 500, 1000 );
-
-			 
-			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_P1,Current_P2,Current_F1,Current_F2);
-		   print_debug((uint8_t *)buf, strlen(buf));
-		
-		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
-		HAL_Delay(500);
-=======
 		
 		   a=(int)pressure(1);
 		   b=(int)pressure(1);
@@ -502,7 +391,6 @@ int main(void)
 		
 		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
 		HAL_Delay(100);
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 			 
 		if(packet_received == 1)
 		{
@@ -1458,13 +1346,8 @@ void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo
 				}
 				else
 				{
-<<<<<<< HEAD
-					response[10]=(int)resp_crc/255;
-					response[11]=resp_crc%255;
-=======
 					response[10]=(int)resp_crc/256;
 					response[11]=resp_crc%256;
->>>>>>> c63a33440ac7da4f4de159016f77aa7bd58c3882
 				}
 	  }
 		response[12]=0xFF;

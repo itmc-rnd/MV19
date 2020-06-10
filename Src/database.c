@@ -25,17 +25,15 @@ int duration_Ins=500,duration_Exp=500;
 int is_inspiratory=1,turbo_speed=0;
 int pwm_i_pcv, pwm_e_pcv;
 
-
 int  st[20],Current_Pressure_Ins=0,Current_Pressure_Exp=0,Current_Flow_Ins=0,Current_Flow_Exp=0;
+
 float Current_P_Triger=0.0;
 
 bool Config_request=false,status_change_falg=false;
 
 int status_bar=7;
 
-int32_t ACV_Vt_Sens=10;
-int32_t PCV_Vt_Sens=0;
-int32_t SIMV_Vt_Sens=0;
+int32_t ACV_Vt_Sens=10,PCV_Vt_Sens=0,SIMV_Vt_Sens=0;
 
 int t3_counter_old=0,t3_counter=0,mode_counter=0;
 
