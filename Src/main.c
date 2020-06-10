@@ -245,7 +245,8 @@ int main(void)
 	 float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
 	 float sumf=0.0;
 	 int cnt=0,sum=0;
-	
+	 extern int cnt_temp;
+	 
 	driver_init();
   HAL_Delay(200);
 	check_devices();
@@ -268,7 +269,7 @@ int main(void)
 		if(ALARM_RECEIVED)
 		{
 			ALARM_RECEIVED=false;
-			buzzer(1,1);
+		//	buzzer(2,1);
 			status(1,1);
 			create_response_for_raspberry(111,ALARM_CODE);
 		}
@@ -385,10 +386,12 @@ int main(void)
 			 //		sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp);
 		   //   HAL_UART_Transmit(&huart1,(uint8_t *) buf, 500, 1000 );
 
-			 
-			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
+
+				 
+			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", cnt_temp,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
 		   print_debug((uint8_t *)buf, strlen(buf));
-		
+				 
+
 		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
 		HAL_Delay(100);
 			 

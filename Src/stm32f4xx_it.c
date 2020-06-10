@@ -75,6 +75,8 @@ extern bool Audio_Paused_available,Alarm_Paused_available;
 extern int ACV_Vt_Sens;
 
 extern bool PSV_MODE_INS;
+extern 	int  cnt_temp;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -242,9 +244,9 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE BEGIN EXTI9_5_IRQn 0 */
 	sw1 = 0;
 	if(Audio_Paused_available)
-	  buzzer(1,0);
+	  buzzer(2,0);
 	if(Alarm_Paused_available)
-	   status(1,0);
+	   status(2,0);
 	
   /* USER CODE END EXTI9_5_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
@@ -295,7 +297,7 @@ void TIM2_IRQHandler(void)
 	if (sw1==300)
 		if (HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9))
 			Config_request=true;
-			//buzzer(1,1);
+			//buzzer(2,1);
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
@@ -309,7 +311,9 @@ void TIM2_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
-	
+
+
+		
 		t3_counter++;
 	if(CURRENT_MODE==PSV)
 	{
@@ -330,9 +334,15 @@ void TIM3_IRQHandler(void)
 	{
 	if(t3_counter>=duration_Ins+duration_Exp )
 	{
+		   cnt_temp=cnt_temp+1;
+
 		t3_counter = 0;
 		t3_counter_old=0;
 		ACV_Vt_Sens=0;
+		PCV_Vt_Sens=0;
+		SIMV_Vt_Sens=0;
+		
+		
 	}
 	if(t3_counter<=duration_Ins )
 	{
@@ -342,20 +352,23 @@ void TIM3_IRQHandler(void)
 		   HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_SET);
 		is_inspiratory=1;
 		
+		
 	}
 	if(t3_counter>duration_Ins)
 	{
-//     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
-//	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
+     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
 		spd = turbo_speed_Exp;
 		is_inspiratory=0;
 		 ACV_Vt_Sens=0;
+		
+		
 	}
-	if(t3_counter==duration_Ins+40)
-	{
-    if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
-	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
-	}
+//	if(t3_counter==duration_Ins+40)
+//	{
+//    if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+//	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
+//	}
 
 //	if((t3_counter%10)==0)
 //	{	
@@ -403,18 +416,18 @@ void TIM4_IRQHandler(void)
     else if(CURRENT_MODE==PCV)
 		{
 		   PCV_Mode();
-			 PCV_Alarms();
+			// PCV_Alarms();
 		}	
     else if(CURRENT_MODE==ACV)
 		{
 			
 		   ACV_Mode();
-			 ACV_Alarms();
+		//	 ACV_Alarms();
 		}	
      else if(CURRENT_MODE==SIMV)
 		{
 		   SIMV_Mode();
-			 SIMV_Alarms();
+			// SIMV_Alarms();
 		}	
 
 		else // STOP

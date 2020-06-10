@@ -19,9 +19,9 @@ extern float Current_P_Triger;
 int Tt_acv=0, Ttrig_acv=0, Ti_acv=0, Te_acv=0, Tflat_acv=0, delay_unit_acv=0,ACV_Vt_normal=0;
 int  ACV_Exp_Pressure=0 ,ACV_Exp_Pressure_normal=0 ,ACV_EPAP_normal=0,  ACV_Ins_Pressure=0 ;
 int ACV_Ins_Flow=0, ACV_Exp_Flow=0;
-int pwm_Vt_acv=0 ,pwm_Vt_acv_calulate=0, pwm_e_acv=0;
+int pwm_Vt_acv=0,pwm_Vt_acv_normal=0 ,pwm_Vt_acv_calulate=0, pwm_e_acv=0,pwm_e_acv_normal=0;
 int Pe_Ad_ACV=0, Pe_Pa_ACV=0, Q_Pa_ACV=0, Q_Ad_ACV=0;
-float  Pe_ACV= -4.7, Bias_Flow_ACV=20.0,ACV_Exp_Pressure_Trriger=0.0;
+float  Pe_ACV= -1.7, Bias_Flow_ACV=20.0,ACV_Exp_Pressure_Trriger=0.0;
 int sigh_counter=1;
  
 // int ACV_RAMP; 
@@ -34,8 +34,8 @@ void ACV_Mode()
 	Ti_acv=ACV_IT_RATIO*Tt_acv/100;
 	Te_acv=Tt_acv-Ti_acv;
 	
-	pwm_Vt_acv=(ACV_Vt/1400.0)*100;
-	pwm_e_acv=(ACV_EPAP/55.0)*100;
+	pwm_Vt_acv=(ACV_Vt*100)/1400.0;
+	pwm_e_acv=(ACV_EPAP*100)/55.0;
 	
 	Pe_Pa_ACV=Pe_ACV-0.3;
 	Pe_Ad_ACV=Pe_ACV-0.3-0.1*ACV_TRRIG_I;
@@ -54,17 +54,19 @@ if(is_inspiratory==1)
 	     ACV_Exp_Pressure = Current_Pressure_Exp;
 	
 	
-      ACV_Ins_Flow=Current_Flow_Exp;     // Flow Ins  
+      ACV_Ins_Flow=Current_Flow_Ins;     // Flow Ins  
 	
       ACV_Vt_Sens=(ACV_Vt_Sens + (ACV_Ins_Flow*(t3_counter-t3_counter_old))/100);	// determine the volume of breath according to flow
 	    t3_counter_old=t3_counter;
-	
-  if(ACV_Exp_Pressure<=ACV_Ins_Pressure)  // for certainty that expiration is Done 
-	{  	
-				  		if(sigh_counter!=(ACV_Sigh_Rate+1))  // normal inspiration
+	     
+	     pwm_Vt_acv_normal=(((ACV_Vt_Sens-ACV_Vt)*100)/1400.0);
+	   
+//  if(ACV_Exp_Pressure<=ACV_Ins_Pressure)  // for certainty that expiration is Done 
+//	{  	
+				  		if((ACV_Sigh_Rate==0 )|| (sigh_counter!=(ACV_Sigh_Rate+1)))  // normal inspiration
 				   	  	{
-						      		if ((ACV_Vt_Sens-ACV_Vt)<=pwm_Vt_acv)     // Delete negetive value of pwm
-		          	          pwm_Vt_acv_calulate=pwm_Vt_acv - ((ACV_Ins_Flow-ACV_Vt)/1400.0)*100;
+						      		if (pwm_Vt_acv_normal<=pwm_Vt_acv)     // Delete negetive value of pwm
+		          	          pwm_Vt_acv_calulate=pwm_Vt_acv - pwm_Vt_acv_normal;
 											
 						    
 				      	if(pwm_Vt_acv_calulate>pwm_Vt_acv)							
@@ -77,15 +79,15 @@ if(is_inspiratory==1)
 											
 						}
 	          else{   // the paitent need the sigh
-					     		pwm_Vt_acv_calulate=((ACV_Vt*ACV_Vt_Sigh)/1400.0)*100;
+					     		pwm_Vt_acv_calulate=((ACV_Vt*ACV_Vt_Sigh)*100)/1400.0;
 							    sigh_counter=1;
-						      turbo_speed_Ins=(pwm_Vt_acv_calulate/Ti_acv)*198;
+						      turbo_speed_Ins=(pwm_Vt_acv_calulate*198.0)/Ti_acv;
 					    		duration_Ins=Ti_acv;
 					   		//pwm_Vt_acv=(ACV_Vt/1400)*100;
 					      }
-					}
-					else
-					  	turbo_speed_Ins=14;
+//					}
+//					else
+//					  	turbo_speed_Ins=14;
  
 }
 
@@ -100,13 +102,15 @@ if(is_inspiratory==0)
     	 ACV_Exp_Flow = (-1)*Current_Flow_Exp;	     // Flow Exp
        ACV_Vt_Sens=(ACV_Vt_Sens + (ACV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
 	     t3_counter_old=t3_counter;
+	       pwm_e_acv_normal=(((ACV_Exp_Pressure-ACV_EPAP)*100)/55.0);
 	
        if (ACV_TRRIG_I>1)
 			 {
+				 
 			 	 if((ACV_Exp_Flow>Q_Ad_ACV) || (ACV_Exp_Pressure_Trriger<Pe_Ad_ACV))
 			       	 {
-								 if ((ACV_Exp_Pressure-ACV_EPAP)>pwm_e_acv)
-								       pwm_e_acv=pwm_e_acv - (ACV_Exp_Pressure-ACV_EPAP);
+								 if (pwm_e_acv_normal>pwm_e_acv)
+								       pwm_e_acv=pwm_e_acv -pwm_e_acv_normal ;
 									 else
 									   	 pwm_e_acv= 15;
 					       
@@ -117,8 +121,8 @@ if(is_inspiratory==0)
 			      	 }
 							 else
 							 {
-								 if ((ACV_Exp_Pressure-ACV_EPAP)>pwm_e_acv)
-								     pwm_e_acv=pwm_e_acv - (ACV_Exp_Pressure-ACV_EPAP);
+								 if (pwm_e_acv_normal>pwm_e_acv)
+								     pwm_e_acv=pwm_e_acv - pwm_e_acv_normal;
 								 else
 									 pwm_e_acv= 15;
 	
@@ -131,8 +135,8 @@ if(is_inspiratory==0)
 			     	 if((ACV_Exp_Flow>Q_Pa_ACV) || (ACV_Exp_Pressure_Trriger<Pe_Pa_ACV))
 			      	 {
 								 
-								if ((ACV_Exp_Pressure-ACV_EPAP)>pwm_e_acv)
-								       pwm_e_acv=pwm_e_acv - (ACV_Exp_Pressure-ACV_EPAP);
+								if (pwm_e_acv_normal>pwm_e_acv)
+								       pwm_e_acv=pwm_e_acv - pwm_e_acv_normal;
 									 else
 									   	 pwm_e_acv= 15;
 					       
@@ -143,8 +147,8 @@ if(is_inspiratory==0)
 		     	  	 }
 							 else
 							 {
-								   if ((ACV_Exp_Pressure-ACV_EPAP)>pwm_e_acv)
-								       pwm_e_acv=pwm_e_acv - (ACV_Exp_Pressure-ACV_EPAP);
+								   if (pwm_e_acv_normal>pwm_e_acv)
+								       pwm_e_acv=pwm_e_acv - pwm_e_acv_normal;
 									 else
 									   	 pwm_e_acv= 15;
 	
@@ -157,8 +161,8 @@ if(is_inspiratory==0)
 			 {
 			   if(ACV_Exp_Pressure>=ACV_EPAP)
 				   	{
-	                if((ACV_Exp_Pressure-ACV_EPAP)>pwm_e_acv)
-			              pwm_e_acv=pwm_e_acv-(ACV_Exp_Pressure-ACV_EPAP);
+	                if(pwm_e_acv_normal>pwm_e_acv)
+			              pwm_e_acv=pwm_e_acv-pwm_e_acv_normal;
                   else 
 		            	 pwm_e_acv= 15;
 					 
