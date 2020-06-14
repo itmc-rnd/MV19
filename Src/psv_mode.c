@@ -27,7 +27,8 @@ extern float Current_P_Triger;
 extern int PSV_Flow_MAXi_sens;
 extern	int32_t PSV_Vt_Sens;
 extern bool PSV_MODE_INS;
-
+ 
+int PSV_Target_Vt_temp=0;
 
 void PSV_Mode()
 {
@@ -58,9 +59,16 @@ void PSV_Mode()
 	
        PSV_Vt_Sens=(PSV_Vt_Sens + (PSV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
 			
+			  
 			
 			pwm_i_psv_normal=((PSV_Ins_Pressure-PSV_IPAP)*100/55.0);  
-			if(PSV_Vt_Sens<PSV_Target_Vt)
+			
+			if(PSV_Target_Vt==0)
+				PSV_Target_Vt_temp=1400;
+			else
+				PSV_Target_Vt_temp=PSV_Target_Vt;
+			
+			if(PSV_Vt_Sens<=PSV_Target_Vt_temp)
 			{
 	
         if (PSV_Ins_Pressure<=PSV_IPAP)   // for certainty that expiration is Done 

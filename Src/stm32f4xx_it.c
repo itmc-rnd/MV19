@@ -62,6 +62,7 @@
 /* USER CODE BEGIN PV */
 int tm1t=0,sw1=0,tm2_speed=0,spd=0,tf=0;
 int t=500,t1=350,s1=20,s2=40,e=100,tm2=0;
+int PSV_SV_Counter=0;
 
 extern int t,t1,s1,s2,st[];
 extern int sw2,e,status_bar;
@@ -317,34 +318,45 @@ void TIM3_IRQHandler(void)
 		
 	if(CURRENT_MODE==PSV)
 	{
-		
+		if(PSV_SV_Counter>35)
+	 {
+      PSV_SV_Counter=0;
+		  if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
+	 }
+	 else
+	 {
+		 if(PSV_MODE_INS==false)
+		    PSV_SV_Counter++;
+		 else
+			 PSV_SV_Counter=0;
+	 }
+	 
 	 if(PSV_MODE_INS==true)   // ins
 	 {
 		  spd = turbo_speed_Ins;
 		  
 		 if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
 		   HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_SET);
-		    
-		  PSV_Vt_Sens=0;
-			 cnt_temp=0;
-		   t3_counter=0;
-		  is_inspiratory=1;
+		  
+		 t3_counter++;
+		 PSV_Vt_Sens=0;
+		 cnt_temp=0;
+		  
+		 is_inspiratory=1;
 		 
 	 }
 	 else   //Exp  - No action
 	 {
+		  t3_counter=0;
 		  cnt_temp=-100;
 		  spd = turbo_speed_Exp;
 		  is_inspiratory=0;
+		 
+		 //PSV_SV_Counter=0;
+		 
 	 }
-	 if((PSV_MODE_INS==false)&&(t3_counter>35))
-	 {
-		 t3_counter=0;
-		  if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
-	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
-	 }
-	 else
-		 t3_counter++;
+	 
 	}
 	else  // modes == STOP,STANDBY,SIMV, PCV, ACV
 	{
