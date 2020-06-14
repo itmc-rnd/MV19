@@ -72,7 +72,7 @@ extern int duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp,is_inspirat
 extern modes CURRENT_MODE;
 extern bool Config_request,status_change_falg;
 extern bool Audio_Paused_available,Alarm_Paused_available;
-extern int ACV_Vt_Sens;
+extern int32_t ACV_Vt_Sens,PCV_Vt_Sens,SIMV_Vt_Sens,PSV_Vt_Sens;
 
 extern bool PSV_MODE_INS;
 extern 	int  cnt_temp;
@@ -314,25 +314,43 @@ void TIM3_IRQHandler(void)
 
 
 		
-		t3_counter++;
+		
 	if(CURRENT_MODE==PSV)
 	{
+		
 	 if(PSV_MODE_INS==true)   // ins
 	 {
 		  spd = turbo_speed_Ins;
+		  
+		 if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+		   HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_SET);
+		    
+		  PSV_Vt_Sens=0;
+			 cnt_temp=0;
+		   t3_counter=0;
 		  is_inspiratory=1;
 		 
 	 }
 	 else   //Exp  - No action
 	 {
+		  cnt_temp=-100;
 		  spd = turbo_speed_Exp;
-		  t3_counter = 0;
 		  is_inspiratory=0;
 	 }
+	 if((PSV_MODE_INS==false)&&(t3_counter>35))
+	 {
+		 t3_counter=0;
+		  if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
+	 }
+	 else
+		 t3_counter++;
 	}
-	else
+	else  // modes == STOP,STANDBY,SIMV, PCV, ACV
 	{
-	if(t3_counter>=duration_Ins+duration_Exp )
+		t3_counter++;
+	
+		if(t3_counter>=duration_Ins+duration_Exp )
 	{
 		   cnt_temp=cnt_temp+1;
 
@@ -356,19 +374,19 @@ void TIM3_IRQHandler(void)
 	}
 	if(t3_counter>duration_Ins)
 	{
-     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
-	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
+//     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+//	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
 		spd = turbo_speed_Exp;
 		is_inspiratory=0;
 		 ACV_Vt_Sens=0;
 		
 		
 	}
-//	if(t3_counter==duration_Ins+40)
-//	{
-//    if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
-//	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
-//	}
+	if(t3_counter>duration_Ins+30)
+	{
+    if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
+	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
+	}
 
 //	if((t3_counter%10)==0)
 //	{	

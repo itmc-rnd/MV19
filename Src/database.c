@@ -7,7 +7,7 @@ modes CURRENT_MODE;
 
 int PSV_IPAP,PSV_EPAP, PSV_RISE_TIME, PSV_TRRIG_I, PSV_BUR, PSV_Apnea,PSV_MAXP, PSV_TRIIG_E,PSV_Target_Vt;
 int PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspiratory, PCV_Expiratory,PCV_TRRIG_I,PCV_MAXP,PCV_Target_Vt;
-int ACV_EPAP,ACV_RAMP, ACV_RATE,ACV_IT_RATIO, ACV_Inspiratory, ACV_Expiratory,ACV_TRRIG_I,ACV_Sigh_Rate,ACV_Vt;
+int ACV_EPAP,ACV_RAMP, ACV_RATE,ACV_IT_RATIO, ACV_Inspiratory, ACV_Expiratory,ACV_TRRIG_I,ACV_Sigh_Rate,ACV_Sigh,ACV_Vt;
 float ACV_Vt_Sigh;
 int SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV,SIMV_IT_RATIO, SIMV_Inspiratory, SIMV_Expiratory,SIMV_TRRIG_I,SIMV_BUR,SIMV_Apnea,SIMV_Vt;
 
@@ -33,7 +33,7 @@ bool Config_request=false,status_change_falg=false;
 
 int status_bar=7;
 
-int32_t ACV_Vt_Sens=10,PCV_Vt_Sens=0,SIMV_Vt_Sens=0;
+int32_t ACV_Vt_Sens=10,PCV_Vt_Sens=0,SIMV_Vt_Sens=0,PSV_Vt_Sens=0;
 
 int t3_counter_old=0,t3_counter=0,mode_counter=0;
 
@@ -46,6 +46,11 @@ int PSV_Flow_MAXi_sens=0;
 
 bool PSV_MODE_INS=false;
 
+int sigh_counter=1;
+
  int cnt_temp=0;
+ 
+ 
+ int is_trigger=0;
 
 

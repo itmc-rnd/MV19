@@ -1,6 +1,7 @@
 #include "pcv_mode.h"
 #include "database.h"
 #include "driver.h"
+#include "stdint.h"
 
 extern int PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspiratory, PCV_Expiratory,PCV_TRRIG_I,PCV_MAXP,PCV_Target_Vt;
 extern int is_inspiratory;
@@ -14,10 +15,12 @@ extern float Current_P_Triger;
 extern int t3_counter_old,t3_counter;
 extern int pwm_i_pcv, pwm_e_pcv;
 
+int PCV_Vt_Sens_normal=0,pwm_i_pcv_normal=0;
+
 int Tt_pcv=0, Ti_pcv=0,  Tflat_pcv=0,Te_pcv=0, trs_step_pcv=100;
 int Trs_pcv=0;
 int PCV_Ins_Pressure=0, PCV_Exp_Pressure=0;
-extern	int PCV_Vt_Sens;
+extern	int32_t PCV_Vt_Sens;
 int PCV_Ins_Flow=0, PCV_Exp_Flow=0;
 
 int pwm_max=0;
@@ -50,21 +53,27 @@ if(is_inspiratory==1)
 			PCV_Ins_Pressure = Current_Pressure_Ins;
 	    PCV_Exp_Pressure = Current_Pressure_Exp;
 
-    	PCV_Ins_Flow = Current_Flow_Exp/1000;  // Flow ins
+    	PCV_Ins_Flow = Current_Flow_Exp;  // Flow ins
 
 	
 	   PCV_Vt_Sens=(PCV_Vt_Sens + (PCV_Ins_Flow*(t3_counter-t3_counter_old))/100); // determine the volume of breath according to flow
 	   t3_counter_old=t3_counter;
 	
+	   PCV_Vt_Sens_normal=((PCV_Vt_Sens-PCV_Target_Vt)*100/1400.0); 
+	   pwm_i_pcv_normal=((PCV_Ins_Pressure-PCV_IPAP)*100/55.0); 
+	   
 	  if (PCV_Target_Vt!=0)   // the power of turbo set by volume
     {    
-								if(PCV_Ins_Pressure<PCV_MAXP) // The inspiratory pressure should be less than the maximi P
+			
+			
+																
+								if(PCV_Vt_Sens<PCV_Target_Vt) // The current volume should be less than the PCV_Target_Vt
 						    {
 						
-			                 	 if(PCV_Exp_Pressure<=PCV_IPAP)  // for certainty that expiration is Done 
-				                 	{  
-                               	if((PCV_Vt_Sens-PCV_Target_Vt)<=pwm_Vt_pcv)   // Delet negetive value of pwm
-			                             pwm_Vt_pcv_calulate=pwm_Vt_pcv-((PCV_Vt_Sens-PCV_Target_Vt)/1400.0)*100;
+//			                 	 if(PCV_Exp_Pressure<=PCV_IPAP)  // for certainty that expiration is Done 
+//				                 	{  
+                               	if(PCV_Vt_Sens_normal<=pwm_Vt_pcv)   // Delet negetive value of pwm
+			                             pwm_Vt_pcv_calulate=pwm_Vt_pcv-PCV_Vt_Sens_normal;
 			                          
 																if(pwm_Vt_pcv_calulate>pwm_Vt_pcv)	
 				                           pwm_Vt_pcv_calulate=pwm_Vt_pcv;
@@ -76,9 +85,9 @@ if(is_inspiratory==1)
 									         	trs_step_pcv=1;
                             raise_step=trs_step_pcv;
 														
-	                       	}
-				                  else
-			              			turbo_speed_Ins=14;
+//	                       	}
+//				                  else
+//			              			turbo_speed_Ins=14;
 				 
 			        }		
 								else
@@ -91,8 +100,8 @@ if(is_inspiratory==1)
 			{
 			 if(PCV_Exp_Pressure<=PCV_Ins_Pressure)  // for certainty that expiration is Done 
 					{  
-                	if((PCV_Ins_Pressure-PCV_IPAP)<=pwm_i_pcv)   // Delet negetive value of pwm
-			             pwm_i_pcv=pwm_i_pcv-(PCV_Ins_Pressure-PCV_IPAP);
+                	if(pwm_i_pcv_normal<=pwm_i_pcv)   // Delet negetive value of pwm
+			             pwm_i_pcv=pwm_i_pcv-pwm_i_pcv_normal;
 			            else
 				           pwm_i_pcv=pwm_i_pcv;
 	
@@ -118,13 +127,15 @@ if(is_inspiratory==0)
       	PCV_Exp_Pressure = Current_Pressure_Exp;
 	
         PCV_Exp_Flow = (-1)*Current_Flow_Exp/1000;	    // Flow Exp
-       PCV_Vt_Sens=(PCV_Vt_Sens + PCV_Exp_Flow*t3_counter);  // determine the volume of breath according to flow
+       PCV_Vt_Sens=(PCV_Vt_Sens + (PCV_Exp_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+	     t3_counter_old=t3_counter;
+       
+	     PCV_Vt_Sens_normal=((PCV_Vt_Sens-PCV_Target_Vt)*100/1400.0); 
 	
-
      	   		if(PCV_Exp_Pressure>=PCV_EPAP)
 				   	{
-	                if((PCV_Exp_Pressure-PCV_EPAP)>pwm_e_pcv)
-			              pwm_e_pcv=pwm_e_pcv-(PCV_Exp_Pressure-PCV_EPAP);
+	                if(PCV_Vt_Sens_normal>pwm_e_pcv)
+			              pwm_e_pcv=pwm_e_pcv-PCV_Vt_Sens_normal;
                   else 
 		            	 pwm_e_pcv= 0;
 					 

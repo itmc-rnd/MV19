@@ -2,29 +2,30 @@
 //=================== PSV ST = PRESSURE SUPPORT VENTILATION SPONTANEOUS TIMED ===========
 //=====================================================================================
 
-
 #include "psv_mode.h"
 #include "database.h"
 #include "driver.h"
+#include "stdint.h"
 
 extern int PSV_IPAP,PSV_EPAP, PSV_RISE_TIME, PSV_TRRIG_I, PSV_BUR, PSV_Apnea,PSV_MAXP, PSV_TRIIG_E,PSV_Target_Vt;
 extern int is_inspiratory;
 extern int turbo_speed_Ins,turbo_speed_Exp,raise_step;
 extern int duration_Ins,duration_Exp;
 extern int Current_Pressure_Ins,Current_Pressure_Exp, Current_Flow_Ins, Current_Flow_Exp;
-extern int t3_counter;
+extern int t3_counter,t3_counter_old;
 extern float Current_P_Triger;	
 
- int Tt_psv=0, Ti_psv=0, Te_psv=0, Tflat_psv=0, trs_step_psv=0, raise_step_psv=100;
+ int Tt_psv=1000, Ti_psv=500, Te_psv=500, Tflat_psv=0, trs_step_psv=0, raise_step_psv=100;
  int Trs_psv=0;
  int PSV_Ins_Pressure=0, PSV_Exp_Pressure=0;
  int PSV_Ins_Flow=0, PSV_Exp_Flow=0, PSV_Qi_maxi=0;
- int pwm_i_psv=0, pwm_e_psv=0, pwm_max_psv=0;
+ int pwm_i_psv=0,pwm_i_psv_normal=0, pwm_e_psv=0, pwm_max_psv=0;
  int Pe_Ad_psv=0, Pe_Pa_psv=0, Q_Pa_psv=0, Q_Ad_psv=0;
  float  Pe_psv= -1.7, Bias_Flow_psv=20.0,PSV_Exp_Pressure_Trriger=0.0;
  int start_ins_psv_mode=0, Maxi_Flow=1, counter_Maxi_Flow=0;
 
 extern int PSV_Flow_MAXi_sens;
+extern	int32_t PSV_Vt_Sens;
 extern bool PSV_MODE_INS;
 
 
@@ -55,10 +56,17 @@ void PSV_Mode()
 		    PSV_Exp_Pressure= Current_Pressure_Exp;
         PSV_Ins_Flow=Current_Flow_Exp;      
 	
-        if (PSV_Exp_Pressure<=PSV_IPAP)   // for certainty that expiration is Done 
+       PSV_Vt_Sens=(PSV_Vt_Sens + (PSV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+			
+			
+			pwm_i_psv_normal=((PSV_Ins_Pressure-PSV_IPAP)*100/55.0);  
+			if(PSV_Vt_Sens<PSV_Target_Vt)
+			{
+	
+        if (PSV_Ins_Pressure<=PSV_IPAP)   // for certainty that expiration is Done 
 				   	{  	
-	            	if ((PSV_Ins_Pressure-PSV_IPAP)<=pwm_i_psv)     // Delet negetive value of pwm
-		              	pwm_i_psv=pwm_i_psv - (PSV_Ins_Pressure-PSV_IPAP);
+	            	if (pwm_i_psv_normal<=pwm_i_psv)     // Delet negetive value of pwm
+		              	pwm_i_psv=pwm_i_psv - pwm_i_psv_normal;
 	              else
 			            	pwm_i_psv=pwm_i_psv;
 						
@@ -69,14 +77,12 @@ void PSV_Mode()
 				  	trs_step_psv=1;
          raise_step=trs_step_psv;
 
-
-         if (PSV_Ins_Flow>PSV_Flow_MAXi_sens)	
+			
+         if (PSV_Ins_Flow>PSV_Flow_MAXi_sens)	  // find max ins flow
 				 {
 					 PSV_Flow_MAXi_sens=PSV_Ins_Flow;
 				 }
 				 else{
-					    
-					    
 					   counter_Maxi_Flow=t3_counter;
 					 if(PSV_Flow_MAXi_sens>0)
 					   if(((PSV_Flow_MAXi_sens-PSV_Ins_Flow)*100)/PSV_Flow_MAXi_sens>= (-1)*PSV_TRIIG_E)
@@ -94,6 +100,13 @@ void PSV_Mode()
 							 	turbo_speed_Ins=12;
 							  duration_Ins=Ti_psv;
 				   	}
+					}
+			else
+			{
+			      PSV_MODE_INS=false;
+						turbo_speed_Ins=13;
+						duration_Ins=Ti_psv;
+			}
  
    }
 
@@ -103,7 +116,8 @@ void PSV_Mode()
 
     if(is_inspiratory==0)
       {	
-
+          PSV_Flow_MAXi_sens=0;
+				
 			    PSV_Exp_Pressure=Current_Pressure_Exp;
 	        PSV_Exp_Flow=Current_Flow_Exp;  
 	

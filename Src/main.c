@@ -135,7 +135,11 @@ extern bool flow_s1_error,flow_s2_error;
 
 extern bool ALARM_RECEIVED;
 extern int ALARM_CODE;
+extern int sigh_counter;
 
+ extern int cnt_temp;
+extern int is_trigger;
+extern int32_t ACV_Vt_Sens,PCV_Vt_Sens,SIMV_Vt_Sens,PSV_Vt_Sens;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -245,7 +249,7 @@ int main(void)
 	 float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
 	 float sumf=0.0;
 	 int cnt=0,sum=0;
-	 extern int cnt_temp;
+	
 	 
 	driver_init();
   HAL_Delay(200);
@@ -253,7 +257,8 @@ int main(void)
 	
 	HAL_TIM_Base_Start_IT(&htim4);
 		 
-	status(4,1);
+	//status(4,1);
+	 
 	 
 	while (1)
   {
@@ -388,7 +393,7 @@ int main(void)
 
 
 				 
-			 sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", cnt_temp,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
+			 sprintf(buf, "\f cnt=%d , t3Cnt=%d, T=%d , Ins=%d , Exp=%d , t_spd_I=%d , t_spd_E=%d  ,t_spd=%d , M=%d - is_I=%d , P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", cnt_temp,t3_counter,is_trigger,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
 		   print_debug((uint8_t *)buf, strlen(buf));
 				 
 
@@ -1215,6 +1220,7 @@ void decode_raspi_packet()
 					}
 					else if(rspy_receive_buffer[2]==0x00) //  SET Standby MODE Function
 					{
+						cnt_temp=0;
               CURRENT_MODE=STANDBY;
 						  t3_counter=duration_Ins;
 						
@@ -1226,6 +1232,7 @@ void decode_raspi_packet()
 					}
 					else if(rspy_receive_buffer[2]==0x04) //  SET STOP MODE Function
 					{
+						  cnt_temp=0;
               CURRENT_MODE=STOP;
 						  t3_counter=duration_Ins;
 						
@@ -1237,11 +1244,18 @@ void decode_raspi_packet()
 					}
 					else if(rspy_receive_buffer[2]==0x01) //  SET Date and Time Function
 					{
+						
 						  create_response_for_raspberry(1,0);
 						  date_time_decoder();
 					}
 					else if(rspy_receive_buffer[2]==0x02) //  SET MODE Function
 					{
+						    cnt_temp=0;
+								ACV_Vt_Sens=0;
+		            PCV_Vt_Sens=0;
+		            SIMV_Vt_Sens=0;
+		            PSV_Vt_Sens=0;
+						
 						if(rspy_receive_buffer[3]==0x01)    // PSV MODE
 						{														
 							CURRENT_MODE=PSV;			
@@ -1261,6 +1275,7 @@ void decode_raspi_packet()
 						else if(rspy_receive_buffer[3]==0x03)   // ACV MODE
 						{
 							CURRENT_MODE=ACV;	
+							sigh_counter=1; 
               t3_counter=duration_Ins;							
 						  acv_mode_decoder();							
 							create_response_for_raspberry(2,3);

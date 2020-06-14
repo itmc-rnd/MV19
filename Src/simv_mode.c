@@ -1,6 +1,7 @@
 #include "simv_mode.h"
 #include "database.h"
 #include "driver.h"
+#include "stdint.h"
 
 extern int SIMV_IPAP,SIMV_EPAP, SIMV_RATE_SIMV, SIMV_IT_RATIO, SIMV_Inspiratory, SIMV_Expiratory,SIMV_TRRIG_I, SIMV_BUR, SIMV_Apnea, SIMV_Vt;
 extern int is_inspiratory;
@@ -12,11 +13,13 @@ extern float Current_P_Triger;
 
  int Tt_simv=0, Ttrig_simv=0, Ti_simv=0, Te_simv=0, Tflat_simv=0, delay_unit_simv=0;
  int SIMV_Ins_Pressure=0, SIMV_Exp_Pressure=0;
- extern int SIMV_Vt_Sens;
+ extern int32_t SIMV_Vt_Sens;
  int SIMV_Ins_Flow=0, SIMV_Exp_Flow=0;
- int pwm_i_simv=0, pwm_e_simv=0;
+ int pwm_i_simv=0,pwm_Vt_simv_normal=0, pwm_e_simv=0,pwm_i_simv_normal=0,pwm_e_simv_normal=0;
  int Pe_Ad_SIMV=0, Pe_Pa_SIMV=0, Q_Pa_SIMV=0, Q_Ad_SIMV=0;
- float  Pe= -4.7, Bias_Flow=20.0,SIMV_Exp_Pressure_Trriger=0.0;
+ float  Pe= +1.7, Bias_Flow=20.0,SIMV_Exp_Pressure_Trriger=0.0;
+ 
+ extern  int is_trigger;
  
 int pwm_Vt_simv=0,pwm_Vt_simv_calulate=0;
 
@@ -36,8 +39,8 @@ void SIMV_Mode()
 	
 	pwm_Vt_simv=(SIMV_Vt/1400.0)*100;
 	
-	Pe_Pa_SIMV=Pe-0.3;
-	Pe_Ad_SIMV=Pe-0.3-0.1*SIMV_TRRIG_I;
+	Pe_Pa_SIMV=Pe+0.3;
+	Pe_Ad_SIMV=Pe+0.3+0.1*SIMV_TRRIG_I;
 	Q_Pa_SIMV=Bias_Flow+3.5;
 	Q_Ad_SIMV=Bias_Flow+4;
 	
@@ -47,50 +50,50 @@ void SIMV_Mode()
 
 	
 //============================ determine IPAP	
+ 
 
 if(is_inspiratory==1)
 {	
 			SIMV_Ins_Pressure= Current_Pressure_Ins;
 	    SIMV_Exp_Pressure=Current_Pressure_Exp;
       SIMV_Ins_Flow=Current_Flow_Exp;        // Flow Ins 
+	    
+
 	
 	   SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100); // determine the volume of breath according to flow
 	   t3_counter_old=t3_counter;
 	
+		     pwm_Vt_simv_normal=(((SIMV_Vt_Sens-SIMV_Vt)*100)/1400.0);
+	     pwm_i_simv_normal=((SIMV_Ins_Pressure-SIMV_IPAP)*100/55.0);
+	
 	  if (SIMV_Vt!=0)   // the power of turbo set by volume
     {    
-								if(SIMV_Ins_Pressure>=SIMV_Exp_Pressure) // The inspiratory pressure should be less than the 
+								if(SIMV_Vt_Sens<SIMV_Vt) // The current volume should be less than the SIMV_Vt
 						    {
 						
-			                 	 if(SIMV_Exp_Pressure<=SIMV_IPAP)  // for certainty that expiration is Done 
-				                 	{  
-                               	if((SIMV_Vt_Sens-SIMV_Vt)<=pwm_Vt_simv)   // Delet negetive value of pwm
-			                             pwm_Vt_simv_calulate=pwm_Vt_simv-((SIMV_Vt_Sens-SIMV_Vt)/1400.0)*100;
+			                 	 
+                               	if(pwm_Vt_simv_normal<=pwm_Vt_simv)   // Delet negetive value of pwm
+			                             pwm_Vt_simv_calulate=pwm_Vt_simv-pwm_Vt_simv_normal;
 			                          
 																if(pwm_Vt_simv_calulate>pwm_Vt_simv)	
 				                           pwm_Vt_simv_calulate=pwm_Vt_simv;
 	
 	                          turbo_speed_Ins=(int)((int)(pwm_Vt_simv_calulate*198.0)/Ti_simv);;
-	                          duration_Ins=Ti_simv;
-			                			
-														
-	                       	}
-				                  else
-			              			turbo_speed_Ins=14;
+	                          duration_Ins=Ti_simv;			                															                      
 				 
 			        }		
 								else
-					  	turbo_speed_Ins=14;
+					  	    turbo_speed_Ins=14;
 										
 			
 								
         }						
 			else  // the power of turbo set by pressure
 			{
-			 if(SIMV_Exp_Pressure<=SIMV_Ins_Pressure)  // for certainty that expiration is Done 
+			 if(SIMV_Ins_Pressure<SIMV_IPAP)  //  The current pressure should be less than the SIMV_IPAP
 					{  
-                	if((SIMV_Ins_Pressure-SIMV_IPAP)<=pwm_i_simv)   // Delet negetive value of pwm
-			             pwm_i_simv=pwm_i_simv-(SIMV_Ins_Pressure-SIMV_IPAP);
+                	if(pwm_i_simv_normal<=pwm_i_simv)   // Delet negetive value of pwm
+			             pwm_i_simv=pwm_i_simv-pwm_i_simv_normal;
 			            else
 				           pwm_i_simv=pwm_i_simv;
 	
@@ -111,18 +114,25 @@ if(is_inspiratory==0)
 {	
 
 			 SIMV_Exp_Pressure=Current_Pressure_Exp;
-	     SIMV_Exp_Pressure_Trriger=(-1.0)* Current_P_Triger;
+	     SIMV_Exp_Pressure_Trriger= Current_P_Triger;
     	 SIMV_Exp_Flow = (-1)*Current_Flow_Exp;	     // Flow Exp
-       SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+  
+      SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+	    pwm_e_simv_normal=((SIMV_Exp_Pressure-SIMV_EPAP)*100/55.0); 
+	
 	
 	     t3_counter_old=t3_counter;
 	
        if (SIMV_TRRIG_I>1)
 			 {
-			 	 if((Ttrig_simv>Tt_simv && (SIMV_Exp_Flow>Q_Ad_SIMV)) || (Ttrig_simv>Tt_simv && (SIMV_Exp_Pressure_Trriger<Pe_Ad_SIMV)))
+				 
+//			 	  if(SIMV_Exp_Pressure<SIMV_EPAP)  //  The current pressure should be less than the SIMV_EPAP
+//				 {
+					 if(((t3_counter>Ttrig_simv) && (SIMV_Exp_Flow>Q_Ad_SIMV)) || ((t3_counter>Ttrig_simv) && (SIMV_Exp_Pressure_Trriger>Pe_Ad_SIMV)))
 			       	 {
-								 if ((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
-								       pwm_e_simv=pwm_e_simv - (SIMV_Exp_Pressure-SIMV_EPAP);
+								  is_trigger=2;
+								 if (pwm_e_simv_normal>pwm_e_simv)
+								       pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 									 else
 									   	 pwm_e_simv= 15;
 					       
@@ -133,22 +143,28 @@ if(is_inspiratory==0)
 			      	 }
 							 else
 							 {
-								 if ((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
-								     pwm_e_simv=pwm_e_simv - (SIMV_Exp_Pressure-SIMV_EPAP);
+								 if (pwm_e_simv_normal>pwm_e_simv)
+								     pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 								 else
 									 pwm_e_simv= 15;
 	
 	          	  turbo_speed_Exp=pwm_e_simv;
 	              duration_Exp=Te_simv;
-							 }
+							 }				 
+//			 }				 
+//		    	 else
+//				   		turbo_speed_Exp=15;
 			 }
 			 else if (SIMV_TRRIG_I==1)
 			 {
-			     	 if((Ttrig_simv>Tt_simv && (SIMV_Exp_Flow>Q_Pa_SIMV)) || (Ttrig_simv>Tt_simv && (SIMV_Exp_Pressure_Trriger<Pe_Pa_SIMV)))
+				 
+//				 if(SIMV_Exp_Pressure<SIMV_EPAP)  //  The current pressure should be less than the SIMV_EPAP
+//				 {
+			     	 if(((t3_counter>Ttrig_simv) && (SIMV_Exp_Flow>Q_Pa_SIMV)) || ((t3_counter>Ttrig_simv) && (SIMV_Exp_Pressure_Trriger>Pe_Pa_SIMV)))
 			      	 {
-								 
-								if ((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
-								       pwm_e_simv=pwm_e_simv - (SIMV_Exp_Pressure-SIMV_EPAP);
+								 is_trigger=1;
+								if (pwm_e_simv_normal>pwm_e_simv)
+								       pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 									 else
 									   	 pwm_e_simv= 15;
 					       
@@ -159,31 +175,35 @@ if(is_inspiratory==0)
 		     	  	 }
 							 else
 							 {
-								   if ((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
-								       pwm_e_simv=pwm_e_simv - (SIMV_Exp_Pressure-SIMV_EPAP);
+								   if (pwm_e_simv_normal>pwm_e_simv)
+								       pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 									 else
 									   	 pwm_e_simv= 15;
 	
 	          	  turbo_speed_Exp=pwm_e_simv;
 	              duration_Exp=Te_simv;
 								 }
+//							 }				 
+//		    	 else
+//				   		turbo_speed_Exp=15;
 				 
 			 }
 			 else
 			 {
-			   if(SIMV_Exp_Pressure>=SIMV_EPAP)
-				   	{
-	                if((SIMV_Exp_Pressure-SIMV_EPAP)>pwm_e_simv)
-			              pwm_e_simv=pwm_e_simv-(SIMV_Exp_Pressure-SIMV_EPAP);
+				  is_trigger=-1;
+//			   if(SIMV_Exp_Pressure<SIMV_EPAP)  //  The current pressure should be less than the SIMV_EPAP
+//				   	{
+	                if(pwm_e_simv_normal>pwm_e_simv)
+			              pwm_e_simv=pwm_e_simv-pwm_e_simv_normal;
                   else 
 		            	 pwm_e_simv= 15;
 					 
 		           turbo_speed_Exp=pwm_e_simv;
 	             duration_Exp=Te_simv;
 
-	    	      }
-		    	 else
-				   		turbo_speed_Exp=15;
+//	    	      }
+//		    	 else
+//				   		turbo_speed_Exp=15;
 			 }				 			    	
        
 }
