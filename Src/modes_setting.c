@@ -20,7 +20,7 @@ void psv_mode_decoder()
 				 else
 					 PSV_TRIIG_E=TRIIG_E;
 							 
-         int PSV_Target_Vt=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];			
+          PSV_Target_Vt=rspy_receive_buffer[13]*256+rspy_receive_buffer[14];			
 				 	
 }
 

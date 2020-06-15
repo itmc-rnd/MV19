@@ -62,13 +62,20 @@
 /* USER CODE BEGIN PV */
 int tm1t=0,sw1=0,tm2_speed=0,spd=0,tf=0;
 int t=500,t1=350,s1=20,s2=40,e=100,tm2=0;
-int PSV_SV_Counter=0;
+int PSV_SV_Counter=0,t2_counter=0;
 
+float sumf=0.0;
+int sum=0;
+
+//int a=0,b=0,c=0,d=0,e1=0,f=0,g=0,h=0,i=0,j=0,Counter_loop=0;
+//float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
+ 
 extern int t,t1,s1,s2,st[];
 extern int sw2,e,status_bar;
 extern int t3_counter,t3_counter_old,mode_counter;
 int status_counter=0;
 extern int duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp,is_inspiratory;
+extern float Current_P_Triger;
 
 extern modes CURRENT_MODE;
 extern bool Config_request,status_change_falg;
@@ -77,6 +84,11 @@ extern int32_t ACV_Vt_Sens,PCV_Vt_Sens,SIMV_Vt_Sens,PSV_Vt_Sens;
 
 extern bool PSV_MODE_INS;
 extern 	int  cnt_temp;
+
+extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
+int Pressure_Report_tmp=0,Flow_Report_tmp=0;
+extern int Pressure_Report,Flow_Report;
+extern bool send_report;
 
 /* USER CODE END PV */
 
@@ -284,6 +296,153 @@ void TIM1_UP_TIM10_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
+	
+	     sum=0;
+			 sum+=(int)pressure(1);
+		   sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+       sum+=(int)pressure(1);
+			      
+		   if(sum<=0)
+		   {
+         Current_Pressure_Ins=0;
+		   }
+		   else
+		   {
+			   Current_Pressure_Ins=(int)((sum*20)/100);
+		   }
+			 
+		   sum=0;
+		   sum+=(int)pressure(3);
+		   sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+       sum+=(int)pressure(3);
+		
+	     
+		   if(sum<=0)
+		   {
+         Current_Pressure_Exp=0;
+		   }
+		   else
+		   {
+			   Current_Pressure_Exp=(int)(sum/10);
+		   }
+			 
+    	sumf=0;
+			sumf+=pressure(2);
+		  sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+      sumf+=pressure(2);
+		
+
+		   if(sumf<=0)
+		   {
+         Current_P_Triger=0;
+		   }
+		   else
+		   {
+			   Current_P_Triger=sumf;
+		   }
+			 
+			 sum=0;
+			 sum+=(int)flow(1);
+		   sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+       sum+=(int)flow(1);
+		     
+		   if(sum<=0)
+		   {
+         Current_Flow_Ins=0;
+		   }
+		   else
+		   {
+			   Current_Flow_Ins=(int)(sum/10);
+		   }
+    
+			 sum=0; 
+			 sum+=(int)flow(2);
+		   sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+       sum+=(int)flow(2);
+			     
+		   if(sum<=0)
+		   {
+         Current_Flow_Exp=0;
+		   }
+		   else
+		   {
+			   Current_Flow_Exp=(int)(sum/10);
+		   }
+			 Current_Flow_Ins=Current_Flow_Exp;
+	
+ 
+			 t2_counter++;
+
+	if(t2_counter>=500)
+	{
+		
+     t2_counter=0;	
+
+		Pressure_Report=Pressure_Report_tmp/100; 
+
+		if(CURRENT_MODE==SIMV)
+			Flow_Report=SIMV_Vt_Sens;
+		else if(CURRENT_MODE==PCV)
+		  Flow_Report=PCV_Vt_Sens;
+		else if(CURRENT_MODE==ACV)
+			Flow_Report=ACV_Vt_Sens;
+		else if(CURRENT_MODE==PSV)
+			Flow_Report=PSV_Vt_Sens;
+		else
+			Flow_Report=0;
+						
+		//Flow_Report=Flow_Report_tmp/100; 
+	
+		send_report=true;
+		
+  	Pressure_Report_tmp=0;		
+		
+		Flow_Report_tmp=0;
+
+	}
+	else
+	{
+		Pressure_Report_tmp=Pressure_Report_tmp+Current_Pressure_Ins;
+		
+		Flow_Report_tmp=Flow_Report_tmp+Current_Flow_Exp;
+	}
+
+	
 	tm2_speed++;
 	if(tm2_speed==10)
 	{
@@ -293,7 +452,7 @@ void TIM2_IRQHandler(void)
 	}
 	sw1++;
 	
-
+ 
 	
 	if (sw1==300)
 		if (HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9))
@@ -313,13 +472,14 @@ void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
 
-
+  
 		
 		
 	if(CURRENT_MODE==PSV)
 	{
 		if(PSV_SV_Counter>35)
 	 {
+		 // PSV_Vt_Sens=0;
       PSV_SV_Counter=0;
 		  if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
 	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
@@ -334,13 +494,14 @@ void TIM3_IRQHandler(void)
 	 
 	 if(PSV_MODE_INS==true)   // ins
 	 {
+		 
 		  spd = turbo_speed_Ins;
 		  
 		 if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
 		   HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_SET);
 		  
 		 t3_counter++;
-		 PSV_Vt_Sens=0;
+		 //
 		 cnt_temp=0;
 		  
 		 is_inspiratory=1;
@@ -352,7 +513,7 @@ void TIM3_IRQHandler(void)
 		  cnt_temp=-100;
 		  spd = turbo_speed_Exp;
 		  is_inspiratory=0;
-		 
+		 PSV_Vt_Sens=0;
 		 //PSV_SV_Counter=0;
 		 
 	 }
@@ -366,6 +527,7 @@ void TIM3_IRQHandler(void)
 	{
 		   cnt_temp=cnt_temp+1;
 
+		
 		t3_counter = 0;
 		t3_counter_old=0;
 		ACV_Vt_Sens=0;
@@ -390,12 +552,17 @@ void TIM3_IRQHandler(void)
 //	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
 		spd = turbo_speed_Exp;
 		is_inspiratory=0;
-		 ACV_Vt_Sens=0;
+//		ACV_Vt_Sens=0;
+//		PCV_Vt_Sens=0;
+//		SIMV_Vt_Sens=0;
+		
 		
 		
 	}
 	if(t3_counter>duration_Ins+30)
 	{
+
+		
     if(CURRENT_MODE!=STOP && CURRENT_MODE!=STANDBY)
 	    HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_RESET);
 	}

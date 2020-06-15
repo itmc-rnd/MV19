@@ -22,23 +22,29 @@ Dialog DLL:      TCM.DLL V1.36.1.0
  
 <h2>Project:</h2>
 E:\1399\MV19\MDK-ARM\MV19.uvprojx
-Project File Date:  06/07/2020
+Project File Date:  06/15/2020
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'MV19'
-compiling stm32f4xx_it.c...
-../Inc/simv_alarms.h(5): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Inc/psv_alarms.h(5): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Src/stm32f4xx_it.c(516): warning:  #188-D: enumerated type mixed with another type
-  			HAL_GPIO_WritePin(LED_DATA_GPIO_Port, LED_DATA_Pin, st[status_counter]);
-../Src/stm32f4xx_it.c: 3 warnings, 0 errors
+compiling simv_mode.c...
+..\Src\simv_mode.c(42): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Pe_Pa_SIMV=Pe+0.3;
+..\Src\simv_mode.c(43): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Pe_Ad_SIMV=Pe+0.3+0.1*SIMV_TRRIG_I;
+..\Src\simv_mode.c(44): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Q_Pa_SIMV=Bias_Flow+3.5;
+..\Src\simv_mode.c: 3 warnings, 0 errors
+compiling acv_alarms.c...
+../Inc/check_device_init.h(8): warning:  #1-D: last line of file ends without a newline
+   
+..\Src\acv_alarms.c(70): warning:  #1-D: last line of file ends without a newline
+  }
+..\Src\acv_alarms.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=22948 RO-data=1656 RW-data=824 ZI-data=4096  
+Program Size: Code=23992 RO-data=1664 RW-data=824 ZI-data=4096  
 FromELF: creating hex file...
-"MV19\MV19.axf" - 0 Error(s), 3 Warning(s).
+"MV19\MV19.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 

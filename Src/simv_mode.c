@@ -117,7 +117,7 @@ if(is_inspiratory==0)
 	     SIMV_Exp_Pressure_Trriger= Current_P_Triger;
     	 SIMV_Exp_Flow = (-1)*Current_Flow_Exp;	     // Flow Exp
   
-      SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+      SIMV_Vt_Sens=(SIMV_Vt_Sens + (SIMV_Exp_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
 	    pwm_e_simv_normal=((SIMV_Exp_Pressure-SIMV_EPAP)*100/55.0); 
 	
 	
@@ -131,7 +131,7 @@ if(is_inspiratory==0)
 					 if(((t3_counter>Ttrig_simv) && (SIMV_Exp_Flow>Q_Ad_SIMV)) || ((t3_counter>Ttrig_simv) && (SIMV_Exp_Pressure_Trriger>Pe_Ad_SIMV)))
 			       	 {
 								  is_trigger=2;
-								 if (pwm_e_simv_normal>pwm_e_simv)
+								 if (pwm_e_simv_normal<=pwm_e_simv)
 								       pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 									 else
 									   	 pwm_e_simv= 15;
@@ -143,7 +143,7 @@ if(is_inspiratory==0)
 			      	 }
 							 else
 							 {
-								 if (pwm_e_simv_normal>pwm_e_simv)
+								 if (pwm_e_simv_normal<=pwm_e_simv)
 								     pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 								 else
 									 pwm_e_simv= 15;
@@ -163,7 +163,7 @@ if(is_inspiratory==0)
 			     	 if(((t3_counter>Ttrig_simv) && (SIMV_Exp_Flow>Q_Pa_SIMV)) || ((t3_counter>Ttrig_simv) && (SIMV_Exp_Pressure_Trriger>Pe_Pa_SIMV)))
 			      	 {
 								 is_trigger=1;
-								if (pwm_e_simv_normal>pwm_e_simv)
+								if (pwm_e_simv_normal<=pwm_e_simv)
 								       pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 									 else
 									   	 pwm_e_simv= 15;
@@ -175,7 +175,7 @@ if(is_inspiratory==0)
 		     	  	 }
 							 else
 							 {
-								   if (pwm_e_simv_normal>pwm_e_simv)
+								   if (pwm_e_simv_normal<=pwm_e_simv)
 								       pwm_e_simv=pwm_e_simv - pwm_e_simv_normal;
 									 else
 									   	 pwm_e_simv= 15;
@@ -193,7 +193,7 @@ if(is_inspiratory==0)
 				  is_trigger=-1;
 //			   if(SIMV_Exp_Pressure<SIMV_EPAP)  //  The current pressure should be less than the SIMV_EPAP
 //				   	{
-	                if(pwm_e_simv_normal>pwm_e_simv)
+	                if(pwm_e_simv_normal<=pwm_e_simv)
 			              pwm_e_simv=pwm_e_simv-pwm_e_simv_normal;
                   else 
 		            	 pwm_e_simv= 15;

@@ -116,7 +116,7 @@ uint8_t rspy_receive_buffer[MAX_BUFFER_SIZE];
 //bool packet_received = false;
 int packet_received = 0;
 int rspy_receive_buffer_index = 0;
-bool send_complete = true;
+bool send_complete = true,paceket_decoded=false;
 extern modes CURRENT_MODE;
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
 extern float Current_P_Triger;
@@ -140,6 +140,10 @@ extern int sigh_counter;
  extern int cnt_temp;
 extern int is_trigger;
 extern int32_t ACV_Vt_Sens,PCV_Vt_Sens,SIMV_Vt_Sens,PSV_Vt_Sens;
+
+extern int Pressure_Report,Flow_Report;
+extern bool send_report;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -180,7 +184,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		
 		if(rspy_receive_buffer_index > 0 && rspy_receive_buffer[rspy_receive_buffer_index-2]==0xFF &&rspy_receive_buffer[rspy_receive_buffer_index-1]==0x0A)// && rx_buffer == 10)
 		{
-			//packet_received = true;
+		
 			packet_received = 1;
 		}
 		
@@ -245,10 +249,7 @@ int main(void)
 	HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
 	
 	 
-	 int a=0,b=0,c=0,d=0,e=0,f=0,g=0,h=0,i=0,j=0,Counter_loop=0;
-	 float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
-	 float sumf=0.0;
-	 int cnt=0,sum=0;
+	// int cnt=0;
 	
 	 
 	driver_init();
@@ -263,14 +264,42 @@ int main(void)
 	while (1)
   {
 		
-		status(4,1);
+		if(packet_received == 1)
+		{
+			
+			
+			packet_received = 0;
+		
+			paceket_decoded=false;			
+			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+			
+			decode_raspi_packet();
+			
+			rspy_receive_buffer_index = 0;
+			//HAL_Delay(500);
+		
+		}
+		else
+		{
+		
+			if(paceket_decoded)
+			{
+		   
 		
 		if(Config_request)
 		{
 			create_response_for_raspberry(5,0);
 			Config_request=false;
 		}
-		
+		if(CURRENT_MODE>0)
+		{
+		  if(send_report)
+		  {
+			  create_report_for_raspberry(20,Pressure_Report,Flow_Report);
+			  send_report=false;	
+      		
+		  }
+	  }
 		if(ALARM_RECEIVED)
 		{
 			ALARM_RECEIVED=false;
@@ -279,137 +308,19 @@ int main(void)
 			create_response_for_raspberry(111,ALARM_CODE);
 		}
 		
-		   a=(int)pressure(1);
-		   b=(int)pressure(1);
-       c=(int)pressure(1);
-       d=(int)pressure(1);
-       e=(int)pressure(1);
-       f=(int)pressure(1);
-       g=(int)pressure(1);
-       h=(int)pressure(1);
-       i=(int)pressure(1);
-       h=(int)pressure(1);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_Pressure_Ins=0;
-		   }
-		   else
-		   {
-			   Current_Pressure_Ins=(int)((sum*15)/100);
-		   }
-		
-		   a=(int)pressure(3);
-		   b=(int)pressure(3);
-       c=(int)pressure(3);
-       d=(int)pressure(3);
-       e=(int)pressure(3);
-       f=(int)pressure(3);
-       g=(int)pressure(3);
-       h=(int)pressure(3);
-       i=(int)pressure(3);
-       h=(int)pressure(3);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_Pressure_Exp=0;
-		   }
-		   else
-		   {
-			   Current_Pressure_Exp=(int)(sum/10);
-		   }
-    	
-			 af=pressure(2);
-		   bf=pressure(2);
-       cf=pressure(2);
-       df=pressure(2);
-       ef=pressure(2);
-       ff=pressure(2);
-       gf=pressure(2);
-       hf=pressure(2);
-      iff=pressure(2);
-       hf=pressure(2);
-		
-	      sumf=(af+bf+cf+df+ef+ff+gf+hf+iff+jf)/10.0;
-		   if(sumf<=0)
-		   {
-         Current_P_Triger=0;
-		   }
-		   else
-		   {
-			   Current_P_Triger=sumf;
-		   }
 			 
-			 a=(int)flow(1);
-		   b=(int)flow(1);
-       c=(int)flow(1);
-       d=(int)flow(1);
-       e=(int)flow(1);
-       f=(int)flow(1);
-       g=(int)flow(1);
-       h=(int)flow(1);
-       i=(int)flow(1);
-       h=(int)flow(1);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_Flow_Ins=0;
-		   }
-		   else
-		   {
-			   Current_Flow_Ins=(int)(sum/10);
-		   }
-    
-			 	
-			 a=(int)flow(2);
-		   b=(int)flow(2);
-       c=(int)flow(2);
-       d=(int)flow(2);
-       e=(int)flow(2);
-       f=(int)flow(2);
-       g=(int)flow(2);
-       h=(int)flow(2);
-       i=(int)flow(2);
-       h=(int)flow(2);
-		
-	      sum=(a+b+c+d+e+f+g+h+i+j);
-		   if((sum/10)<=0)
-		   {
-         Current_Flow_Exp=0;
-		   }
-		   else
-		   {
-			   Current_Flow_Exp=(int)(sum/10);
-		   }
-			 Current_Flow_Ins=Current_Flow_Exp;
-			 
-		   HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
-			 
-			 //		sprintf(buf, "\f cnt=%d , Ins=%d , Exp=%d , t_spd_Ins=%d , t_spd_Exp=%d  ,t_spd=%d , Mode=%d - is_Ins=%d , raise_step=%d P1=%d , P2=%d  , F1=%d , F2=%d               ", Counter_loop++,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,raise_step,Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp);
-		   //   HAL_UART_Transmit(&huart1,(uint8_t *) buf, 500, 1000 );
 
-
+		 }
+			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+			 
 				 
-			 sprintf(buf, "\f cnt=%d , t3Cnt=%d, T=%d , Ins=%d , Exp=%d , t_spd_I=%d , t_spd_E=%d  ,t_spd=%d , M=%d - is_I=%d , P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", cnt_temp,t3_counter,is_trigger,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
+			 sprintf(buf, "\f cnt=%d , pd=%d, indx=%d, T=%d , Ins=%d , Exp=%d , t_spd_I=%d , t_spd_E=%d  ,t_spd=%d , M=%d - is_I=%d , P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", cnt_temp,(int)paceket_decoded,rspy_receive_buffer_index,is_trigger,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
 		   print_debug((uint8_t *)buf, strlen(buf));
 				 
 
 		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
 		HAL_Delay(100);
-			 
-		if(packet_received == 1)
-		{
-			packet_received = 0;
-						
-			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
-			
-			decode_raspi_packet();
-			
-			rspy_receive_buffer_index = 0;
-		}
+	 }
 	
   }
     /* USER CODE END WHILE */
@@ -817,7 +728,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 7200;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 350;
+  htim4.Init.Period = 10;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -861,7 +772,7 @@ static void MX_TIM12_Init(void)
   htim12.Instance = TIM12;
   htim12.Init.Prescaler = 7200;
   htim12.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim12.Init.Period = 300;
+  htim12.Init.Period = 1000;
   htim12.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim12.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim12) != HAL_OK)
@@ -1171,10 +1082,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(DR4_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
@@ -1250,6 +1161,7 @@ void decode_raspi_packet()
 					}
 					else if(rspy_receive_buffer[2]==0x02) //  SET MODE Function
 					{
+						    is_inspiratory=0;
 						    cnt_temp=0;
 								ACV_Vt_Sens=0;
 		            PCV_Vt_Sens=0;
@@ -1406,6 +1318,64 @@ void create_response_for_raspberry(int function_id,int param_id)
 		send_rspy(response, 8);
 		
 }
+
+void create_report_for_raspberry(int function_id,int pressure,int flow)
+{
+	  uint8_t response[12];
+	
+		response[0]=0xFE;
+		response[1]=0x06;  // len
+		response[2]=function_id;
+	  if(pressure<0)
+		{
+			response[3]=0xFF;
+			response[4]=(-1)*pressure;
+		}
+		else
+		{
+			response[3]=0x00;
+			response[4]=pressure;			
+		}
+		if(flow<0)
+		{
+			   response[5]=0xFF;
+			   flow=flow*(-1);
+         response[6]=(int)flow/256; 				
+			   response[7]=flow%256;
+		}
+		else
+		{
+			   response[5]=0x00;
+         response[6]=(int)flow/256; 				
+			   response[7]=flow%256;
+		}
+		
+
+	  {
+		    uint8_t dt[6];
+		    dt[0]=response[2];  dt[1]=response[3];
+			  dt[2]=response[4];  dt[3]=response[5];
+			  dt[4]=response[6];  dt[5]=response[7];
+			
+				uint16_t resp_crc=crc_calc(dt,response[1]);
+				if( resp_crc<=256)
+				{
+					response[8]=0x00;
+					response[9]=resp_crc;
+				}
+				else
+				{
+					response[8]=(int)resp_crc/256;
+					response[9]=resp_crc%256;
+				}
+	  }
+		response[10]=0xFF;
+		response[11]=0x0A;
+							
+		send_rspy(response, 12);
+		
+}
+
 // END OF CREATE RESPONSE FOR RASPBERRY
 
 //  BEGIN OF DATE and TIME Packet DECODER
@@ -1446,10 +1416,12 @@ void send_rspy(uint8_t *data, int size)
 		for(int i=0; i<size; i++)
 		{
 				HAL_UART_Transmit_IT(&huart2, data+i, 1);
+				//HAL_UART_Transmit(&huart2, data+i, 1, 100);
 				HAL_Delay(10);
 		}
 	
-	  send_complete = true;		
+	  send_complete = true;	
+    paceket_decoded=true;		
 }
 
 

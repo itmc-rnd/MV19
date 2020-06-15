@@ -26,6 +26,8 @@ int is_inspiratory=1,turbo_speed=0;
 int pwm_i_pcv, pwm_e_pcv;
 
 int  st[20],Current_Pressure_Ins=0,Current_Pressure_Exp=0,Current_Flow_Ins=0,Current_Flow_Exp=0;
+int Pressure_Report=0,Flow_Report=0;
+bool send_report=false;
 
 float Current_P_Triger=0.0;
 

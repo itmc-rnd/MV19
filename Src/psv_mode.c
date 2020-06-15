@@ -21,14 +21,15 @@ extern float Current_P_Triger;
  int PSV_Ins_Flow=0, PSV_Exp_Flow=0, PSV_Qi_maxi=0;
  int pwm_i_psv=0,pwm_i_psv_normal=0, pwm_e_psv=0, pwm_max_psv=0;
  int Pe_Ad_psv=0, Pe_Pa_psv=0, Q_Pa_psv=0, Q_Ad_psv=0;
- float  Pe_psv= -1.7, Bias_Flow_psv=20.0,PSV_Exp_Pressure_Trriger=0.0;
+ float  Pe_psv= -.7, Bias_Flow_psv=20.0,PSV_Exp_Pressure_Trriger=0.0;
  int start_ins_psv_mode=0, Maxi_Flow=1, counter_Maxi_Flow=0;
+
+int pwm_Vt_psv=0,pwm_Vt_psv_normal=0,pwm_Vt_psv_calulate=0;
 
 extern int PSV_Flow_MAXi_sens;
 extern	int32_t PSV_Vt_Sens;
 extern bool PSV_MODE_INS;
  
-int PSV_Target_Vt_temp=0;
 
 void PSV_Mode()
 {
@@ -39,6 +40,8 @@ void PSV_Mode()
 	pwm_max_psv=(PSV_MAXP/55.0)*100;
 	pwm_i_psv=(PSV_IPAP/55.0)*100;
 	pwm_e_psv=(PSV_EPAP/55.0)*100;
+	
+	pwm_Vt_psv=(PSV_Target_Vt*100)/1400.0;
 	
 	Pe_Pa_psv=Pe_psv-0.3;
 	Pe_Ad_psv=Pe_psv-0.3-0.1*PSV_TRRIG_I;
@@ -51,32 +54,27 @@ void PSV_Mode()
 //============================ Inspiratory Phase
 
 
-   if(is_inspiratory>0)
-    {	
-		   	PSV_Ins_Pressure= Current_Pressure_Ins;
-		    PSV_Exp_Pressure= Current_Pressure_Exp;
-        PSV_Ins_Flow=Current_Flow_Exp;      
+if(is_inspiratory>0)
+{	
+  	PSV_Ins_Pressure= Current_Pressure_Ins;
+    PSV_Exp_Pressure= Current_Pressure_Exp;
+    PSV_Ins_Flow=Current_Flow_Exp;      
 	
-       PSV_Vt_Sens=(PSV_Vt_Sens + (PSV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
-			
+    PSV_Vt_Sens=(PSV_Vt_Sens + (PSV_Ins_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+		t3_counter_old=t3_counter;
 			  
+		pwm_Vt_psv_normal=(((PSV_Vt_Sens-PSV_Target_Vt)*100)/1400.0);
 			
-			pwm_i_psv_normal=((PSV_Ins_Pressure-PSV_IPAP)*100/55.0);  
+		pwm_i_psv_normal=((PSV_Ins_Pressure-PSV_IPAP)*100/55.0);  
 			
-			if(PSV_Target_Vt==0)
-				PSV_Target_Vt_temp=1400;
-			else
-				PSV_Target_Vt_temp=PSV_Target_Vt;
-			
-			if(PSV_Vt_Sens<=PSV_Target_Vt_temp)
-			{
-	
-        if (PSV_Ins_Pressure<=PSV_IPAP)   // for certainty that expiration is Done 
-				   	{  	
-	            	if (pwm_i_psv_normal<=pwm_i_psv)     // Delet negetive value of pwm
-		              	pwm_i_psv=pwm_i_psv - pwm_i_psv_normal;
-	              else
-			            	pwm_i_psv=pwm_i_psv;
+		if(PSV_Target_Vt==0)  // PRESSURE mode
+		{
+			  if (PSV_Ins_Pressure<=PSV_IPAP)   // for certainty that expiration is Done 
+				{  	
+	         	if (pwm_i_psv_normal<=pwm_i_psv)     // Delet negetive value of pwm
+		            	pwm_i_psv=pwm_i_psv - pwm_i_psv_normal;
+	          else
+			          	pwm_i_psv=pwm_i_psv;
 						
 	       turbo_speed_Ins=pwm_i_psv;
 	      // duration_Ins=Ti_psv;
@@ -90,7 +88,54 @@ void PSV_Mode()
 				 {
 					 PSV_Flow_MAXi_sens=PSV_Ins_Flow;
 				 }
-				 else{
+				 else
+				 {
+					 counter_Maxi_Flow=t3_counter;
+					 if(PSV_Flow_MAXi_sens>0)
+					   if(((PSV_Flow_MAXi_sens-PSV_Ins_Flow)*100)/PSV_Flow_MAXi_sens>= (-1)*PSV_TRIIG_E)
+				     {
+						       PSV_MODE_INS=false;								
+					   }
+				 }
+	   	 }
+			 else
+			 {
+					PSV_MODE_INS=false;
+				 	turbo_speed_Ins=12;
+				  duration_Ins=Ti_psv;
+			 }
+		}
+		else /// VOLOUME mode 
+		{			
+			
+			if(PSV_Vt_Sens<=PSV_Target_Vt)
+			{
+	 	
+	         if (pwm_Vt_psv_normal<=pwm_Vt_psv)     // Delete negetive value of pwm
+		           pwm_Vt_psv_calulate=pwm_Vt_psv - pwm_Vt_psv_normal;
+											
+						    
+				if(pwm_Vt_psv_calulate>pwm_Vt_psv)							
+              pwm_Vt_psv_calulate=pwm_Vt_psv;																
+							  
+				turbo_speed_Ins=(int)((int)(pwm_Vt_psv_calulate*198.0)/Ti_psv);
+				duration_Ins=Ti_psv;	
+								
+						
+	       turbo_speed_Ins=pwm_i_psv;
+	      // duration_Ins=Ti_psv;
+       	trs_step_psv=(int)(turbo_speed_Ins-turbo_speed_Exp)/(Trs_psv);
+		  	if (trs_step_psv==0)
+				  	trs_step_psv=1;
+         raise_step=trs_step_psv;
+
+			
+         if (PSV_Ins_Flow>PSV_Flow_MAXi_sens)	  // find max ins flow
+				 {
+					 PSV_Flow_MAXi_sens=PSV_Ins_Flow;
+				 }
+				 else
+				 {
 					   counter_Maxi_Flow=t3_counter;
 					 if(PSV_Flow_MAXi_sens>0)
 					   if(((PSV_Flow_MAXi_sens-PSV_Ins_Flow)*100)/PSV_Flow_MAXi_sens>= (-1)*PSV_TRIIG_E)
@@ -99,24 +144,16 @@ void PSV_Mode()
 									
 					      }
 				 }
-				 
-						
-				   	}
-			  		else
-				  	{
-							 PSV_MODE_INS=false;
-							 	turbo_speed_Ins=12;
-							  duration_Ins=Ti_psv;
-				   	}
-					}
+
+			}
 			else
 			{
 			      PSV_MODE_INS=false;
 						turbo_speed_Ins=13;
 						duration_Ins=Ti_psv;
 			}
- 
-   }
+		}
+}
 
 
 
@@ -131,9 +168,12 @@ void PSV_Mode()
 	
 				PSV_Exp_Pressure_Trriger=(-1.0)* Current_P_Triger;
 				
+				PSV_Vt_Sens=(PSV_Vt_Sens - (PSV_Exp_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
+				t3_counter_old=t3_counter;
 				
          if (PSV_TRRIG_I==1)
 			     {
+  						 // PSV_Vt_Sens=0;
 			     	    if(/*(PSV_Ins_Flow>Q_Pa_psv) ||*/ (PSV_Exp_Pressure_Trriger<Pe_Pa_psv))
 			         	 {
 //					         t3_counter=duration_Ins+duration_Exp+1;
@@ -158,6 +198,7 @@ void PSV_Mode()
 			 
 			 else 
 			 {
+				       //PSV_Vt_Sens=0;
 				     	 if(/*(PSV_Ins_Flow>Q_Ad_psv) || */(PSV_Exp_Pressure_Trriger<Pe_Ad_psv))
 			       	 {
 //					     	 t3_counter=duration_Ins+duration_Exp+1;;

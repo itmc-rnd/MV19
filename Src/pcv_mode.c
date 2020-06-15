@@ -65,8 +65,6 @@ if(is_inspiratory==1)
 	  if (PCV_Target_Vt!=0)   // the power of turbo set by volume
     {    
 			
-			
-																
 								if(PCV_Vt_Sens<PCV_Target_Vt) // The current volume should be less than the PCV_Target_Vt
 						    {
 						
@@ -126,7 +124,7 @@ if(is_inspiratory==0)
 		    
       	PCV_Exp_Pressure = Current_Pressure_Exp;
 	
-        PCV_Exp_Flow = (-1)*Current_Flow_Exp/1000;	    // Flow Exp
+        PCV_Exp_Flow = (-1)*Current_Flow_Exp;	    // Flow Exp
        PCV_Vt_Sens=(PCV_Vt_Sens + (PCV_Exp_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
 	     t3_counter_old=t3_counter;
        
