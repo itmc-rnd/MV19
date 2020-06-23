@@ -3,7 +3,11 @@
 
 bool turbo_error=false,pressure_s1_error=false,pressure_s2_error=false,buzzer_error=false,flow_s1_error=false,flow_s2_error=false;
 
+bool data_received_from_raspy=false;
+
 modes CURRENT_MODE;
+
+int pressure_sensor_Ins=1,pressure_sensor_Exp=2,pressure_sensor_Triger=3,flow_sensor_Ins=2,flow_sensor_Exp=1;
 
 int PSV_IPAP,PSV_EPAP, PSV_RISE_TIME, PSV_TRRIG_I, PSV_BUR, PSV_Apnea,PSV_MAXP, PSV_TRIIG_E,PSV_Target_Vt;
 int PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspiratory, PCV_Expiratory,PCV_TRRIG_I,PCV_MAXP,PCV_Target_Vt;
@@ -26,8 +30,9 @@ int is_inspiratory=1,turbo_speed=0;
 int pwm_i_pcv, pwm_e_pcv;
 
 int  st[20],Current_Pressure_Ins=0,Current_Pressure_Exp=0,Current_Flow_Ins=0,Current_Flow_Exp=0;
-int Pressure_Report=0,Flow_Report=0;
+int Pressure_Report=0,Flow_Report=0,Voloume_Report=0,PasOxi_Report=0,O2_Report=0;
 bool send_report=false;
+int send_report_count_per_second=1;
 
 float Current_P_Triger=0.0;
 
@@ -38,6 +43,7 @@ int status_bar=7;
 int32_t ACV_Vt_Sens=10,PCV_Vt_Sens=0,SIMV_Vt_Sens=0,PSV_Vt_Sens=0;
 
 int t3_counter_old=0,t3_counter=0,mode_counter=0;
+int  T_expiration=0;
 
 bool ALARM_RECEIVED=false,Audio_Paused_available=false,Alarm_Paused_available=false;
 int ALARM_CODE=0;

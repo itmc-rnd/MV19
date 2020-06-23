@@ -51,6 +51,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
  extern int pwm,turbo_speed;
+ #define MAX_BUFFER_SIZE 500
+ 
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -69,8 +71,9 @@ int sum=0;
 
 //int a=0,b=0,c=0,d=0,e1=0,f=0,g=0,h=0,i=0,j=0,Counter_loop=0;
 //float af=0.0,bf=0.0,cf=0.0,df=0.0,ef=0.0,ff=0.0,gf=0.0,hf=0.0,iff=0.0,jf=0.0;
- 
-extern int t,t1,s1,s2,st[];
+extern bool data_received_from_raspy;
+extern int pressure_sensor_Ins,pressure_sensor_Exp,pressure_sensor_Triger,flow_sensor_Ins,flow_sensor_Exp;
+extern int t,t1,s1,s2,st[20];
 extern int sw2,e,status_bar;
 extern int t3_counter,t3_counter_old,mode_counter;
 int status_counter=0;
@@ -83,13 +86,28 @@ extern bool Audio_Paused_available,Alarm_Paused_available;
 extern int32_t ACV_Vt_Sens,PCV_Vt_Sens,SIMV_Vt_Sens,PSV_Vt_Sens;
 
 extern bool PSV_MODE_INS;
+extern int T_expiration;
 extern 	int  cnt_temp;
 
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
-int Pressure_Report_tmp=0,Flow_Report_tmp=0;
-extern int Pressure_Report,Flow_Report;
+int Pressure_Report_tmp=0,Flow_Report_tmp=0,O2_Report_tmp=0,Voloume_Report_tmp=0;
+extern int Pressure_Report,Flow_Report,Voloume_Report,PasOxi_Report,O2_Report;
 extern bool send_report;
+extern int send_report_count_per_second;
+extern bool receiving;
 
+#define RX_BUFFER_SIZE 64	// Must be the same as defined in main.c file
+
+/*extern char rx_buffer[RX_BUFFER_SIZE];
+extern uint16_t rx_wr_index;
+extern volatile uint16_t rx_counter;
+extern volatile uint8_t rx_overflow;
+extern bool receiving;*/
+
+extern uint8_t rspy_receive_buffer[MAX_BUFFER_SIZE];
+extern int rspy_receive_buffer_index;
+extern int packet_received;
+extern int max_flow1,max_flow2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -298,16 +316,16 @@ void TIM2_IRQHandler(void)
   /* USER CODE BEGIN TIM2_IRQn 0 */
 	
 	     sum=0;
-			 sum+=(int)pressure(1);
-		   sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
-       sum+=(int)pressure(1);
+			 sum+=(int)pressure(pressure_sensor_Ins);
+		   sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
+       sum+=(int)pressure(pressure_sensor_Ins);
 			      
 		   if(sum<=0)
 		   {
@@ -319,16 +337,16 @@ void TIM2_IRQHandler(void)
 		   }
 			 
 		   sum=0;
-		   sum+=(int)pressure(3);
-		   sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
-       sum+=(int)pressure(3);
+		   sum+=(int)pressure(pressure_sensor_Exp);
+		   sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
+       sum+=(int)pressure(pressure_sensor_Exp);
 		
 	     
 		   if(sum<=0)
@@ -341,16 +359,16 @@ void TIM2_IRQHandler(void)
 		   }
 			 
     	sumf=0;
-			sumf+=pressure(2);
-		  sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
-      sumf+=pressure(2);
+			sumf+=pressure(pressure_sensor_Triger);
+		  sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
+      sumf+=pressure(pressure_sensor_Triger);
 		
 
 		   if(sumf<=0)
@@ -359,20 +377,20 @@ void TIM2_IRQHandler(void)
 		   }
 		   else
 		   {
-			   Current_P_Triger=sumf;
+			   Current_P_Triger=sumf/4;
 		   }
 			 
 			 sum=0;
-			 sum+=(int)flow(1);
-		   sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
-       sum+=(int)flow(1);
+			 sum+=(int)flow(flow_sensor_Ins);
+		   sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
+       sum+=(int)flow(flow_sensor_Ins);
 		     
 		   if(sum<=0)
 		   {
@@ -383,17 +401,20 @@ void TIM2_IRQHandler(void)
 			   Current_Flow_Ins=(int)(sum/10);
 		   }
     
+			 Current_Flow_Ins=Current_Flow_Ins*110/100;
+			 
+			 
 			 sum=0; 
-			 sum+=(int)flow(2);
-		   sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
-       sum+=(int)flow(2);
+			 sum+=(int)flow(flow_sensor_Exp);
+		   sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
+       sum+=(int)flow(flow_sensor_Exp);
 			     
 		   if(sum<=0)
 		   {
@@ -403,43 +424,53 @@ void TIM2_IRQHandler(void)
 		   {
 			   Current_Flow_Exp=(int)(sum/10);
 		   }
-			 Current_Flow_Ins=Current_Flow_Exp;
+			 //Current_Flow_Ins=Current_Flow_Exp;
 	
  
 			 t2_counter++;
 
-	if(t2_counter>=500)
+	if(t2_counter>=100/send_report_count_per_second)
 	{
 		
      t2_counter=0;	
 
-		Pressure_Report=Pressure_Report_tmp/100; 
+		Pressure_Report=Pressure_Report_tmp/100/send_report_count_per_second; 
 
 		if(CURRENT_MODE==SIMV)
-			Flow_Report=SIMV_Vt_Sens;
+			Voloume_Report=SIMV_Vt_Sens;
 		else if(CURRENT_MODE==PCV)
-		  Flow_Report=PCV_Vt_Sens;
+		  Voloume_Report=PCV_Vt_Sens;
 		else if(CURRENT_MODE==ACV)
-			Flow_Report=ACV_Vt_Sens;
+			Voloume_Report=ACV_Vt_Sens;
 		else if(CURRENT_MODE==PSV)
-			Flow_Report=PSV_Vt_Sens;
+			Voloume_Report=PSV_Vt_Sens;
 		else
-			Flow_Report=0;
-						
-		//Flow_Report=Flow_Report_tmp/100; 
+			Voloume_Report=0;
+					
+    Voloume_Report_tmp=	Voloume_Report;
+		
+		Flow_Report=Flow_Report_tmp/100/send_report_count_per_second; 
 	
-		send_report=true;
+		send_report = !data_received_from_raspy;
+		
+		
+		PasOxi_Report= O2_Report_tmp/100/send_report_count_per_second;
 		
   	Pressure_Report_tmp=0;		
 		
+		
 		Flow_Report_tmp=0;
+		
+		O2_Report_tmp=0;
 
 	}
 	else
 	{
 		Pressure_Report_tmp=Pressure_Report_tmp+Current_Pressure_Ins;
 		
-		Flow_Report_tmp=Flow_Report_tmp+Current_Flow_Exp;
+		Flow_Report_tmp=Flow_Report_tmp+Current_Flow_Ins;
+		
+		O2_Report_tmp=Voloume_Report_tmp;
 	}
 
 	
@@ -472,9 +503,6 @@ void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
 
-  
-		
-		
 	if(CURRENT_MODE==PSV)
 	{
 		if(PSV_SV_Counter>35)
@@ -487,9 +515,15 @@ void TIM3_IRQHandler(void)
 	 else
 	 {
 		 if(PSV_MODE_INS==false)
+		 {
 		    PSV_SV_Counter++;
+			  T_expiration++;
+		 }
 		 else
+		 {
 			 PSV_SV_Counter=0;
+			 T_expiration=0;
+		 }
 	 }
 	 
 	 if(PSV_MODE_INS==true)   // ins
@@ -509,7 +543,10 @@ void TIM3_IRQHandler(void)
 	 }
 	 else   //Exp  - No action
 	 {
-		  t3_counter=0;
+//	 	t3_counter++;
+//		if(t3_counter>=duration_Ins+duration_Exp )
+     	t3_counter = 0;
+
 		  cnt_temp=-100;
 		  spd = turbo_speed_Exp;
 		  is_inspiratory=0;
@@ -534,6 +571,8 @@ void TIM3_IRQHandler(void)
 		PCV_Vt_Sens=0;
 		SIMV_Vt_Sens=0;
 		
+		max_flow1=0;
+		max_flow2=0;
 		
 	}
 	if(t3_counter<=duration_Ins )
@@ -544,6 +583,7 @@ void TIM3_IRQHandler(void)
 		   HAL_GPIO_WritePin(Valve3_GPIO_Port,Valve3_Pin,GPIO_PIN_SET);
 		is_inspiratory=1;
 		
+	
 		
 	}
 	if(t3_counter>duration_Ins)
@@ -556,7 +596,7 @@ void TIM3_IRQHandler(void)
 //		PCV_Vt_Sens=0;
 //		SIMV_Vt_Sens=0;
 		
-		
+
 		
 	}
 	if(t3_counter>duration_Ins+30)
@@ -572,6 +612,7 @@ void TIM3_IRQHandler(void)
 }
 		if(spd>=0)	
 			turbo(spd);
+
 	//}
 
 		if(t3_counter%100)
@@ -648,9 +689,27 @@ void USART2_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 0 */
 
   /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart2);
+  //HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
 
+	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE))
+	{
+		status(2,1);
+		rspy_receive_buffer[rspy_receive_buffer_index] = huart2.Instance->DR;
+		
+		rspy_receive_buffer_index++;
+		if (rspy_receive_buffer_index >= MAX_BUFFER_SIZE)
+		{
+			rspy_receive_buffer_index = 0;
+		}
+		
+		if(rspy_receive_buffer_index > 0 && rspy_receive_buffer[rspy_receive_buffer_index-2]==0xFF &&rspy_receive_buffer[rspy_receive_buffer_index-1]==0x0A)// && rx_buffer == 10)
+		{		  
+			packet_received = 1;			
+			data_received_from_raspy=true;
+		}
+	}
+	
   /* USER CODE END USART2_IRQn 1 */
 }
 
@@ -680,7 +739,7 @@ void TIM8_BRK_TIM12_IRQHandler(void)
 		status_change_falg = 0;
 		for(status_counter=1;status_counter<status_bar+2;status_counter++)
 		{
-			HAL_GPIO_WritePin(LED_DATA_GPIO_Port, LED_DATA_Pin, st[status_counter]);
+			HAL_GPIO_WritePin(LED_DATA_GPIO_Port, LED_DATA_Pin, (GPIO_PinState)st[status_counter]);
 			HAL_GPIO_WritePin(LED_CLK_GPIO_Port, LED_CLK_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(LED_CLK_GPIO_Port, LED_CLK_Pin, GPIO_PIN_RESET);
 			

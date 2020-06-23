@@ -53,7 +53,7 @@ if(is_inspiratory==1)
 			PCV_Ins_Pressure = Current_Pressure_Ins;
 	    PCV_Exp_Pressure = Current_Pressure_Exp;
 
-    	PCV_Ins_Flow = Current_Flow_Exp;  // Flow ins
+    	PCV_Ins_Flow = Current_Flow_Ins;  // Flow ins
 
 	
 	   PCV_Vt_Sens=(PCV_Vt_Sens + (PCV_Ins_Flow*(t3_counter-t3_counter_old))/100); // determine the volume of breath according to flow
@@ -70,7 +70,7 @@ if(is_inspiratory==1)
 						
 //			                 	 if(PCV_Exp_Pressure<=PCV_IPAP)  // for certainty that expiration is Done 
 //				                 	{  
-                               	if(PCV_Vt_Sens_normal<=pwm_Vt_pcv)   // Delet negetive value of pwm
+                               	if(PCV_Vt_Sens_normal<=pwm_Vt_pcv)   // Delete negetive value of pwm
 			                             pwm_Vt_pcv_calulate=pwm_Vt_pcv-PCV_Vt_Sens_normal;
 			                          
 																if(pwm_Vt_pcv_calulate>pwm_Vt_pcv)	
@@ -98,7 +98,7 @@ if(is_inspiratory==1)
 			{
 			 if(PCV_Exp_Pressure<=PCV_Ins_Pressure)  // for certainty that expiration is Done 
 					{  
-                	if(pwm_i_pcv_normal<=pwm_i_pcv)   // Delet negetive value of pwm
+                	if(pwm_i_pcv_normal<=pwm_i_pcv)   // Delete negetive value of pwm
 			             pwm_i_pcv=pwm_i_pcv-pwm_i_pcv_normal;
 			            else
 				           pwm_i_pcv=pwm_i_pcv;

@@ -76,7 +76,7 @@ void simv_alarm_decoder(void);
 void check_devices(void);
 void create_checking_signal_for_raspberry(int function_id,int param_id,bool tubo,bool sp1,bool sp2,bool f1ow1,bool flow2,bool bz);
 void create_response_for_raspberry(int function_id,int param_id);
-void create_report_for_raspberry(int function_id,int pressure,int flow);
+void create_report_for_raspberry(int function_id,int pressure,int flow,int volume,int palsOxi,int o2);
 void send_rspy(uint8_t *data, int size);
 void print_debug(uint8_t *data, int size);
 /* USER CODE END EFP */

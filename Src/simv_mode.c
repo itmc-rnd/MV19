@@ -56,7 +56,7 @@ if(is_inspiratory==1)
 {	
 			SIMV_Ins_Pressure= Current_Pressure_Ins;
 	    SIMV_Exp_Pressure=Current_Pressure_Exp;
-      SIMV_Ins_Flow=Current_Flow_Exp;        // Flow Ins 
+      SIMV_Ins_Flow=Current_Flow_Ins;        // Flow Ins 
 	    
 
 	
@@ -72,7 +72,7 @@ if(is_inspiratory==1)
 						    {
 						
 			                 	 
-                               	if(pwm_Vt_simv_normal<=pwm_Vt_simv)   // Delet negetive value of pwm
+                               	if(pwm_Vt_simv_normal<=pwm_Vt_simv)   // Delete negetive value of pwm
 			                             pwm_Vt_simv_calulate=pwm_Vt_simv-pwm_Vt_simv_normal;
 			                          
 																if(pwm_Vt_simv_calulate>pwm_Vt_simv)	
@@ -92,7 +92,7 @@ if(is_inspiratory==1)
 			{
 			 if(SIMV_Ins_Pressure<SIMV_IPAP)  //  The current pressure should be less than the SIMV_IPAP
 					{  
-                	if(pwm_i_simv_normal<=pwm_i_simv)   // Delet negetive value of pwm
+                	if(pwm_i_simv_normal<=pwm_i_simv)   // Delete negetive value of pwm
 			             pwm_i_simv=pwm_i_simv-pwm_i_simv_normal;
 			            else
 				           pwm_i_simv=pwm_i_simv;

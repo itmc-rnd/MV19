@@ -111,9 +111,10 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 
-uint8_t rx_buffer; 
+uint8_t rx_buffer2; 
 uint8_t rspy_receive_buffer[MAX_BUFFER_SIZE];
 //bool packet_received = false;
+extern bool data_received_from_raspy;
 int packet_received = 0;
 int rspy_receive_buffer_index = 0;
 bool send_complete = true,paceket_decoded=false;
@@ -129,6 +130,7 @@ uint8_t rspy_receive_buffer_Data[1000];
 extern bool Config_request;
 extern int duration_Ins,duration_Exp;
 extern int t3_counter;
+extern bool PSV_MODE_INS;
 
 extern bool turbo_error,pressure_s1_error,pressure_s2_error,flow_s_error,buzzer_error;
 extern bool flow_s1_error,flow_s2_error;
@@ -141,8 +143,22 @@ extern int sigh_counter;
 extern int is_trigger;
 extern int32_t ACV_Vt_Sens,PCV_Vt_Sens,SIMV_Vt_Sens,PSV_Vt_Sens;
 
-extern int Pressure_Report,Flow_Report;
+extern int Pressure_Report,Flow_Report,Voloume_Report,PasOxi_Report,O2_Report;
 extern bool send_report;
+
+int max_flow1=0,max_flow2=0;
+
+HAL_StatusTypeDef uart_status;
+
+
+
+#define RX_BUFFER_SIZE 64
+
+char rx_buffer[RX_BUFFER_SIZE];
+uint16_t rx_rd_index, rx_wr_index;
+volatile uint16_t rx_counter;
+volatile uint8_t rx_overflow;
+bool receiving = false;
 
 /* USER CODE END PV */
 
@@ -170,8 +186,10 @@ static void MX_TIM12_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+/*void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {    
+	data_received_from_raspy=true;
+	status(2,1);
 	if (huart->Instance == USART2)  //current UART
   {
 		rspy_receive_buffer[rspy_receive_buffer_index] = rx_buffer;	
@@ -184,16 +202,42 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		
 		if(rspy_receive_buffer_index > 0 && rspy_receive_buffer[rspy_receive_buffer_index-2]==0xFF &&rspy_receive_buffer[rspy_receive_buffer_index-1]==0x0A)// && rx_buffer == 10)
 		{
-		
+		  
 			packet_received = 1;
+			
 		}
 		
 		if(send_complete)
 		{
-			HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
+			uart_status = HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
 		}
 	}
+}*/
+
+char RxBufferGetChar(void)
+{
+	char tmp;
+   
+	/* Read one char from buffer */
+	while (rx_counter == 0);
+	tmp = rx_buffer[rx_rd_index];
+ 
+	/* Increment read counter */
+	rx_rd_index++;
+	if (rx_rd_index >= RX_BUFFER_SIZE)
+	{
+		rx_rd_index = 0;
+	}
+	
+	/* Decrement char counter */
+	__HAL_UART_DISABLE_IT(&huart2, UART_IT_RXNE);
+	rx_counter--;
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
+	
+	return tmp;
 }
+
+
 /* USER CODE END 0 */
 
 /**
@@ -246,8 +290,9 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	
-	HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
+	//HAL_UART_Receive_IT(&huart2, &rx_buffer2, 1);
 	
+	 
 	 
 	// int cnt=0;
 	
@@ -258,68 +303,87 @@ int main(void)
 	
 	HAL_TIM_Base_Start_IT(&htim4);
 		 
-	//status(4,1);
-	 
-	 
+	status(7,1);
+	 turbo(100);
+	
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);	
+	
 	while (1)
-  {
+  {			
 		
 		if(packet_received == 1)
-		{
+		{		
 			
-			
-			packet_received = 0;
-		
+			//status(2,1);
 			paceket_decoded=false;			
-			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
 			
 			decode_raspi_packet();
+			status(2,0);
+			
+			data_received_from_raspy=false;
 			
 			rspy_receive_buffer_index = 0;
 			//HAL_Delay(500);
-		
+		   packet_received = 0;		
+			
 		}
 		else
 		{
-		
 			if(paceket_decoded)
-			{
-		   
+			{	   
 		
-		if(Config_request)
-		{
-			create_response_for_raspberry(5,0);
-			Config_request=false;
-		}
-		if(CURRENT_MODE>0)
-		{
-		  if(send_report)
-		  {
-			  create_report_for_raspberry(20,Pressure_Report,Flow_Report);
-			  send_report=false;	
-      		
-		  }
-	  }
-		if(ALARM_RECEIVED)
-		{
-			ALARM_RECEIVED=false;
-		//	buzzer(2,1);
-			status(1,1);
-			create_response_for_raspberry(111,ALARM_CODE);
-		}
-		
-			 
-
-		 }
+				if(Config_request)
+				{
+					create_response_for_raspberry(5,0);
+					Config_request=false;
+				}
+				
+				if(CURRENT_MODE>0)
+				{
+					if(send_report)
+					{								
+						
+					 create_report_for_raspberry(20,Pressure_Report,Flow_Report,Voloume_Report,PasOxi_Report,O2_Report);
+					 send_report=false;	
+					
+						//HAL_UART_Receive_IT(&huart2, &rx_buffer2, 1);	
+					}
+					else
+					{
+						//while(HAL_UART_Receive(&huart2, &c, 1, 5) == HAL_UART_ERROR_NONE); 				
+					}
+				}
+				
+				if(ALARM_RECEIVED)
+				{
+					ALARM_RECEIVED=false;
+				//	buzzer(2,1);
+					status(1,1);
+					create_response_for_raspberry(111,ALARM_CODE);
+				}		 
+			}
+			
 			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
 			 
-				 
+			if(max_flow1<=Current_Flow_Ins)
+				max_flow1=Current_Flow_Ins;
+			
+			if(max_flow2<=Current_Flow_Exp)
+				max_flow2=Current_Flow_Exp;
+
+			//sprintf(buf, "\f max_flow_Ins=%d , max_flow_Exp=%d    ",max_flow1,max_flow2);
+			
+			//__HAL_UART_DISABLE_IT(&huart2, UART_IT_RXNE);			
 			 sprintf(buf, "\f cnt=%d , pd=%d, indx=%d, T=%d , Ins=%d , Exp=%d , t_spd_I=%d , t_spd_E=%d  ,t_spd=%d , M=%d - is_I=%d , P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d               ", cnt_temp,(int)paceket_decoded,rspy_receive_buffer_index,is_trigger,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp);
+				//sprintf(buf, "\f status= %X", HAL_UART_GetState(&huart2));			
+				//sprintf(buf, "status= %X - %X\r\n", uart_status, HAL_UART_GetState(&huart2));		 
 		   print_debug((uint8_t *)buf, strlen(buf));
+			//__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
 				 
 
-		//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
-		HAL_Delay(100);
+			//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
+			//HAL_Delay(200);
 	 }
 	
   }
@@ -1172,6 +1236,8 @@ void decode_raspi_packet()
 						{														
 							CURRENT_MODE=PSV;			
               t3_counter=duration_Ins;
+							PSV_MODE_INS=false;
+							is_inspiratory=0;
 							
 						  psv_mode_decoder();														
 							create_response_for_raspberry(2,1);													
@@ -1319,12 +1385,12 @@ void create_response_for_raspberry(int function_id,int param_id)
 		
 }
 
-void create_report_for_raspberry(int function_id,int pressure,int flow)
+void create_report_for_raspberry(int function_id,int pressure,int flow,int volume,int palsOxi,int o2)
 {
-	  uint8_t response[12];
+	  uint8_t response[21];
 	
 		response[0]=0xFE;
-		response[1]=0x06;  // len
+		response[1]=0x0F;  // len
 		response[2]=function_id;
 	  if(pressure<0)
 		{
@@ -1350,29 +1416,72 @@ void create_report_for_raspberry(int function_id,int pressure,int flow)
 			   response[7]=flow%256;
 		}
 		
-
+		if(volume<0)
+		{
+			   response[8]=0xFF;
+			   volume=volume*(-1);
+         response[9]=(int)volume/256; 				
+			   response[10]=volume%256;
+		}
+		else
+		{
+			   response[8]=0x00;
+         response[9]=(int)volume/256; 				
+			   response[10]=volume%256;
+		}
+    if(palsOxi<0)
+		{
+			   response[11]=0xFF;
+			   palsOxi=palsOxi*(-1);
+         response[12]=(int)palsOxi/256; 				
+			   response[13]=palsOxi%256;
+		}
+		else
+		{
+			   response[11]=0x00;
+         response[12]=(int)palsOxi/256; 				
+			   response[13]=palsOxi%256;
+		}
+    if(o2<0)
+		{
+			   response[14]=0xFF;
+			   palsOxi=palsOxi*(-1);
+         response[15]=(int)o2/256; 				
+			   response[16]=o2%256;
+		}
+		else
+		{
+			   response[14]=0x00;
+         response[15]=(int)o2/256; 				
+			   response[16]=o2%256;
+		}
 	  {
-		    uint8_t dt[6];
-		    dt[0]=response[2];  dt[1]=response[3];
-			  dt[2]=response[4];  dt[3]=response[5];
-			  dt[4]=response[6];  dt[5]=response[7];
+		    uint8_t dt[15];
+		    dt[0]=response[2];   dt[1]=response[3];
+			  dt[2]=response[4];   dt[3]=response[5];
+			  dt[4]=response[6];   dt[5]=response[7];
+			  dt[6]=response[8];   dt[7]=response[9];
+			  dt[8]=response[10];  dt[9]=response[11];
+			  dt[10]=response[12];  dt[11]=response[13];
+			  dt[12]=response[14];  dt[11]=response[15];
+			  dt[14]=response[16]; 
 			
 				uint16_t resp_crc=crc_calc(dt,response[1]);
 				if( resp_crc<=256)
 				{
-					response[8]=0x00;
-					response[9]=resp_crc;
+					response[17]=0x00;
+					response[18]=resp_crc;
 				}
 				else
 				{
-					response[8]=(int)resp_crc/256;
-					response[9]=resp_crc%256;
+					response[17]=(int)resp_crc/256;
+					response[18]=resp_crc%256;
 				}
 	  }
-		response[10]=0xFF;
-		response[11]=0x0A;
+		response[19]=0xFF;
+		response[20]=0x0A;
 							
-		send_rspy(response, 12);
+		send_rspy(response, 21);
 		
 }
 
@@ -1415,9 +1524,9 @@ void send_rspy(uint8_t *data, int size)
 		
 		for(int i=0; i<size; i++)
 		{
-				HAL_UART_Transmit_IT(&huart2, data+i, 1);
-				//HAL_UART_Transmit(&huart2, data+i, 1, 100);
-				HAL_Delay(10);
+				//HAL_UART_Transmit_IT(&huart2, data+i, 1);
+				HAL_UART_Transmit(&huart2, data+i, 1, 100);
+				//HAL_Delay(10);
 		}
 	
 	  send_complete = true;	
