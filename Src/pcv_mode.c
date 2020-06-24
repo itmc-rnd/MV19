@@ -1,3 +1,7 @@
+//=====================================================================================
+//         PCV Mode === AC(P) Mode
+//=====================================================================================
+
 #include "pcv_mode.h"
 #include "database.h"
 #include "driver.h"
@@ -22,10 +26,11 @@ int Trs_pcv=0;
 int PCV_Ins_Pressure=0, PCV_Exp_Pressure=0;
 extern	int32_t PCV_Vt_Sens;
 int PCV_Ins_Flow=0, PCV_Exp_Flow=0;
+float PCV_Exp_Pressure_Trriger=0.0;
 
-int pwm_max=0;
+int pwm_max=0,pwm_e_pcv_normal=0;
 int pwm_Vt_pcv=0,pwm_Vt_pcv_calulate=0;
-
+int Pe_Ad_PCV=0, Pe_Pa_PCV=0, Flow_Pa_PCV=0, Flow_Ad_PCV=0;
 
 
 void PCV_Mode()
@@ -46,7 +51,7 @@ void PCV_Mode()
   duration_Ins=Ti_pcv;
   duration_Exp=Te_pcv;
 
-//============================ determine IPAP	
+//============================ Inspiratory Phase	
 
 if(is_inspiratory==1)
 {	
@@ -96,8 +101,8 @@ if(is_inspiratory==1)
         }						
 			else  // the power of turbo set by pressure
 			{
-			 if(PCV_Exp_Pressure<=PCV_Ins_Pressure)  // for certainty that expiration is Done 
-					{  
+			// if(PCV_Exp_Pressure<=PCV_Ins_Pressure)  // for certainty that expiration is Done 
+			//		{  
                 	if(pwm_i_pcv_normal<=pwm_i_pcv)   // Delete negetive value of pwm
 			             pwm_i_pcv=pwm_i_pcv-pwm_i_pcv_normal;
 			            else
@@ -109,9 +114,9 @@ if(is_inspiratory==1)
 									if (trs_step_pcv==0)
 										trs_step_pcv=1;
             raise_step=trs_step_pcv;
-	        	}
-				 else
-						turbo_speed_Ins=14;
+	        //	}
+				// else
+				//		turbo_speed_Ins=14;
 			}	
 			
 			
@@ -123,6 +128,7 @@ if(is_inspiratory==0)
 {	
 		    
       	PCV_Exp_Pressure = Current_Pressure_Exp;
+	      PCV_Exp_Pressure_Trriger=(-1.0)* Current_P_Triger; 
 	
         PCV_Exp_Flow = (-1)*Current_Flow_Exp;	    // Flow Exp
        PCV_Vt_Sens=(PCV_Vt_Sens + (PCV_Exp_Flow*(t3_counter-t3_counter_old))/100);  // determine the volume of breath according to flow
@@ -130,24 +136,81 @@ if(is_inspiratory==0)
        
 	     PCV_Vt_Sens_normal=((PCV_Vt_Sens-PCV_Target_Vt)*100/1400.0); 
 	
-     	   		if(PCV_Exp_Pressure>=PCV_EPAP)
-				   	{
-	                if(PCV_Vt_Sens_normal>pwm_e_pcv)
-			              pwm_e_pcv=pwm_e_pcv-PCV_Vt_Sens_normal;
+	     pwm_e_pcv_normal=(((PCV_Exp_Pressure-PCV_EPAP)*100)/55.0);
+	
+	
+	
+	
+	
+	      if (PCV_TRRIG_I>1)
+			 {
+				 
+			 	 if((PCV_Exp_Flow>Flow_Ad_PCV) || (PCV_Exp_Pressure_Trriger<Pe_Ad_PCV))
+			       	 {
+								 if (pwm_e_pcv_normal<=pwm_e_pcv)
+								       pwm_e_pcv=pwm_e_pcv -pwm_e_pcv_normal ;
+									 else
+									   	 pwm_e_pcv= 15;
+					       
+								 turbo_speed_Exp=pwm_e_pcv;
+	               duration_Exp=Te_pcv;
+									 
+					     	 t3_counter=duration_Ins+duration_Exp+1;
+			      	 }
+							 else
+							 {
+								 if (pwm_e_pcv_normal<=pwm_e_pcv)
+								     pwm_e_pcv=pwm_e_pcv - pwm_e_pcv_normal;
+								 else
+									 pwm_e_pcv= 15;
+	
+	          	  turbo_speed_Exp=pwm_e_pcv;
+	              duration_Exp=Te_pcv;
+							 }
+			 }
+			 else if (PCV_TRRIG_I==1)
+			 {
+			     	 if((PCV_Exp_Flow>Flow_Pa_PCV) || (PCV_Exp_Pressure_Trriger<Pe_Pa_PCV))
+			      	 {
+								 
+								if (pwm_e_pcv_normal<=pwm_e_pcv)
+								       pwm_e_pcv=pwm_e_pcv - pwm_e_pcv_normal;
+									 else
+									   	 pwm_e_pcv= 15;
+					       
+								 turbo_speed_Exp=pwm_e_pcv;
+	               duration_Exp=Te_pcv;
+									 
+								 t3_counter=duration_Ins+duration_Exp+1;
+		     	  	 }
+							 else
+							 {
+								   if (pwm_e_pcv_normal<=pwm_e_pcv)
+								       pwm_e_pcv=pwm_e_pcv - pwm_e_pcv_normal;
+									 else
+									   	 pwm_e_pcv= 15;
+	
+	          	  turbo_speed_Exp=pwm_e_pcv;
+	              duration_Exp=Te_pcv;
+								 }
+				 
+			 }
+			 else
+			 {
+
+	                if(pwm_e_pcv_normal<=pwm_e_pcv)
+			              pwm_e_pcv=pwm_e_pcv-pwm_e_pcv_normal;
                   else 
-		            	 pwm_e_pcv= 0;
+		            	 pwm_e_pcv= 15;
 					 
 		           turbo_speed_Exp=pwm_e_pcv;
 	             duration_Exp=Te_pcv;
-//							 trs_step=(int)(turbo_speed_Ins-turbo_speed_Exp)/(Trs_pcv1);
-	             raise_step=trs_step_pcv;
-	    	      }
-		    	 else
-				   		turbo_speed_Exp=10;
-						
+
+
+			 }				 			
+					
 }
 
-//	 delay_unit=(Trs/(pwm_max-pwm_min));	
 
 }
     

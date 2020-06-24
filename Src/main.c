@@ -111,7 +111,6 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 
-uint8_t rx_buffer2; 
 uint8_t rspy_receive_buffer[MAX_BUFFER_SIZE];
 //bool packet_received = false;
 extern bool data_received_from_raspy;
@@ -152,9 +151,6 @@ HAL_StatusTypeDef uart_status;
 
 
 
-#define RX_BUFFER_SIZE 64
-
-char rx_buffer[RX_BUFFER_SIZE];
 uint16_t rx_rd_index, rx_wr_index;
 volatile uint16_t rx_counter;
 volatile uint8_t rx_overflow;
@@ -213,30 +209,6 @@ static void MX_TIM12_Init(void);
 		}
 	}
 }*/
-
-char RxBufferGetChar(void)
-{
-	char tmp;
-   
-	/* Read one char from buffer */
-	while (rx_counter == 0);
-	tmp = rx_buffer[rx_rd_index];
- 
-	/* Increment read counter */
-	rx_rd_index++;
-	if (rx_rd_index >= RX_BUFFER_SIZE)
-	{
-		rx_rd_index = 0;
-	}
-	
-	/* Decrement char counter */
-	__HAL_UART_DISABLE_IT(&huart2, UART_IT_RXNE);
-	rx_counter--;
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-	
-	return tmp;
-}
-
 
 /* USER CODE END 0 */
 
@@ -339,7 +311,7 @@ int main(void)
 					Config_request=false;
 				}
 				
-				if(CURRENT_MODE>0)
+				if(CURRENT_MODE>1)
 				{
 					if(send_report)
 					{								
@@ -383,7 +355,7 @@ int main(void)
 				 
 
 			//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
-			//HAL_Delay(200);
+			HAL_Delay(500);
 	 }
 	
   }
