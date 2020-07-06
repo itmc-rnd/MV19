@@ -22,25 +22,43 @@ Dialog DLL:      TCM.DLL V1.36.1.0
  
 <h2>Project:</h2>
 E:\1399\MV19\MDK-ARM\MV19.uvprojx
-Project File Date:  06/15/2020
+Project File Date:  07/05/2020
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'MV19'
+compiling database.c...
 compiling psv_mode.c...
 ..\Src\psv_mode.c(54): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Pe_Pa_psv=Pe_psv-0.3;
+  	Pe_Pa_psv = Pe_psv - 0.3;
 ..\Src\psv_mode.c(55): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Pe_Ad_psv=Pe_psv-0.3-0.1*PSV_TRRIG_I;
+  	Pe_Ad_psv = Pe_psv - 0.3 - 0.1 * PSV_TRRIG_I;
 ..\Src\psv_mode.c(56): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Q_Pa_psv=Bias_Flow_psv+3.5;
-..\Src\psv_mode.c(273): warning:  #1-D: last line of file ends without a newline
-    
-..\Src\psv_mode.c: 4 warnings, 0 errors
+  	Q_Pa_psv = Bias_Flow_psv + 3.5;
+..\Src\psv_mode.c: 3 warnings, 0 errors
+compiling stm32f4xx_it.c...
+compiling main.c...
+../Inc/show_alarms.h(6): warning:  #1-D: last line of file ends without a newline
+   
+../Src/main.c(1585): warning:  #177-D: variable "YYh"  was declared but never referenced
+  	int YYh = rspy_receive_buffer[3];
+../Src/main.c(1586): warning:  #177-D: variable "YYl"  was declared but never referenced
+  	int YYl = rspy_receive_buffer[4];
+../Src/main.c(1587): warning:  #177-D: variable "MM"  was declared but never referenced
+  	int MM = rspy_receive_buffer[5];
+../Src/main.c(1588): warning:  #177-D: variable "DD"  was declared but never referenced
+  	int DD = rspy_receive_buffer[6];
+../Src/main.c(1589): warning:  #177-D: variable "hh"  was declared but never referenced
+  	int hh = rspy_receive_buffer[7];
+../Src/main.c(1590): warning:  #177-D: variable "mm"  was declared but never referenced
+  	int mm = rspy_receive_buffer[8];
+../Src/main.c(1591): warning:  #177-D: variable "ss"  was declared but never referenced
+  	int ss = rspy_receive_buffer[9];
+../Src/main.c: 8 warnings, 0 errors
 linking...
-Program Size: Code=23916 RO-data=1664 RW-data=920 ZI-data=4096  
+Program Size: Code=22700 RO-data=1472 RW-data=996 ZI-data=3892  
 FromELF: creating hex file...
-"MV19\MV19.axf" - 0 Error(s), 4 Warning(s).
+"MV19\MV19.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -63,7 +81,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.2.0
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

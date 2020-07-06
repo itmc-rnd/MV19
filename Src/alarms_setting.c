@@ -15,12 +15,12 @@ void psv_alarm_decoder()
 }
 void pcv_alarm_decoder()
 {
-		     ALARM_PCV_Fr_Maxi=rspy_receive_buffer[4];
-	       ALARM_PCV_FiO2_Mini=rspy_receive_buffer[5];
-				 ALARM_PCV_FiO2_Maxi=rspy_receive_buffer[6];
-				 ALARM_PCV_Vti_Mini=rspy_receive_buffer[7]*256+rspy_receive_buffer[8];
-				 ALARM_PCV_Vti_Maxi=rspy_receive_buffer[9]*256+rspy_receive_buffer[10];
-				 ALARM_PCV_Vte_Mini=rspy_receive_buffer[11]*256+rspy_receive_buffer[12];
+		     ALARM_ACP_Fr_Maxi=rspy_receive_buffer[4];
+	       ALARM_ACP_FiO2_Mini=rspy_receive_buffer[5];
+				 ALARM_ACP_FiO2_Maxi=rspy_receive_buffer[6];
+				 ALARM_ACP_Vti_Mini=rspy_receive_buffer[7]*256+rspy_receive_buffer[8];
+				 ALARM_ACP_Vti_Maxi=rspy_receive_buffer[9]*256+rspy_receive_buffer[10];
+				 ALARM_ACP_Vte_Mini=rspy_receive_buffer[11]*256+rspy_receive_buffer[12];
   
 }
 void acv_alarm_decoder()

@@ -3,23 +3,23 @@
 #include "check_device_init.h"
 
 
-extern int PCV_IPAP,PCV_EPAP, PCV_RISE_TIME, PCV_RATE, PCV_IT_RATIO, PCV_Inspiratory, PCV_Expiratory,PCV_TRRIG_I,PCV_MAXP,PCV_Target_Vt;
-extern int ALARM_PCV_Fr_Maxi,ALARM_PCV_FiO2_Mini,ALARM_PCV_FiO2_Maxi,ALARM_PCV_Vti_Mini,ALARM_PCV_Vti_Maxi,ALARM_PCV_Vte_Mini;
+extern int ACP_IPAP,ACP_EPAP, ACP_RISE_TIME, ACP_RATE, ACP_IT_RATIO, ACP_Inspiratory, ACP_Expiratory,ACP_TRRIG_I,ACP_MAXP,ACP_Target_Vt;
+extern int ALARM_ACP_Fr_Maxi,ALARM_ACP_FiO2_Mini,ALARM_ACP_FiO2_Maxi,ALARM_ACP_Vti_Mini,ALARM_ACP_Vti_Maxi,ALARM_ACP_Vte_Mini;
 
 
 extern bool ALARM_RECEIVED,Audio_Paused_available,Alarm_Paused_available;
 extern int ALARM_CODE;
-extern int32_t PCV_Vt_Sens;
-float pcv_tmp=0.0;
+extern int32_t ACP_Vt_Sens;
+float acp_tmp=0.0;
 
-void PCV_Alarms()
+void ACP_Alarms()
 {
 	 ALARM_RECEIVED=false;
-	 pcv_tmp=ALARM_PCV_FiO2_Maxi-(ALARM_PCV_FiO2_Maxi*0.1);
+	 acp_tmp=ALARM_ACP_FiO2_Maxi-(ALARM_ACP_FiO2_Maxi*0.1);
 	
-//	 if(PCV_Target_Vt <= ALARM_PCV_Vti_Mini || ALARM_PCV_Vti_Mini>(ALARM_PCV_Vti_Maxi-50))
+//	 if(ACP_Target_Vt <= ALARM_ACP_Vti_Mini || ALARM_ACP_Vti_Mini>(ALARM_ACP_Vti_Maxi-50))
 //		{
-			if(PCV_Vt_Sens<ALARM_PCV_Vti_Mini)
+			if(ACP_Vt_Sens<ALARM_ACP_Vti_Mini)
 			{
 			  ALARM_RECEIVED=true;
 			  Audio_Paused_available=true;
@@ -29,9 +29,9 @@ void PCV_Alarms()
 			}  
 		
 //		}
-//	 else if(PCV_Target_Vt >= ALARM_PCV_Vti_Maxi || ALARM_PCV_Vti_Maxi<(ALARM_PCV_Vti_Mini+50))
+//	 else if(ACP_Target_Vt >= ALARM_ACP_Vti_Maxi || ALARM_ACP_Vti_Maxi<(ALARM_ACP_Vti_Mini+50))
 //		{
-			if(PCV_Vt_Sens>ALARM_PCV_Vti_Maxi)
+			if(ACP_Vt_Sens>ALARM_ACP_Vti_Maxi)
 			{
 		  	ALARM_RECEIVED=true;
 			  ALARM_CODE=71;
@@ -40,9 +40,9 @@ void PCV_Alarms()
 		 
 	
 		//} 
-//		else if(PCV_Target_Vt < ALARM_PCV_Vte_Mini)
+//		else if(ACP_Target_Vt < ALARM_ACP_Vte_Mini)
 //		{
-			if(PCV_Vt_Sens<ALARM_PCV_Vte_Mini)
+			if(ACP_Vt_Sens<ALARM_ACP_Vte_Mini)
 			{
 			  ALARM_RECEIVED=true;
 			  ALARM_CODE=72;
@@ -51,19 +51,19 @@ void PCV_Alarms()
 		 
 		
 	//	}
-	//	else if(ALARM_PCV_Fr_Maxi < (PCV_RATE+5))
+	//	else if(ALARM_ACP_Fr_Maxi < (ACP_RATE+5))
 	//	{
 		//  ALARM_RECEIVED=true;
 	//		ALARM_CODE=73;
 		
 	//	}
-	/*else if(ALARM_PCV_FiO2_Mini > ((int)tmp))
+	/*else if(ALARM_ACP_FiO2_Mini > ((int)tmp))
 		{
 		  ALARM_RECEIVED=true;
 			ALARM_CODE=74;
 		
 		}
-		else if(ALARM_PCV_FiO2_Mini > ((int)tmp))
+		else if(ALARM_ACP_FiO2_Mini > ((int)tmp))
 		{
 		  ALARM_RECEIVED=true;
 			ALARM_CODE=75;

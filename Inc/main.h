@@ -64,7 +64,7 @@ uint16_t crc_calc(const uint8_t *data, uint8_t data_size);
 void date_time_decoder(void);
 
 void psv_mode_decoder(void);
-void pcv_mode_decoder(void);
+void acp_mode_decoder(void);
 void acv_mode_decoder(void);
 void simv_mode_decoder(void);
 

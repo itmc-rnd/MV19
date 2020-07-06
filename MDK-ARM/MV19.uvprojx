@@ -412,11 +412,6 @@
               <FilePath>..\Src\modes_setting.c</FilePath>
             </File>
             <File>
-              <FileName>pcv_mode.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\pcv_mode.c</FilePath>
-            </File>
-            <File>
               <FileName>standby_mode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\standby_mode.c</FilePath>
@@ -480,6 +475,11 @@
               <FileName>stm32f4xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/stm32f4xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>mode_acp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\mode_acp.c</FilePath>
             </File>
           </Files>
         </Group>

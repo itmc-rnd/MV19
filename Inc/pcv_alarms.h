@@ -1,5 +1,5 @@
-#ifndef __PCV_ALARMS_H
-#define __PCV_ALARMS_H
+#ifndef __ACP_ALARMS_H
+#define __ACP_ALARMS_H
 
-void PCV_Alarms(void);
+void ACP_Alarms(void);
 #endif

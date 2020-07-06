@@ -9,7 +9,7 @@ void STANDBY_Mode(void)
 {
 	duration_Ins=500;
 	duration_Exp=500;
-	turbo_speed_Ins=0;
-	turbo_speed_Exp=0;
+	turbo_speed_Ins=5;
+	turbo_speed_Exp=5;
 }
 
