@@ -9,6 +9,8 @@ extern int ALARM_ACP_Fr_Maxi,ALARM_ACP_FiO2_Mini,ALARM_ACP_FiO2_Maxi,ALARM_ACP_V
 
 extern bool ALARM_RECEIVED,Audio_Paused_available,Alarm_Paused_available;
 extern int ALARM_CODE;
+extern bool ALARM_Hi,ALARM_Low;
+
 extern int32_t ACP_Vt_Sens;
 float acp_tmp=0.0;
 
@@ -22,8 +24,11 @@ void ACP_Alarms()
 			if(ACP_Vt_Sens<ALARM_ACP_Vti_Mini)
 			{
 			  ALARM_RECEIVED=true;
+				ALARM_Hi=true,ALARM_Low=false;
+				
 			  Audio_Paused_available=true;
 			  Alarm_Paused_available=false;
+				
 			  ALARM_CODE=70;
 				return;
 			}  
@@ -34,6 +39,7 @@ void ACP_Alarms()
 			if(ACP_Vt_Sens>ALARM_ACP_Vti_Maxi)
 			{
 		  	ALARM_RECEIVED=true;
+				ALARM_Hi=false,ALARM_Low=true;
 			  ALARM_CODE=71;
 				return;
 			}
@@ -45,6 +51,7 @@ void ACP_Alarms()
 			if(ACP_Vt_Sens<ALARM_ACP_Vte_Mini)
 			{
 			  ALARM_RECEIVED=true;
+				ALARM_Hi=false,ALARM_Low=true;
 			  ALARM_CODE=72;
 				return;
 			}

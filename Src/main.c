@@ -120,6 +120,9 @@ bool send_complete = true, paceket_decoded = false;
 extern modes CURRENT_MODE;
 extern int Current_Pressure_Ins, Current_Pressure_Exp, Current_Flow_Ins, Current_Flow_Exp;
 extern float Current_P_Triger;
+extern int LED_POWER1, LED_POWER2, LED_BATTRY_Red, LED_BATTRY_Green, LED_Apnea, LED_ALARM_Hi, LED_ALARM_Low, LED_STANDBY1, LED_STANDBY2, LED_ACV1, LED_ACV2, LED_ACP, LED_SIMV, LED_PSV;
+extern int sent_ALARM_Hi_code, sent_ALARM_Low_code;
+bool no_alarm_sent = false;
 
 extern int turbo_speed_Ins, turbo_speed_Exp, turbo_speed, is_inspiratory, raise_step;
 extern int pwm_i_acp, pwm_e_pcv, ACP_RATE;
@@ -132,6 +135,7 @@ extern int duration_Ins, duration_Exp;
 extern int t3_counter;
 extern bool PSV_MODE_STEP;
 extern bool PSV_MODE_INS;
+extern bool ALARM_Hi, ALARM_Low;
 
 extern bool turbo_error, pressure_s1_error, pressure_s2_error, flow_s_error, buzzer_error;
 extern bool flow_s1_error, flow_s2_error;
@@ -190,33 +194,7 @@ static void MX_TIM12_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/*void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	data_received_from_raspy=true;
-	status(2,1);
-	if (huart->Instance == USART2)  //current UART
-  {
-		rspy_receive_buffer[rspy_receive_buffer_index] = rx_buffer;
-		rspy_receive_buffer_index++;
 
-		if(rspy_receive_buffer_index > MAX_BUFFER_SIZE)
-		{
-			rspy_receive_buffer_index = 0;
-		}
-
-		if(rspy_receive_buffer_index > 0 && rspy_receive_buffer[rspy_receive_buffer_index-2]==0xFF &&rspy_receive_buffer[rspy_receive_buffer_index-1]==0x0A)// && rx_buffer == 10)
-		{
-
-			packet_received = 1;
-
-		}
-
-		if(send_complete)
-		{
-			uart_status = HAL_UART_Receive_IT(&huart2, &rx_buffer, 1);
-		}
-	}
-}*/
 
 /* USER CODE END 0 */
 
@@ -283,8 +261,14 @@ int main(void)
 
 	HAL_TIM_Base_Start_IT(&htim4);
 
-	status(15, 1);
-	status(16, 1);
+	status(LED_POWER1, 1);  //POWER LED
+	status(LED_POWER2, 1);  //POWER LED
+
+	status(LED_STANDBY1, 1);  //Mode led STANDBY on
+	status(LED_STANDBY2, 1);  //Mode led STANDBY on
+
+	status(LED_BATTRY_Red, 1);  //POWER Battry
+	//status(LED_BATTRY_Green, 1);  //POWER Battry
 
 
 	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
@@ -395,34 +379,81 @@ int main(void)
 
 				if (ALARM_RECEIVED)
 				{
-					ALARM_RECEIVED = false;
-					//	buzzer(2,1);
-					status(1, 1);
-					create_response_for_raspberry(111, ALARM_CODE);
+					if (ALARM_Hi == true)
+					{
+						if (sent_ALARM_Hi_code == 0)
+						{
+							buzzer(2, 1);
+							status(LED_ALARM_Hi, 1);  //  ALARM Hi LED On
+							status(LED_ALARM_Low, 0);  //  ALARM Low LED OFF
+							ALARM_RECEIVED = false;
+
+							sent_ALARM_Hi_code = ALARM_CODE;
+							create_response_for_raspberry(111, ALARM_CODE);
+							no_alarm_sent = false;
+						}
+					}
+					else
+					{
+						if (ALARM_Low == true)
+						{
+							if (sent_ALARM_Low_code == 0)
+							{
+								buzzer(2, 1);
+								status(LED_ALARM_Hi, 0);  //  ALARM Hi LED OFF
+								status(LED_ALARM_Low, 1);  //  ALARM Low LED on							 
+								ALARM_RECEIVED = false;
+
+								sent_ALARM_Low_code = ALARM_CODE;
+								create_response_for_raspberry(111, ALARM_CODE);
+								no_alarm_sent = false;
+							}
+
+						}
+					}
+				}
+				else  // NO ALARM
+				{
+
+
+					if (no_alarm_sent == false)
+					{
+					  buzzer(2, 0);
+					  status(LED_ALARM_Hi, 0);
+					  status(LED_ALARM_Low, 0);
+
+					  ALARM_RECEIVED = false;
+					  sent_ALARM_Hi_code = 0;
+					  sent_ALARM_Low_code = 0;
+						
+						create_response_for_raspberry(111, 0);
+						no_alarm_sent = true;
+					}
+
 				}
 			}
 
 			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 
-			if (max_flow1 <= Current_Pressure_Ins)
-				max_flow1 = Current_Pressure_Ins;
+//			if (max_flow1 <= Current_Pressure_Ins)
+//				max_flow1 = Current_Pressure_Ins;
 
-			if (max_flow2 <= Current_Pressure_Exp)
-				max_flow2 = Current_Pressure_Exp;
+//			if (max_flow2 <= Current_Pressure_Exp)
+//				max_flow2 = Current_Pressure_Exp;
 
 			//		sprintf(buf, "\f  F-ins=%d , F-exp=%d  , MAX ACV_Vt_Sens_Ins=%d    , MAX ACV_Vt_Sens_Exp=%d  , E-I=%d  ",Current_Flow_Ins,Current_Flow_Exp, max_flow1,max_flow2,(max_flow2-max_flow1));
 
 					//__HAL_UART_DISABLE_IT(&huart2, UART_IT_RXNE);			
-					// sprintf(buf, "\f cnt=%d , pd=%d, indx=%d, T=%d , Ins=%d , Exp=%d , t_spd_I=%d , t_spd_E=%d  ,t_spd=%d , M=%d - is_I=%d , P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d , MAX Current_Pressure_Ins=%d    , MAX Current_Pressure_Exp=%d   , ACV_Vt_Sens=%d           ", cnt_temp,(int)paceket_decoded,rspy_receive_buffer_index,is_trigger_simv,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp, max_flow1,max_flow2,ACV_Vt_Sens);
+					 sprintf(buf, "\f cnt=%d , pd=%d, indx=%d, T=%d , Ins=%d , Exp=%d , t_spd_I=%d , t_spd_E=%d  ,t_spd=%d , M=%d - is_I=%d , P-ins=%d , P-exp=%d  pi-pe=%d ,P-Trriger= %4.2f, F-ins=%d , F-exp=%d , MAX Current_Pressure_Ins=%d    , MAX Current_Pressure_Exp=%d   , ACV_Vt_Sens=%d           ", cnt_temp,(int)paceket_decoded,rspy_receive_buffer_index,is_trigger_simv,duration_Ins,duration_Exp,turbo_speed_Ins,turbo_speed_Exp, turbo_speed,(int)CURRENT_MODE,is_inspiratory,Current_Pressure_Ins,Current_Pressure_Exp,Current_Pressure_Ins-Current_Pressure_Exp,Current_P_Triger,Current_Flow_Ins,Current_Flow_Exp, max_flow1,max_flow2,ACV_Vt_Sens);
 						//sprintf(buf, "\f status= %X", HAL_UART_GetState(&huart2));			
 						//sprintf(buf, "status= %X - %X\r\n", uart_status, HAL_UART_GetState(&huart2));		 
 				//	 sprintf(buf,"\f cnt=%d , array=%d",cnt_temp,0);//,length(report_response_packet));
-				//   print_debug((uint8_t *)buf, strlen(buf));
+				   print_debug((uint8_t *)buf, strlen(buf));
 					//__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
 
 
 					//HAL_UART_Transmit(&huart1,(uint8_t *) buf, 200, 20 );
-			//		HAL_Delay(500);
+					HAL_Delay(200);
 		}
 
 	}
@@ -1236,19 +1267,20 @@ void decode_raspi_packet()
 			{
 				cnt_temp = 0;
 				CURRENT_MODE = STANDBY;
-				status(1, 0);
-				status(2, 0);
-				status(3, 0);
-				status(4, 0);
-				status(5, 0);
+				status(LED_ACP, 0);  //MODE LED OFF
+				status(LED_ACV1, 0);  //MODE LED OFF
+				status(LED_ACV2, 0);  //MODE LED OFF
+				status(LED_SIMV, 0);  //MODE LED OFF
+				status(LED_PSV, 0);  //MODE LED OFF
 
-				status(6, 1);
-				status(7, 1);
+
+				status(LED_STANDBY1, 1);  //Mode led STANDBY on
+				status(LED_STANDBY2, 1);  //Mode led STANDBY on
 				t3_counter = duration_Ins;
 
 				duration_Ins = 500;
 				duration_Exp = 500;
-				turbo_speed_Ins = 12, turbo_speed_Exp = 12;
+				turbo_speed_Ins = 1, turbo_speed_Exp = 1;
 				create_response_for_raspberry(0, 0);
 
 			}
@@ -1256,20 +1288,21 @@ void decode_raspi_packet()
 			{
 				cnt_temp = 0;
 				CURRENT_MODE = STOP;
-				status(1, 0);
-				status(2, 0);
-				status(3, 0);
-				status(4, 0);
-				status(5, 0);
+				status(LED_ACP, 0);  //MODE LED OFF
+				status(LED_ACV1, 0);  //MODE LED OFF
+				status(LED_ACV2, 0);  //MODE LED OFF
+				status(LED_SIMV, 0);  //MODE LED OFF
+				status(LED_PSV, 0);  //MODE LED OFF
 
-				status(6, 1);
-				status(7, 1);
+
+				status(LED_STANDBY1, 1);  //Mode led STANDBY on
+				status(LED_STANDBY2, 1);  //Mode led STANDBY on
 
 				t3_counter = duration_Ins;
 
 				duration_Ins = 500;
 				duration_Exp = 500;
-				turbo_speed_Ins = 0, turbo_speed_Exp = 0;
+				turbo_speed_Ins = 1, turbo_speed_Exp = 1;
 				create_response_for_raspberry(4, 0);
 
 			}
@@ -1287,27 +1320,29 @@ void decode_raspi_packet()
 				ACP_Vt_Sens = 0;
 				SIMV_Vt_Sens = 0;
 				PSV_Vt_Sens = 0;
-				status(1, 0);
-				status(2, 0);
-				status(3, 0);
-				status(4, 0);
-				status(5, 0);
-				status(6, 0);
-				status(7, 0);
+				status(LED_ACP, 0);  //MODE LED OFF
+				status(LED_ACV1, 0);  //MODE LED OFF
+				status(LED_ACV2, 0);  //MODE LED OFF
+				status(LED_SIMV, 0);  //MODE LED OFF
+				status(LED_PSV, 0);  //MODE LED OFF
+
+
+				status(LED_STANDBY1, 0);  //Mode led STANDBY OFF
+				status(LED_STANDBY2, 0);  //Mode led STANDBY OFF
 				send_report = false;
-				sigh_occured=false;
-				sigh_counter=0;
-				
+				sigh_occured = false;
+				sigh_counter = 0;
+
 				if (rspy_receive_buffer[3] == 0x01)    // PSV MODE
 				{
 
 					CURRENT_MODE = PSV;
-					status(1, 1);
+					status(LED_PSV, 1);     //Mode led PSV on
 					t3_counter = duration_Ins;
 					PSV_MODE_STEP = 2;
 					is_inspiratory = 0;
-          PSV_MODE_INS = false;
-					
+					PSV_MODE_INS = false;
+
 					psv_mode_decoder();
 
 					create_response_for_raspberry(2, 1);
@@ -1316,17 +1351,17 @@ void decode_raspi_packet()
 				else if (rspy_receive_buffer[3] == 0x02)   //ACP MODE
 				{
 					CURRENT_MODE = ACP;
-					status(3, 1);
+					status(LED_ACP, 1);     //Mode led ACP on
 					t3_counter = duration_Ins;
-					
+
 					acp_mode_decoder();
 					create_response_for_raspberry(2, 2);
 				}
 				else if (rspy_receive_buffer[3] == 0x03)   // ACV MODE
 				{
 					CURRENT_MODE = ACV;
-					status(4, 1);
-					status(5, 1);
+					status(LED_ACV1, 1);     //Mode led ACV on
+					status(LED_ACV2, 1);     //Mode led ACV on
 					sigh_counter = 0;
 					t3_counter = duration_Ins;
 					acv_mode_decoder();
@@ -1336,7 +1371,7 @@ void decode_raspi_packet()
 				{
 
 					CURRENT_MODE = SIMV;
-					status(2, 1);
+					status(LED_SIMV, 1);     //Mode led SIMV on
 					t3_counter = duration_Ins;
 
 					simv_mode_decoder();
@@ -1375,6 +1410,14 @@ void decode_raspi_packet()
 					// Nothing		
 				  // Received Data ALARM Error!!!!
 				}
+			}
+			else if (rspy_receive_buffer[2] == 0x06) //  Received STOP ALARM Function
+			{
+				cnt_temp = 0;
+				buzzer(2, 0);
+				//				status(LED_ALARM_Hi, 0);  //  ALARM Hi LED OFF
+				//				status(LED_ALARM_Low, 0);  //  ALARM Low LED OFF
+
 			}
 		}
 		else

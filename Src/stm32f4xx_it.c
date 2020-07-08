@@ -79,6 +79,7 @@ extern int t3_counter, t3_counter_old, mode_counter;
 int status_counter = 0;
 extern int duration_Ins, duration_Exp, turbo_speed_Ins, turbo_speed_Exp, is_inspiratory;
 extern float Current_P_Triger;
+extern int LED_POWER1,LED_POWER2,LED_BATTRY1,LED_BATTRY2,LED_Apnea,LED_ALARM_Hi,LED_ALARM_Low,LED_STANDBY1,LED_STANDBY2,LED_ACV,LED_ACP,LED_SIMV,LED_PSV;
 
 extern modes CURRENT_MODE;
 extern bool Config_request, status_change_falg;
@@ -291,7 +292,10 @@ void EXTI9_5_IRQHandler(void)
 	if (Audio_Paused_available)
 		buzzer(2, 0);
 	if (Alarm_Paused_available)
-		status(2, 0);
+	{
+		status(LED_ALARM_Hi, 0);  //  ALARM Hi LED OFF
+		status(LED_ALARM_Low, 0);  //  ALARM Low LED OFF
+	}
 
 	/* USER CODE END EXTI9_5_IRQn 0 */
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_9);
@@ -402,8 +406,6 @@ void TIM3_IRQHandler(void)
 	{
 		t3_counter++;
 
-
-
 		if (t3_counter >= duration_Ins + duration_Exp)
 		{
 			cnt_temp = cnt_temp + 1;
@@ -412,7 +414,8 @@ void TIM3_IRQHandler(void)
 			ACV_Vt_Sens = 0;
 			ACP_Vt_Sens = 0;
 			SIMV_Vt_Sens = 0;
-
+      PSV_Vt_Sens=0;
+			
 			ACV_Vt_Sens_Ins = 0;
 			ACV_Vt_Sens_Exp = 0;
 
@@ -421,6 +424,9 @@ void TIM3_IRQHandler(void)
 
 			SIMV_Vt_Sens_Ins = 0;
 			SIMV_Vt_Sens_Exp = 0;
+
+			PSV_Vt_Sens_Ins = 0;
+			PSV_Vt_Sens_Exp = 0;
 
 			max_flow1 = 0;
 			max_flow2 = 0;
@@ -442,8 +448,9 @@ void TIM3_IRQHandler(void)
 		}
 		if (t3_counter <= duration_Ins)
 		{
-
+  
 			T_expiration_simv = 0;
+			T_expiration=0;
 			spd = turbo_speed_Ins;
 			if (CURRENT_MODE != STOP && CURRENT_MODE != STANDBY)
 				HAL_GPIO_WritePin(Valve3_GPIO_Port, Valve3_Pin, GPIO_PIN_SET);
@@ -459,12 +466,12 @@ void TIM3_IRQHandler(void)
 			ACV_Vt_Sens_Ins = 0;
 			ACP_Vt_Sens_Ins = 0;
 			SIMV_Vt_Sens_Ins = 0;
-
+      PSV_Vt_Sens_Ins = 0; 
+			
 			spd = turbo_speed_Exp;
 			is_inspiratory = 0;
 			T_expiration_simv++;
-
-
+      T_expiration++;
 		}
 
 		if (is_inspiratory == 0)
@@ -487,304 +494,343 @@ void TIM3_IRQHandler(void)
 
 
 	//////////////////////////////////////////////////////////////////////////////////// t2 START ///
-
-	sum = 0;
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-	sum += (int)pressure(pressure_sensor_Ins);
-
-	if (sum <= 0)
 	{
-		Current_Pressure_Ins = 0;
-	}
-	else
-	{
-		Current_Pressure_Ins = (int)((sum * 20) / 100);
-	}
+		sum = 0;
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
+		sum += (int)pressure(pressure_sensor_Ins);
 
-	sum = 0;
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-	sum += (int)pressure(pressure_sensor_Exp);
-
-
-	if (sum <= 0)
-	{
-		Current_Pressure_Exp = 0;
-	}
-	else
-	{
-		Current_Pressure_Exp = (int)((sum * 87 / (100 * 10)));
-	}
-
-	sumf = 0;
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-	sumf += pressure(pressure_sensor_Triger);
-
-
-	if (sumf <= 0)
-	{
-		Current_P_Triger = 0;
-	}
-	else
-	{
-		Current_P_Triger = sumf / 4;
-	}
-
-	sum = 0;
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-	sum += (int)flow(flow_sensor_Ins);
-
-	if (sum <= 0)
-	{
-		Current_Flow_Ins = 0;
-	}
-	else
-	{
-		Current_Flow_Ins = (int)(sum / 10);
-	}
-
-	Current_Flow_Ins = Current_Flow_Ins * 110 / 100;
-
-
-	sum = 0;
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-	sum += (int)flow(flow_sensor_Exp);
-
-	if (sum <= 0)
-	{
-		Current_Flow_Exp = 0;
-	}
-	else
-	{
-		Current_Flow_Exp = (int)(sum / 10);
-	}
-
-
-	send_counter++;
-
-
-	if (is_inspiratory == 1)
-	{
-		ACV_Vt_Sens_Ins = ACV_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		ACV_Vt_Sens = ACV_Vt_Sens_Ins;
-
-		ACP_Vt_Sens_Ins = ACP_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		ACP_Vt_Sens = ACP_Vt_Sens_Ins;
-
-		SIMV_Vt_Sens_Ins = SIMV_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		SIMV_Vt_Sens = SIMV_Vt_Sens_Ins;
-
-		PSV_Vt_Sens_Ins = PSV_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		PSV_Vt_Sens = PSV_Vt_Sens_Ins;
-	}
-	else
-	{
-		ACV_Vt_Sens_Exp = ACV_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		if (ACV_Vt_Sens >= ACV_Vt_Sens_Exp)
-			ACV_Vt_Sens = ACV_Vt_Sens - ACV_Vt_Sens_Exp;
-		else
-			ACV_Vt_Sens = ACV_Vt_Sens;
-
-		ACP_Vt_Sens_Exp = ACP_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		if (ACP_Vt_Sens - ACP_Vt_Sens_Exp > 0)
-			ACP_Vt_Sens = ACP_Vt_Sens - ACP_Vt_Sens_Exp;
-		else
-			ACP_Vt_Sens = ACP_Vt_Sens;
-
-		SIMV_Vt_Sens_Exp = SIMV_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
-		if (SIMV_Vt_Sens - SIMV_Vt_Sens_Exp > 0)
-			SIMV_Vt_Sens = SIMV_Vt_Sens - SIMV_Vt_Sens_Exp;
-		else
-			SIMV_Vt_Sens = SIMV_Vt_Sens;
-	}
-
-	if (send_counter >= 10)
-	{
-
-
-
-		Pressure_Report = Pressure_Report_tmp / 5;
-
-		PasOxi_Report = O2_Report_tmp / 5;
-
-		Pressure_Report_tmp = 0;
-
-
-		Flow_Report_tmp = 0;
-
-		O2_Report_tmp = 0;
-
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////// START create response packet /////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (send_report == false)
+		if (sum <= 0)
 		{
-			if (report_response_packet_index < 10)
+			Current_Pressure_Ins = 0;
+		}
+		else
+		{
+			Current_Pressure_Ins = (int)((sum * 20) / 100);
+		}
+
+		sum = 0;
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+		sum += (int)pressure(pressure_sensor_Exp);
+
+
+		if (sum <= 0)
+		{
+			Current_Pressure_Exp = 0;
+		}
+		else
+		{
+			Current_Pressure_Exp = (int)((sum * 87 / (100 * 10)));
+		}
+
+		sumf = 0;
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+		sumf += pressure(pressure_sensor_Triger);
+
+
+		if (sumf <= 0)
+		{
+			Current_P_Triger = 0;
+		}
+		else
+		{
+			Current_P_Triger = sumf / 4;
+		}
+
+		sum = 0;
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+		sum += (int)flow(flow_sensor_Ins);
+
+		if (sum <= 0)
+		{
+			Current_Flow_Ins = 0;
+		}
+		else
+		{
+			Current_Flow_Ins = (int)(sum / 10);
+		}
+
+		Current_Flow_Ins = Current_Flow_Ins * 110 / 100;
+
+
+		sum = 0;
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+		sum += (int)flow(flow_sensor_Exp);
+
+		if (sum <= 0)
+		{
+			Current_Flow_Exp = 0;
+		}
+		else
+		{
+			Current_Flow_Exp = (int)(sum / 10);
+		}
+
+
+		send_counter++;
+
+
+		if (is_inspiratory == 1)
+		{
+			if (CURRENT_MODE == ACV)
 			{
-
-				if (is_inspiratory == 1)
-				{
-					if (Current_Pressure_Ins < 0)
-					{
-						report_response_packet[4 + (report_response_packet_index * 14)] = 0xFF;
-						report_response_packet[5 + (report_response_packet_index * 14)] = (-1) * Current_Pressure_Ins;
-					}
-					else
-					{
-						report_response_packet[4 + (report_response_packet_index * 14)] = 0x00;
-						report_response_packet[5 + (report_response_packet_index * 14)] = Current_Pressure_Ins;
-					}
-					if (Current_Flow_Ins < 0)
-					{
-						report_response_packet[6 + (report_response_packet_index * 14)] = 0xFF;
-						report_response_packet[7 + (report_response_packet_index * 14)] = (int)(Current_Flow_Ins * (-1)) / 256;
-						report_response_packet[8 + (report_response_packet_index * 14)] = (Current_Flow_Ins * (-1)) % 256;
-					}
-					else
-					{
-						report_response_packet[6 + (report_response_packet_index * 14)] = 0x00;
-						report_response_packet[7 + (report_response_packet_index * 14)] = (int)Current_Flow_Ins / 256;
-						report_response_packet[8 + (report_response_packet_index * 14)] = Current_Flow_Ins % 256;
-					}
-				}
-				else
-				{
-					if (Current_Pressure_Exp < 0)
-					{
-						report_response_packet[4 + (report_response_packet_index * 14)] = 0xFF;
-						report_response_packet[5 + (report_response_packet_index * 14)] = (-1) * Current_Pressure_Exp;
-					}
-					else
-					{
-						report_response_packet[4 + (report_response_packet_index * 14)] = 0x00;
-						report_response_packet[5 + (report_response_packet_index * 14)] = Current_Pressure_Exp;
-					}
-					if (Current_Flow_Exp < 0)
-					{
-						report_response_packet[6 + (report_response_packet_index * 14)] = 0xFF;
-						report_response_packet[7 + (report_response_packet_index * 14)] = (int)(Current_Flow_Exp * (-1)) / 256;
-						report_response_packet[8 + (report_response_packet_index * 14)] = (Current_Flow_Exp * (-1)) % 256;
-					}
-					else
-					{
-						report_response_packet[6 + (report_response_packet_index * 14)] = 0xFF;
-						report_response_packet[7 + (report_response_packet_index * 14)] = (int)Current_Flow_Exp / 256;
-						report_response_packet[8 + (report_response_packet_index * 14)] = Current_Flow_Exp % 256;
-					}
-				}
-				if (Vt_Sens < 0)
-				{
-					report_response_packet[9 + (report_response_packet_index * 14)] = 0xFF;
-					report_response_packet[10 + (report_response_packet_index * 14)] = (int)(Vt_Sens * (-1)) / 256;
-					report_response_packet[11 + (report_response_packet_index * 14)] = ACV_Vt_Sens % 256;
-				}
-				else
-				{
-					report_response_packet[9 + (report_response_packet_index * 14)] = 0x00;
-					report_response_packet[10 + (report_response_packet_index * 14)] = (int)Vt_Sens / 256;
-					report_response_packet[11 + (report_response_packet_index * 14)] = Vt_Sens % 256;
-				}
-				if (PasOxi_Report < 0)
-				{
-					report_response_packet[12 + (report_response_packet_index * 14)] = 0xFF;
-					report_response_packet[13 + (report_response_packet_index * 14)] = (int)(PasOxi_Report * (-1)) / 256;
-					report_response_packet[14 + (report_response_packet_index * 14)] = (PasOxi_Report * (-1)) % 256;
-				}
-				else
-				{
-					report_response_packet[12 + (report_response_packet_index * 14)] = 0x00;
-					report_response_packet[13 + (report_response_packet_index * 14)] = (int)PasOxi_Report / 256;
-					report_response_packet[14 + (report_response_packet_index * 14)] = PasOxi_Report % 256;
-				}
-				if (O2_Report < 0)
-				{
-					report_response_packet[15 + (report_response_packet_index * 14)] = 0xFF;
-					report_response_packet[16 + (report_response_packet_index * 14)] = (int)(O2_Report * (-1)) / 256;
-					report_response_packet[17 + (report_response_packet_index * 14)] = (O2_Report * (-1)) % 256;
-				}
-				else
-				{
-					report_response_packet[15 + (report_response_packet_index * 14)] = 0x00;
-					report_response_packet[16 + (report_response_packet_index * 14)] = (int)O2_Report / 256;
-					report_response_packet[17 + (report_response_packet_index * 14)] = O2_Report % 256;
-				}
-
-				report_response_packet_index += 1;
-
+				ACV_Vt_Sens_Ins = ACV_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				ACV_Vt_Sens = ACV_Vt_Sens_Ins;
+			}
+			else if (CURRENT_MODE == ACP)
+			{
+				ACP_Vt_Sens_Ins = ACP_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				ACP_Vt_Sens = ACP_Vt_Sens_Ins;
+			}
+			else if (CURRENT_MODE == SIMV)
+			{
+				SIMV_Vt_Sens_Ins = SIMV_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				SIMV_Vt_Sens = SIMV_Vt_Sens_Ins;
+			}
+			else if (CURRENT_MODE == PSV)
+			{
+				PSV_Vt_Sens_Ins = PSV_Vt_Sens_Ins + (Current_Flow_Ins / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				PSV_Vt_Sens = PSV_Vt_Sens_Ins;
 			}
 			else
 			{
-
-				send_report = !data_received_from_raspy;
-
+				ACV_Vt_Sens = 0;
+				ACP_Vt_Sens = 0;
+				SIMV_Vt_Sens = 0;
+				PSV_Vt_Sens = 0;
 			}
 		}
+		else
+		{
+			if (CURRENT_MODE == ACV)
+			{
+				ACV_Vt_Sens_Exp = ACV_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				if (ACV_Vt_Sens >= ACV_Vt_Sens_Exp)
+					ACV_Vt_Sens = ACV_Vt_Sens - ACV_Vt_Sens_Exp;
+				else
+					ACV_Vt_Sens = ACV_Vt_Sens;
+			}
+			else if (CURRENT_MODE == ACP)
+			{
+				ACP_Vt_Sens_Exp = ACP_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				if (ACP_Vt_Sens - ACP_Vt_Sens_Exp > 0)
+					ACP_Vt_Sens = ACP_Vt_Sens - ACP_Vt_Sens_Exp;
+				else
+					ACP_Vt_Sens = ACP_Vt_Sens;
+			}
+			else if (CURRENT_MODE == SIMV)
+			{
+				SIMV_Vt_Sens_Exp = SIMV_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
+				if (SIMV_Vt_Sens - SIMV_Vt_Sens_Exp > 0)
+					SIMV_Vt_Sens = SIMV_Vt_Sens - SIMV_Vt_Sens_Exp;
+				else
+					SIMV_Vt_Sens = SIMV_Vt_Sens;
+			}
+			else if (CURRENT_MODE == PSV)
+			{
+							PSV_Vt_Sens_Exp = PSV_Vt_Sens_Exp + (Current_Flow_Exp / flow_to_voloume_des);	// determine the volume of breath according to flow  
+							if (PSV_Vt_Sens - PSV_Vt_Sens_Exp > 0)
+								PSV_Vt_Sens = PSV_Vt_Sens - PSV_Vt_Sens_Exp;
+							else
+								PSV_Vt_Sens = PSV_Vt_Sens;
+			}
+			else
+			{
+				ACV_Vt_Sens = 0;
+				ACP_Vt_Sens = 0;
+				SIMV_Vt_Sens = 0;
+				PSV_Vt_Sens = 0;
+			}
+		}
+
+		if (send_counter >= 10)
+		{
+
+
+
+			Pressure_Report = Pressure_Report_tmp / 5;
+
+			PasOxi_Report = O2_Report_tmp / 5;
+
+			Pressure_Report_tmp = 0;
+
+
+			Flow_Report_tmp = 0;
+
+			O2_Report_tmp = 0;
+
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	  ///////////////////////////////////////////// START create response packet /////////////////////////////////////
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (send_report == false)
+			{
+				if (report_response_packet_index < 10)
+				{
+
+					if (is_inspiratory == 1)
+					{
+						if (Current_Pressure_Ins < 0)
+						{
+							report_response_packet[4 + (report_response_packet_index * 14)] = 0xFF;
+							report_response_packet[5 + (report_response_packet_index * 14)] = (-1) * Current_Pressure_Ins;
+						}
+						else
+						{
+							report_response_packet[4 + (report_response_packet_index * 14)] = 0x00;
+							report_response_packet[5 + (report_response_packet_index * 14)] = Current_Pressure_Ins;
+						}
+						if (Current_Flow_Ins < 0)
+						{
+							report_response_packet[6 + (report_response_packet_index * 14)] = 0xFF;
+							report_response_packet[7 + (report_response_packet_index * 14)] = (int)(Current_Flow_Ins * (-1)) / 256;
+							report_response_packet[8 + (report_response_packet_index * 14)] = (Current_Flow_Ins * (-1)) % 256;
+						}
+						else
+						{
+							report_response_packet[6 + (report_response_packet_index * 14)] = 0x00;
+							report_response_packet[7 + (report_response_packet_index * 14)] = (int)Current_Flow_Ins / 256;
+							report_response_packet[8 + (report_response_packet_index * 14)] = Current_Flow_Ins % 256;
+						}
+					}
+					else
+					{
+						if (Current_Pressure_Exp < 0)
+						{
+							report_response_packet[4 + (report_response_packet_index * 14)] = 0xFF;
+							report_response_packet[5 + (report_response_packet_index * 14)] = (-1) * Current_Pressure_Exp;
+						}
+						else
+						{
+							report_response_packet[4 + (report_response_packet_index * 14)] = 0x00;
+							report_response_packet[5 + (report_response_packet_index * 14)] = Current_Pressure_Exp;
+						}
+						if (Current_Flow_Exp < 0)
+						{
+							report_response_packet[6 + (report_response_packet_index * 14)] = 0xFF;
+							report_response_packet[7 + (report_response_packet_index * 14)] = (int)(Current_Flow_Exp * (-1)) / 256;
+							report_response_packet[8 + (report_response_packet_index * 14)] = (Current_Flow_Exp * (-1)) % 256;
+						}
+						else
+						{
+							report_response_packet[6 + (report_response_packet_index * 14)] = 0xFF;
+							report_response_packet[7 + (report_response_packet_index * 14)] = (int)Current_Flow_Exp / 256;
+							report_response_packet[8 + (report_response_packet_index * 14)] = Current_Flow_Exp % 256;
+						}
+					}
+					if (Vt_Sens < 0)
+					{
+						report_response_packet[9 + (report_response_packet_index * 14)] = 0xFF;
+						report_response_packet[10 + (report_response_packet_index * 14)] = (int)(Vt_Sens * (-1)) / 256;
+						report_response_packet[11 + (report_response_packet_index * 14)] = ACV_Vt_Sens % 256;
+					}
+					else
+					{
+						report_response_packet[9 + (report_response_packet_index * 14)] = 0x00;
+						report_response_packet[10 + (report_response_packet_index * 14)] = (int)Vt_Sens / 256;
+						report_response_packet[11 + (report_response_packet_index * 14)] = Vt_Sens % 256;
+					}
+					if (PasOxi_Report < 0)
+					{
+						report_response_packet[12 + (report_response_packet_index * 14)] = 0xFF;
+						report_response_packet[13 + (report_response_packet_index * 14)] = (int)(PasOxi_Report * (-1)) / 256;
+						report_response_packet[14 + (report_response_packet_index * 14)] = (PasOxi_Report * (-1)) % 256;
+					}
+					else
+					{
+						report_response_packet[12 + (report_response_packet_index * 14)] = 0x00;
+						report_response_packet[13 + (report_response_packet_index * 14)] = (int)PasOxi_Report / 256;
+						report_response_packet[14 + (report_response_packet_index * 14)] = PasOxi_Report % 256;
+					}
+					if (O2_Report < 0)
+					{
+						report_response_packet[15 + (report_response_packet_index * 14)] = 0xFF;
+						report_response_packet[16 + (report_response_packet_index * 14)] = (int)(O2_Report * (-1)) / 256;
+						report_response_packet[17 + (report_response_packet_index * 14)] = (O2_Report * (-1)) % 256;
+					}
+					else
+					{
+						report_response_packet[15 + (report_response_packet_index * 14)] = 0x00;
+						report_response_packet[16 + (report_response_packet_index * 14)] = (int)O2_Report / 256;
+						report_response_packet[17 + (report_response_packet_index * 14)] = O2_Report % 256;
+					}
+
+					report_response_packet_index += 1;
+
+				}
+				else
+				{
+
+					send_report = !data_received_from_raspy;
+
+				}
+			}
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			///////////////////////////////////////////// END create response packet /////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		///////////////////////////////////////////// END create response packet /////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		send_counter = 0;
+			send_counter = 0;
+
+		}
+		else
+		{
+
+			if (CURRENT_MODE == ACV)
+				Vt_Sens = ACV_Vt_Sens;
+			else if (CURRENT_MODE == ACP)
+				Vt_Sens = ACP_Vt_Sens;
+			else if (CURRENT_MODE == SIMV)
+				Vt_Sens = SIMV_Vt_Sens;
+			else if (CURRENT_MODE == PSV)
+				Vt_Sens = PSV_Vt_Sens;
+
+			Pressure_Report_tmp = Pressure_Report_tmp + Current_Pressure_Ins;
+
+			Flow_Report_tmp = Flow_Report_tmp + Current_Flow_Ins;
+
+			O2_Report_tmp = 0;
+		}
 
 	}
-	else
-	{
-
-		if (CURRENT_MODE == ACV)
-			Vt_Sens = ACV_Vt_Sens;
-		else if (CURRENT_MODE == ACP)
-			Vt_Sens = ACP_Vt_Sens;
-		else if (CURRENT_MODE == SIMV)
-			Vt_Sens = SIMV_Vt_Sens;
-		else if (CURRENT_MODE == PSV)
-			Vt_Sens = PSV_Vt_Sens;
-
-		Pressure_Report_tmp = Pressure_Report_tmp + Current_Pressure_Ins;
-
-		Flow_Report_tmp = Flow_Report_tmp + Current_Flow_Ins;
-
-		O2_Report_tmp = 0;
-	}
-
 
 	tm2_speed++;
 	if (tm2_speed == 10)
@@ -845,18 +891,18 @@ void TIM4_IRQHandler(void)
 		else if (CURRENT_MODE == ACP)
 		{
 			Mode_ACP();
-			// ACP_Alarms();
+		//	ACP_Alarms();
 		}
 		else if (CURRENT_MODE == ACV)
 		{
 
 			ACV_Mode();
-			//	 ACV_Alarms();
+		//	ACV_Alarms();
 		}
 		else if (CURRENT_MODE == SIMV)
 		{
 			SIMV_Mode();
-			// SIMV_Alarms();
+		//	SIMV_Alarms();
 		}
 
 		else // STOP
@@ -885,7 +931,7 @@ void USART2_IRQHandler(void)
 
 	if (__HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_RXNE))
 	{
-		status(2, 1);
+		
 		rspy_receive_buffer[rspy_receive_buffer_index] = huart2.Instance->DR;
 
 		rspy_receive_buffer_index++;

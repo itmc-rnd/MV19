@@ -8,6 +8,7 @@ extern int ALARM_SIMV_Pi_Mini,ALARM_SIMV_Pi_Maxi,ALARM_SIMV_Fr_Maxi,ALARM_SIMV_F
 
 extern bool ALARM_RECEIVED,Audio_Paused_available,Alarm_Paused_available;
 extern int ALARM_CODE;
+extern bool ALARM_Hi,ALARM_Low;
 
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp;
 extern int SIMV_Vt_Sens;
@@ -22,6 +23,7 @@ void SIMV_Alarms()
 			if(Current_Pressure_Ins<ALARM_SIMV_Pi_Mini)
 			{
 				ALARM_RECEIVED=true;
+				ALARM_Hi=false,ALARM_Low=true;
 			  ALARM_CODE=76;
 			  return;
 			}
@@ -31,6 +33,7 @@ void SIMV_Alarms()
 			if(Current_Pressure_Ins>ALARM_SIMV_Pi_Maxi)
 			{
 				ALARM_RECEIVED=true;
+				ALARM_Hi=false,ALARM_Low=true;
 			  ALARM_CODE=77;
         return;
 			}	
@@ -40,6 +43,7 @@ void SIMV_Alarms()
 			if(SIMV_Vt_Sens<ALARM_SIMV_Vte_Mini)
 			{
 				ALARM_RECEIVED=true;
+				ALARM_Hi=false,ALARM_Low=true;
 			  ALARM_CODE=78;
 			  return;
 			}	

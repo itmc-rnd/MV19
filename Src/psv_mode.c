@@ -13,7 +13,7 @@ extern int turbo_speed_Ins, turbo_speed_Exp, raise_step;
 extern int Current_Pressure_Ins, Current_Pressure_Exp, Current_Flow_Ins, Current_Flow_Exp;
 extern int t3_counter, t3_counter_old;
 extern float Current_P_Triger;
-
+extern int LED_Apnea;
 int Tt_psv = 1000, Ti_psv = 500, Te_psv = 500, Tflat_psv = 0, trs_step_psv = 0, raise_step_psv = 100;
 int Tt_psv_apnea, Ti_psv_apnea, Te_psv_apnea, PSV_IT_RATIO_apnea = 33;
 int Trs_psv = 0;
@@ -21,7 +21,7 @@ int PSV_Ins_Pressure = 0, PSV_Exp_Pressure = 0;
 int PSV_Ins_Flow = 0, PSV_Exp_Flow = 0, PSV_Qi_maxi = 0;
 int pwm_i_psv = 0, pwm_i_psv_normal = 0, pwm_e_psv = 0, pwm_max_psv = 0;
 int Pe_Ad_psv = 0, Pe_Pa_psv = 0, Q_Pa_psv = 0, Q_Ad_psv = 0;
-float  Pe_psv = -4.7, Bias_Flow_psv = 20.0, PSV_Exp_Pressure_Trriger = 0.0;
+float  Pe_psv = -2.7, Bias_Flow_psv = 20.0, PSV_Exp_Pressure_Trriger = 0.0;
 int start_ins_psv_mode = 0, Maxi_Flow = 1;
 
 int PSV_Vt_Sens_normal = 0;
@@ -33,7 +33,6 @@ extern	int32_t PSV_Vt_Sens;
 extern bool PSV_MODE_INS;
 
 int pwm_Vt_psv = 0, pwm_Vt_psv_calulate = 0;
-int PSV_Target_Vt_temp = 0;
 
 
 
@@ -41,7 +40,7 @@ void PSV_Mode()
 {
 
 	Tt_psv_apnea = 6000 / PSV_BUR;
-	Ti_psv_apnea = 120; //(PSV_IT_RATIO_apnea * Tt_psv_apnea)/100.0;
+	Ti_psv_apnea = (PSV_IT_RATIO_apnea * Tt_psv_apnea) / 100.0;
 	Te_psv_apnea = Tt_psv_apnea - Ti_psv_apnea;
 
 	Trs_psv = PSV_RISE_TIME * 20;
@@ -56,9 +55,6 @@ void PSV_Mode()
 	Q_Pa_psv = Bias_Flow_psv + 3.5;
 	Q_Ad_psv = Bias_Flow_psv + 4;
 
-	
-
-	
 	//============================ Inspiratory Phase
 
 
@@ -76,12 +72,7 @@ void PSV_Mode()
 
 			pwm_i_psv_normal = ((PSV_Ins_Pressure - PSV_IPAP) * 100 / 55.0);
 
-			if (PSV_Target_Vt == 0)
-				PSV_Target_Vt_temp = 1400;
-			else
-				PSV_Target_Vt_temp = PSV_Target_Vt;
-
-			if (PSV_Vt_Sens <= PSV_Target_Vt_temp)
+			if (PSV_Vt_Sens <= PSV_Target_Vt)
 			{
 
 				if (PSV_Ins_Pressure <= PSV_IPAP)   // for certainty that expiration is Done 
@@ -108,7 +99,7 @@ void PSV_Mode()
 						if (PSV_Flow_MAXi_sens > 0)
 							if (((PSV_Flow_MAXi_sens - PSV_Ins_Flow) * 100) / PSV_Flow_MAXi_sens >= (-1) * PSV_TRIIG_E)
 							{
-								turbo_speed_Ins = 12;
+								turbo_speed_Ins = pwm_e_psv;
 								PSV_MODE_INS = false;
 
 							}
@@ -119,13 +110,13 @@ void PSV_Mode()
 				else
 				{
 
-					turbo_speed_Ins = 12;
+					turbo_speed_Ins = pwm_e_psv;
 					PSV_MODE_INS = false;
 				}
 			}
 			else
 			{
-				turbo_speed_Ins = 13;
+				turbo_speed_Ins = pwm_e_psv;
 				PSV_MODE_INS = false;
 
 
@@ -170,7 +161,7 @@ void PSV_Mode()
 				}
 				else
 				{
-					turbo_speed_Ins = 14;
+					turbo_speed_Ins = pwm_e_psv;
 					PSV_MODE_INS = false;
 				}
 
@@ -194,12 +185,6 @@ void PSV_Mode()
 				if (t3_counter > Ti_psv_apnea)
 					PSV_MODE_INS = false;
 
-				//	        	}
-				//				 else
-				//				 {
-				//						turbo_speed_Ins=14;
-				//				 		PSV_MODE_INS=false;
-				//				 }
 			}
 		}
 
@@ -234,7 +219,6 @@ void PSV_Mode()
 			{
 				is_trigger_psv = 0;
 
-				pwm_e_psv = 12;
 
 				turbo_speed_Exp = pwm_e_psv;
 				PSV_MODE_INS = false;
@@ -255,8 +239,6 @@ void PSV_Mode()
 			{
 				is_trigger_psv = 0;
 
-				pwm_e_psv = 12;
-
 				turbo_speed_Exp = pwm_e_psv;
 
 				PSV_MODE_INS = false;
@@ -267,9 +249,15 @@ void PSV_Mode()
 
 		if (PSV_BUR > 0 && T_expiration > (PSV_Apnea * 100) && is_trigger_psv == 0)     // ========================== if Apnea enable
 		{
+			status(LED_Apnea,1);
+			
 			turbo_speed_Ins = pwm_i_psv;
 			PSV_MODE_INS = true;
 
+		}
+		else
+		{
+			status(LED_Apnea,0);
 		}
 	}
 }

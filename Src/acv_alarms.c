@@ -8,7 +8,7 @@ extern int ALARM_ACV_Pi_Mini,ALARM_ACV_Pi_Maxi,ALARM_ACV_Fr_Maxi,ALARM_ACV_FiO2_
 
 extern bool ALARM_RECEIVED,Audio_Paused_available,Alarm_Paused_available;
 extern int ALARM_CODE;
-
+extern bool ALARM_Hi,ALARM_Low;
 
 extern int Current_Pressure_Ins,Current_Pressure_Exp,Current_Flow_Ins,Current_Flow_Exp,t3_counter;
 int Sum=0,avg=0;
@@ -26,12 +26,14 @@ void ACV_Alarms()
 			if(Current_Pressure_Ins<ALARM_ACV_Pi_Mini)
 				{
 					ALARM_RECEIVED=true;
+					ALARM_Hi=false,ALARM_Low=true;
 					ALARM_CODE=82;
 					return;
 				}
 				 if(Current_Pressure_Ins>ALARM_ACV_Pi_Maxi)
 				{
 					ALARM_RECEIVED=true;
+					ALARM_Hi=false,ALARM_Low=true;
 					ALARM_CODE=83;
 					return;
 				}
@@ -41,6 +43,7 @@ void ACV_Alarms()
 				if(ACV_Vt_Sens<ALARM_ACV_Vte_Mini)
 				{
 				ALARM_RECEIVED=true;
+					ALARM_Hi=false,ALARM_Low=true;
 				ALARM_CODE=84;
 					return;
 				}

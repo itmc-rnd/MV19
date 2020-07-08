@@ -18,6 +18,7 @@ void check_devices()                 /////////////////////// ALARM CHECK
 
 	buzzer(2, 1);
 
+	 
 	if (turbo_speed == 0)
 	{
 		turbo_error = true;

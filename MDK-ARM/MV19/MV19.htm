@@ -3,7 +3,7 @@
 <title>Static Call Graph - [MV19\MV19.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image MV19\MV19.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Jul 05 15:39:44 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Jul 07 13:04:38 2020
 <BR><P>
 <H3>Maximum Stack Usage =        256 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -416,7 +416,7 @@ Global Symbols
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
+<BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acv_mode_decoder
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acp_mode_decoder
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
@@ -461,7 +461,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
+<BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acv_mode_decoder
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acp_mode_decoder
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Mode_ACP
@@ -475,7 +475,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
+<BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acv_mode_decoder
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acp_mode_decoder
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pressure
@@ -509,7 +509,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_float_round
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
+<BR>[Called By]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acv_mode_decoder
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acp_mode_decoder
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pressure
@@ -633,7 +633,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[21]"></a>EXTI9_5_IRQHandler</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, stm32f4xx_it.o(i.EXTI9_5_IRQHandler))
+<P><STRONG><a name="[21]"></a>EXTI9_5_IRQHandler</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, stm32f4xx_it.o(i.EXTI9_5_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = EXTI9_5_IRQHandler &rArr; buzzer
 </UL>
 <BR>[Calls]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;status
@@ -723,9 +723,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;driver_init
+<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;driver_init
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 
 <P><STRONG><a name="[89]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_EXTI_Callback))
@@ -753,8 +753,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c1]"></a>HAL_GPIO_ReadPin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_ReadPin))
-<BR><BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
+<BR><BR>[Called By]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 
 <P><STRONG><a name="[d7]"></a>HAL_GPIO_TogglePin</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_TogglePin))
@@ -956,12 +956,12 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[9d]"></a>HAL_TIM_ConfigClockSource</STRONG> (Thumb, 214 bytes, Stack size 16 bytes, stm32f4xx_hal_tim.o(i.HAL_TIM_ConfigClockSource))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_TIM_ConfigClockSource &rArr; TIM_ETR_SetConfig
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_TIM_ConfigClockSource &rArr; TIM_TI2_ConfigInputStage
 </UL>
-<BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ETR_SetConfig
-<LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TI2_ConfigInputStage
+<BR>[Calls]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TI2_ConfigInputStage
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_TI1_ConfigInputStage
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ITRx_SetConfig
+<LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_ETR_SetConfig
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM4_Init
@@ -1068,14 +1068,15 @@ Global Symbols
 <P><STRONG><a name="[1]"></a>NMI_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.NMI_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[ba]"></a>PSV_Mode</STRONG> (Thumb, 942 bytes, Stack size 88 bytes, psv_mode.o(i.PSV_Mode))
-<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = PSV_Mode &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[ba]"></a>PSV_Mode</STRONG> (Thumb, 970 bytes, Stack size 104 bytes, psv_mode.o(i.PSV_Mode))
+<BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = PSV_Mode &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;status
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2iz
 </UL>
@@ -1085,13 +1086,14 @@ Global Symbols
 <P><STRONG><a name="[8]"></a>PendSV_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.PendSV_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[bb]"></a>SIMV_Mode</STRONG> (Thumb, 994 bytes, Stack size 152 bytes, simv_mode.o(i.SIMV_Mode))
-<BR><BR>[Stack]<UL><LI>Max Depth = 240<LI>Call Chain = SIMV_Mode &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[bb]"></a>SIMV_Mode</STRONG> (Thumb, 1228 bytes, Stack size 104 bytes, simv_mode.o(i.SIMV_Mode))
+<BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = SIMV_Mode &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;status
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2iz
 </UL>
@@ -1138,16 +1140,16 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
-<P><STRONG><a name="[27]"></a>TIM3_IRQHandler</STRONG> (Thumb, 2556 bytes, Stack size 48 bytes, stm32f4xx_it.o(i.TIM3_IRQHandler))
+<P><STRONG><a name="[27]"></a>TIM3_IRQHandler</STRONG> (Thumb, 2714 bytes, Stack size 48 bytes, stm32f4xx_it.o(i.TIM3_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = TIM3_IRQHandler &rArr; pressure &rArr; ADC_READ &rArr; ADC_CNL &rArr; HAL_ADC_Init &rArr; HAL_ADC_MspInit &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
-<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turbo
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pressure
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;led
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flow
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_IRQHandler
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
@@ -1183,11 +1185,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_ConfigClockSource
 </UL>
 
-<P><STRONG><a name="[30]"></a>USART2_IRQHandler</STRONG> (Thumb, 82 bytes, Stack size 8 bytes, stm32f4xx_it.o(i.USART2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = USART2_IRQHandler
-</UL>
-<BR>[Calls]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;status
-</UL>
+<P><STRONG><a name="[30]"></a>USART2_IRQHandler</STRONG> (Thumb, 70 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.USART2_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f407xx.o(RESET)
 </UL>
 <P><STRONG><a name="[5]"></a>UsageFault_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.UsageFault_Handler))
@@ -1234,18 +1232,20 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI9_5_IRQHandler
+<BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI9_5_IRQHandler
+<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 
 <P><STRONG><a name="[c7]"></a>check_devices</STRONG> (Thumb, 1256 bytes, Stack size 32 bytes, check_device_init.o(i.check_devices))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = check_devices &rArr; pressure &rArr; ADC_READ &rArr; ADC_CNL &rArr; HAL_ADC_Init &rArr; HAL_ADC_MspInit &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
+<BR>[Calls]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pressure
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flow
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
@@ -1279,27 +1279,28 @@ Global Symbols
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
 </UL>
 
-<P><STRONG><a name="[ce]"></a>date_time_decoder</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, main.o(i.date_time_decoder))
+<P><STRONG><a name="[cd]"></a>date_time_decoder</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, main.o(i.date_time_decoder))
 <BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
 </UL>
 
-<P><STRONG><a name="[cc]"></a>decode_raspi_packet</STRONG> (Thumb, 730 bytes, Stack size 56 bytes, main.o(i.decode_raspi_packet))
+<P><STRONG><a name="[cc]"></a>decode_raspi_packet</STRONG> (Thumb, 810 bytes, Stack size 56 bytes, main.o(i.decode_raspi_packet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = decode_raspi_packet &rArr; check_devices &rArr; pressure &rArr; ADC_READ &rArr; ADC_CNL &rArr; HAL_ADC_Init &rArr; HAL_ADC_MspInit &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;psv_mode_decoder
+<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_mode_decoder
+<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;psv_mode_decoder
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acv_mode_decoder
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acp_mode_decoder
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_alarm_decoder
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;simv_alarm_decoder
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;psv_alarm_decoder
 <LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pcv_alarm_decoder
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;acv_alarm_decoder
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;status
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;date_time_decoder
+<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;date_time_decoder
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;create_response_for_raspberry
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;create_checking_signal_for_raspberry
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;crc_calc
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1325,8 +1326,8 @@ Global Symbols
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADC_READ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
+<BR>[Called By]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 
 <P><STRONG><a name="[c2]"></a>led</STRONG> (Thumb, 148 bytes, Stack size 8 bytes, driver.o(i.led))
@@ -1337,15 +1338,15 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
 </UL>
 
-<P><STRONG><a name="[5b]"></a>main</STRONG> (Thumb, 624 bytes, Stack size 24 bytes, main.o(i.main))
+<P><STRONG><a name="[5b]"></a>main</STRONG> (Thumb, 778 bytes, Stack size 24 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 256<LI>Call Chain = main &rArr; decode_raspi_packet &rArr; check_devices &rArr; pressure &rArr; ADC_READ &rArr; ADC_CNL &rArr; HAL_ADC_Init &rArr; HAL_ADC_MspInit &rArr; HAL_GPIO_Init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_Base_Start_IT
+<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_Base_Start_IT
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;status
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;driver_init
+<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Init
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_ConfigClockSource
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_Base_Init
@@ -1367,6 +1368,7 @@ Global Symbols
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_SPI1_Init
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_ADC3_Init
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
@@ -1383,15 +1385,15 @@ Global Symbols
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADC_READ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
-<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
+<BR>[Called By]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_IRQHandler
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;check_devices
 </UL>
 
 <P><STRONG><a name="[d1]"></a>psv_alarm_decoder</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, alarms_setting.o(i.psv_alarm_decoder))
 <BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
 </UL>
 
-<P><STRONG><a name="[d0]"></a>psv_mode_decoder</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, modes_setting.o(i.psv_mode_decoder))
+<P><STRONG><a name="[cf]"></a>psv_mode_decoder</STRONG> (Thumb, 72 bytes, Stack size 0 bytes, modes_setting.o(i.psv_mode_decoder))
 <BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
 </UL>
 
@@ -1405,11 +1407,11 @@ Global Symbols
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;create_checking_signal_for_raspberry
 </UL>
 
-<P><STRONG><a name="[cd]"></a>simv_alarm_decoder</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, alarms_setting.o(i.simv_alarm_decoder))
+<P><STRONG><a name="[d0]"></a>simv_alarm_decoder</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, alarms_setting.o(i.simv_alarm_decoder))
 <BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
 </UL>
 
-<P><STRONG><a name="[cf]"></a>simv_mode_decoder</STRONG> (Thumb, 122 bytes, Stack size 24 bytes, modes_setting.o(i.simv_mode_decoder))
+<P><STRONG><a name="[ce]"></a>simv_mode_decoder</STRONG> (Thumb, 122 bytes, Stack size 24 bytes, modes_setting.o(i.simv_mode_decoder))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = simv_mode_decoder &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
@@ -1422,10 +1424,11 @@ Global Symbols
 
 <P><STRONG><a name="[80]"></a>status</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, driver.o(i.status))
 <BR><BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;driver_init
-<LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_IRQHandler
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI9_5_IRQHandler
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_raspi_packet
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PSV_Mode
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SIMV_Mode
 </UL>
 
 <P><STRONG><a name="[be]"></a>turbo</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, driver.o(i.turbo))

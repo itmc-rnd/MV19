@@ -7,6 +7,9 @@ bool data_received_from_raspy = false;
 
 modes CURRENT_MODE;
 
+int LED_POWER1=15,LED_POWER2=16,LED_BATTRY_Red=14,LED_BATTRY_Green=13,LED_Apnea=12,LED_ALARM_Hi=11,LED_ALARM_Low=10,LED_STANDBY1=7,LED_STANDBY2=6,LED_ACV1=4,LED_ACV2=4,LED_ACP=3,LED_SIMV=2,LED_PSV=1;
+int sent_ALARM_Hi_code=0,sent_ALARM_Low_code=0;
+
 int pressure_sensor_Ins = 1, pressure_sensor_Exp = 2, pressure_sensor_Triger = 3, flow_sensor_Ins = 2, flow_sensor_Exp = 1;
 
 int PSV_IPAP, PSV_EPAP, PSV_RISE_TIME, PSV_TRRIG_I, PSV_BUR, PSV_Apnea, PSV_MAXP, PSV_TRIIG_E, PSV_Target_Vt;
@@ -21,8 +24,10 @@ int ALARM_PSV_Fr_Maxi, ALARM_PSV_FiO2_Mini, ALARM_PSV_FiO2_Maxi, ALARM_PSV_Vti_M
 int ALARM_ACP_Fr_Maxi, ALARM_ACP_FiO2_Mini, ALARM_ACP_FiO2_Maxi, ALARM_ACP_Vti_Mini, ALARM_ACP_Vti_Maxi, ALARM_ACP_Vte_Mini;
 int ALARM_ACV_Pi_Mini, ALARM_ACV_Pi_Maxi, ALARM_ACV_Fr_Maxi, ALARM_ACV_FiO2_Mini, ALARM_ACV_FiO2_Maxi, ALARM_ACV_Vte_Mini;
 int ALARM_SIMV_Pi_Mini, ALARM_SIMV_Pi_Maxi, ALARM_SIMV_Fr_Maxi, ALARM_SIMV_FiO2_Mini, ALARM_SIMV_FiO2_Maxi, ALARM_SIMV_Vte_Mini;
+bool ALARM_Hi=false,ALARM_Low=false;
 
 char buf[500];
+
 
 int Current_IPAP, Current_EPAP, Current_Apnea;
 
